@@ -84,7 +84,7 @@ export default function ModalRegisterMember() {
                   level="L"
                   className="border-2 border-purple-200 rounded-lg p-2"
                   imageSettings={{
-                    src: "https://raw.githubusercontent.com/bquang2k6/locket/refs/heads/main/public/avata.jpg?token=GHSAT0AAAAAAC6TQB4HR6TWYGZR43LJP6BS2CRVE5Q",
+                    src: "./node_random_image2.png",
                     height: 50,
                     width: 50,
                     excavate: true,
