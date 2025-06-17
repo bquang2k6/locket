@@ -159,7 +159,7 @@ const AboutMe = () => {
               
               <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full border-4 border-white shadow-2xl transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 z-10 overflow-hidden">
                 <img 
-                  src="https://ibb.co/mF88j8yR" 
+                  src="https://raw.githubusercontent.com/bquang2k6/locket/refs/heads/main/public/avata.jpg?token=GHSAT0AAAAAAC6TQB4HR6TWYGZR43LJP6BS2CRVE5Q" 
                   alt="Phạm Bá Quang" 
                   className="w-full h-full object-cover"
                 />
@@ -235,7 +235,7 @@ const AboutMe = () => {
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-3xl blur opacity-25 group-hover:opacity-40 transition-opacity duration-300"></div>
                     <div className="relative bg-gradient-to-br from-gray-50 to-white p-8 rounded-3xl w-80 h-80 flex items-center justify-center shadow-xl transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-1">
                       <div className="w-64 h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center shadow-lg">
-                        <span className="text-6xl"><img src="https://ibb.co/4n0dnd5B"></img></span>
+                        <span className="text-6xl"><img src="https://raw.githubusercontent.com/bquang2k6/locket/refs/heads/main/public/qr.png?token=GHSAT0AAAAAAC6TQB4HN3K5U7D6QL464UMA2CRVD3Q"></img></span>
                       </div>
                     </div>
                   </div>
