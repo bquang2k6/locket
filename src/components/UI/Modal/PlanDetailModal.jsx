@@ -79,16 +79,16 @@ export default function ModalRegisterMember() {
             {modalData.qr_code && (
               <div className="flex flex-col items-center space-y-3 my-4">
                 <QRCodeSVG
-                  value={modalData.qr_code}
-                  size={350}
-                  level="L"
-                  className="border-2 border-purple-200 rounded-lg p-2"
-                  imageSettings={{
-                    src: "./node_random_image2.png",
-                    height: 50,
-                    width: 50,
-                    excavate: true,
-                  }}
+                    value={modalData.qr_code}
+                    size={Math.min(300, window.innerWidth - 40)}
+                    level="H"
+                    className="mx-auto"
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                      background: 'white',
+                      padding: '10px' // Built-in quiet zone
+                    }}
                 />
                 <p className="text-center text-sm text-gray-600">
                   Quét mã QR bằng ứng dụng ngân hàng để thanh toán.<br/>
