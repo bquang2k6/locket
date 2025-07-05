@@ -1,51 +1,70 @@
-// self.addEventListener('push', function(event) {
-//   const options = {
-//     body: event.data.text(),
-//     icon: '/icon.png',
-//     badge: '/badge.png',
-//   };
-//   event.waitUntil(
-//     self.registration.showNotification('Thông báo mới', options)
-//   );
-// });
+// Service Worker for PWA - No caching to avoid chrome-extension errors
+const CACHE_NAME = 'locket-wan-v3';
 
-// self.addEventListener('notificationclick', function(event) {
-//   event.notification.close();
-//   event.waitUntil(
-//     clients.openWindow('https://www.example.com')
-//   );
-// });
-// Tên cache
-// const CACHE_NAME = 'my-cache-v1';
-// const ASSETS_TO_CACHE = [
-//   '/icons8-heart-100.png',
-//   '/badge.png',
-//   '/IMG_7016.PNG',
-//   '/src/assets/fonts/YourFont.otf'
-// ];
+// Install event - minimal setup
+self.addEventListener('install', event => {
+  console.log('Service Worker installing...');
+  self.skipWaiting();
+});
 
-// // Cache các file khi service worker được cài đặt
-// self.addEventListener('install', event => {
-//   event.waitUntil(
-//     caches.open(CACHE_NAME).then(cache => {
-//       return cache.addAll(ASSETS_TO_CACHE);
-//     })
-//   );
-// });
+// Fetch event - no caching, just pass through
+self.addEventListener('fetch', event => {
+  // Skip all non-HTTP requests immediately
+  if (!event.request.url.startsWith('http')) {
+    return;
+  }
+  
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
+  // Skip external resources
+  try {
+    const url = new URL(event.request.url);
+    if (url.hostname !== location.hostname) {
+      return;
+    }
+  } catch (error) {
+    return;
+  }
+  
+  // For same-origin requests, just fetch without caching
+  event.respondWith(
+    fetch(event.request)
+      .catch(error => {
+        console.log('Fetch failed:', error);
+        return new Response('Network error', { 
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
+      })
+  );
+});
 
-// Cache API request
-// self.addEventListener('fetch', event => {
-//   event.respondWith(
-//     caches.match(event.request).then(cachedResponse => {
-//       if (cachedResponse) return cachedResponse;
-      
-//       // Fetch và lưu vào cache
-//       return fetch(event.request).then(response => {
-//         return caches.open(CACHE_NAME).then(cache => {
-//           cache.put(event.request, response.clone());
-//           return response;
-//         });
-//       });
-//     })
-//   );
-// });
+// Push notification event
+self.addEventListener('push', function(event) {
+  const options = {
+    body: event.data ? event.data.text() : 'Có nội dung mới từ Locket Wan!',
+    icon: '/images/locket-pro.png',
+    badge: '/images/locket-pro.png',
+    vibrate: [200, 100, 200],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    }
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification('Locket Wan', options)
+  );
+});
+
+// Notification click event
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  
+  event.waitUntil(
+    clients.openWindow('/')
+  );
+});

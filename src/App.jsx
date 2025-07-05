@@ -13,6 +13,7 @@ import { AppProvider } from "./context/AppContext";
 import Loading from "./components/Loading";
 import ToastProvider from "./components/Toast";
 import NotFoundPage from "./components/404";
+import InstallPWA from "./components/InstallPWA";
 import getLayout from "./layouts";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <AppContent />
           </Router>
           <ToastProvider />
+          <InstallPWA />
         </AppProvider>
       </AuthProvider>
     </ThemeProvider>
@@ -43,15 +45,43 @@ function AppContent() {
     document.title = currentRoute ? currentRoute.title : "Ứng dụng của bạn";
   }, [location.pathname]);
 
-  if (loading) return <Loading isLoading={true} />;
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      // Clear all caches first
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            console.log('Deleting cache:', cacheName);
+            return caches.delete(cacheName);
+          })
+        );
+      }).then(() => {
+        // Unregister old service workers
+        return navigator.serviceWorker.getRegistrations();
+      }).then(registrations => {
+        return Promise.all(
+          registrations.map(registration => {
+            console.log('Unregistering service worker:', registration);
+            return registration.unregister();
+          })
+        );
+      }).then(() => {
+        // Register new service worker
+        return navigator.serviceWorker.register('/service-worker.js', {
+          updateViaCache: 'none'
+        });
+      }).then(registration => {
+        console.log('Service Worker đăng ký thành công: ', registration);
+        
+        // Force update if needed
+        registration.update();
+      }).catch(error => {
+        console.log('Service Worker đăng ký thất bại: ', error);
+      });
+    }
+  }, []);
 
-  // if ('serviceWorker' in navigator) {
-  //   navigator.serviceWorker.register('/service-worker.js').then(registration => {
-  //     console.log('Service Worker đăng ký thành công: ', registration);
-  //   }).catch(error => {
-  //     console.log('Service Worker đăng ký thất bại: ', error);
-  //   });
-  // }
+  if (loading) return <Loading isLoading={true} />;
 
   
   return (
