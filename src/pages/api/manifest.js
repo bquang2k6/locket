@@ -1,0 +1,71 @@
+export default function handler(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).json({
+    "name": "Locket Wan",
+    "short_name": "Locket Wan",
+    "description": "Locket Wan giúp bạn đăng ảnh và video lên Locket nhanh chóng ngay từ trình duyệt, hỗ trợ chụp/quay trực tiếp, thêm caption đầy màu sắc và chia sẻ khoảnh khắc dễ dàng.",
+    "id": "/",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "vi",
+    "categories": ["social", "photo", "lifestyle"],
+    "prefer_related_applications": false,
+    "related_applications": [],
+    "icons": [
+      {
+        "src": "/images/locket-pro.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/apple-touch-icon.png",
+        "sizes": "180x180",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/images/prvlocket.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/images/prvlocket.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Chụp ảnh",
+        "short_name": "Chụp ảnh",
+        "description": "Chụp ảnh mới",
+        "url": "/?action=camera",
+        "icons": [
+          {
+            "src": "/images/locket-pro.png",
+            "sizes": "96x96"
+          }
+        ]
+      },
+      {
+        "name": "Tải lên",
+        "short_name": "Tải lên",
+        "description": "Tải ảnh/video lên",
+        "url": "/?action=upload",
+        "icons": [
+          {
+            "src": "/images/locket-pro.png",
+            "sizes": "96x96"
+          }
+        ]
+      }
+    ]
+  });
+} 
