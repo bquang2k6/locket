@@ -8,9 +8,9 @@ const STATIC_FILES = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/images/locket-pro.png',
-  '/images/apple-touch-icon.png',
-  '/images/prvlocket.png'
+  '/images/book.jpg',
+  '/images/book.jpg',
+  '/images/cammera.jpg'
 ];
 
 // Install event
