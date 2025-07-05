@@ -12,6 +12,7 @@
   "lang": "vi",
   "categories": ["social", "photo", "lifestyle"],
   "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
     {
       "src": "/images/locket-pro.png",

@@ -47,26 +47,36 @@ function AppContent() {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      // Check if service worker is already registered
-      navigator.serviceWorker.getRegistration('/service-worker.js')
-        .then(registration => {
-          if (!registration) {
-            // Only register if not already registered
-            return navigator.serviceWorker.register('/service-worker.js', {
-              updateViaCache: 'none'
-            });
-          }
-          return registration;
-        })
-        .then(registration => {
-          console.log('Service Worker đăng ký thành công: ', registration);
+      const registerServiceWorker = async () => {
+        try {
+          // Check if service worker is already registered
+          const existingRegistration = await navigator.serviceWorker.getRegistration('/service-worker.js');
           
-          // Check for updates
-          registration.update();
-        })
-        .catch(error => {
-          console.log('Service Worker đăng ký thất bại: ', error);
-        });
+          if (existingRegistration) {
+            console.log('Service Worker đã được đăng ký:', existingRegistration);
+            // Check for updates
+            existingRegistration.update();
+            return existingRegistration;
+          }
+
+          // Register new service worker
+          const registration = await navigator.serviceWorker.register('/service-worker.js', {
+            updateViaCache: 'none'
+          });
+          
+          console.log('Service Worker đăng ký thành công:', registration);
+          
+          // Wait for the service worker to be ready
+          await navigator.serviceWorker.ready;
+          console.log('Service Worker đã sẵn sàng');
+          
+          return registration;
+        } catch (error) {
+          console.error('Service Worker đăng ký thất bại:', error);
+        }
+      };
+
+      registerServiceWorker();
     }
   }, []);
 
