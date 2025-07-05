@@ -95,9 +95,9 @@ const BottomHomeScreen = () => {
             </div>
           </div>
         ) : (
-          recentPosts.map((item) => (
+          recentPosts.map((item, index) => (
             <div
-              key={item.id}
+              key={`bottom-post-${item.id}-${index}-${Date.now()}`}
               className="w-1/3 md:w-1/6 aspect-square overflow-hidden p-1 cursor-pointer"
               onClick={() => handleOpenMedia(item)}
             >

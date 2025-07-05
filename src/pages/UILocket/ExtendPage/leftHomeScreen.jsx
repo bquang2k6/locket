@@ -11,6 +11,11 @@ import BadgePlan from "./Badge";
 
 const POSTS_PER_PAGE = 10;
 
+// Helper function to generate unique keys
+const generateUniqueKey = (prefix, id, index) => {
+  return `${prefix}-${id}-${index}-${Date.now()}`;
+};
+
 const LeftHomeScreen = () => {
   const { user } = useContext(AuthContext);
   const { navigation, useloading } = useApp();
@@ -20,6 +25,7 @@ const LeftHomeScreen = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
   const [posts, setPosts] = useState([]);
+  const [renderKey, setRenderKey] = useState(0); // Add render key to force re-render
 
   // Thêm state cho phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,7 +43,35 @@ const LeftHomeScreen = () => {
     const getPosts = async () => {
       try {
         const response = await axios.get(API_URL.CAPTION_POSTS_URL);
-        setPosts(response.data);
+        console.log("Fetched posts:", response.data);
+        
+        // Check for duplicate IDs
+        const ids = response.data.map(post => post.id);
+        const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+        if (duplicateIds.length > 0) {
+          console.warn("Duplicate IDs found:", duplicateIds);
+        }
+        
+        // Remove duplicates based on ID and keep the most recent one
+        const uniquePosts = response.data.reduce((acc, post) => {
+          const existingIndex = acc.findIndex(p => p.id === post.id);
+          if (existingIndex === -1) {
+            acc.push(post);
+          } else {
+            // Keep the most recent post
+            const existing = acc[existingIndex];
+            const existingDate = new Date(existing.created_at);
+            const newDate = new Date(post.created_at);
+            if (newDate > existingDate) {
+              acc[existingIndex] = post;
+            }
+          }
+          return acc;
+        }, []);
+        
+        console.log("Unique posts after deduplication:", uniquePosts);
+        setPosts(uniquePosts);
+        setRenderKey(prev => prev + 1); // Force re-render
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -68,6 +102,7 @@ const LeftHomeScreen = () => {
 
   return (
     <div
+      key={`left-home-screen-${renderKey}`}
       className={`fixed inset-0 flex flex-col transition-transform duration-500 z-50 bg-base-100 ${
         isProfileOpen ? "translate-x-0" : "-translate-x-full"
       }`}
@@ -136,45 +171,50 @@ const LeftHomeScreen = () => {
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-4 py-6 space-y-6"
       >
-        {currentPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
+        {currentPosts.map((post, index) => (
+          <PostCard 
+            key={generateUniqueKey("post", post.id, index)} 
+            post={post} 
+          />
         ))}
 
         {/* Phân trang đơn giản */}
-        <div className="flex justify-center items-center space-x-3 mt-4">
-          <button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-3 py-1 rounded border bg-gray-200 disabled:opacity-50"
-          >
-            Prev
-          </button>
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center space-x-3 mt-4">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded border bg-gray-200 disabled:opacity-50"
+            >
+              Prev
+            </button>
 
-          {[...Array(totalPages)].map((_, i) => {
-            const page = i + 1;
-            return (
-              <button
-                key={page}
-                onClick={() => goToPage(page)}
-                className={`px-3 py-1 rounded border ${
-                  currentPage === page
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }`}
-              >
-                {page}
-              </button>
-            );
-          })}
+            {[...Array(totalPages)].map((_, i) => {
+              const page = i + 1;
+              return (
+                <button
+                  key={generateUniqueKey("page", page, i)}
+                  onClick={() => goToPage(page)}
+                  className={`px-3 py-1 rounded border ${
+                    currentPage === page
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
 
-          <button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded border bg-gray-200 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded border bg-gray-200 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

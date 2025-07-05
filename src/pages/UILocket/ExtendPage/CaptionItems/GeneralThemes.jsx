@@ -270,7 +270,7 @@ export default function GeneralThemes({ title }) {
 
               return (
                 <StarProgress
-                  key={star}
+                  key={`star-${star}-${reviewRating}`}
                   size={24}
                   fillPercent={fillPercent}
                   className=""

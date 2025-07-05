@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import { AuthContext } from "../../context/AuthLocket.jsx";
 
@@ -13,23 +13,46 @@ import ScreenCustomeStudio from "./ExtendPage/Container/CustomeStudio.jsx";
 
 const CameraCapture = () => {
   const { user, setUser } = useContext(AuthContext);
+  const [renderKey, setRenderKey] = useState(0);
+
+  // Force re-render to ensure unique keys
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRenderKey(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <>
-      <MainHomeScreen />
+    <React.Fragment key={`camera-capture-${renderKey}`}>
+      <div key="main-home-screen">
+        <MainHomeScreen />
+      </div>
       {/* left */}
-      <LeftHomeScreen />
+      <div key="left-home-screen">
+        <LeftHomeScreen />
+      </div>
       {/* right */}
-      <RightHomeScreen />
+      <div key="right-home-screen">
+        <RightHomeScreen />
+      </div>
       {/* Cái này là giao diện phía dưới chứa các bài viết đã hoặc đăng */}
-      <BottomHomeScreen />
+      <div key="bottom-home-screen">
+        <BottomHomeScreen />
+      </div>
 
-      <ScreenCustomeStudio />
+      <div key="custome-studio">
+        <ScreenCustomeStudio />
+      </div>
 
-      <FriendsContainer />
+      <div key="friends-container">
+        <FriendsContainer />
+      </div>
 
-      <Sidebar />
-    </>
+      <div key="sidebar">
+        <Sidebar />
+      </div>
+    </React.Fragment>
   );
 };
 

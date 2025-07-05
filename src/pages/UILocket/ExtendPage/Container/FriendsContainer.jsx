@@ -245,23 +245,26 @@ const FriendsContainer = () => {
             </p>
           )}
 
-          {filteredFriends.map((friend) => (
+          {filteredFriends.map((friend, index) => (
             <div
-              key={friend.uid}
-              className="flex items-center gap-3 p-2 rounded-md cursor-pointer"
+              key={`friend-${friend.uid}-${index}-${Date.now()}`}
+              className="flex items-center justify-between p-3 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+              onClick={() => handleFriendClick(friend)}
             >
-              <img
-                src={friend.profilePic || "./default-avatar.png"}
-                alt={`${friend.firstName} ${friend.lastName}`}
-                className="w-16 h-16 rounded-full border-[3.5px] p-0.5 border-amber-400 object-cover"
-              />
-              <div>
-                <h2 className="font-medium">
-                  {friend.firstName} {friend.lastName}
-                </h2>
-                <p className="text-sm text-gray-500">
-                  {friend.username || "Không có username"}
-                </p>
+              <div className="flex items-center gap-3">
+                <img
+                  src={friend.profilePic || "./default-avatar.png"}
+                  alt={`${friend.firstName} ${friend.lastName}`}
+                  className="w-16 h-16 rounded-full border-[3.5px] p-0.5 border-amber-400 object-cover"
+                />
+                <div>
+                  <h2 className="font-medium">
+                    {friend.firstName} {friend.lastName}
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    {friend.username || "Không có username"}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
