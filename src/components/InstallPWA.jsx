@@ -6,7 +6,6 @@ const InstallPWA = () => {
   const [promptInstall, setPromptInstall] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState({});
   const location = useLocation();
 
   useEffect(() => {
@@ -35,21 +34,7 @@ const InstallPWA = () => {
         // Check if service worker is registered
         const registration = await navigator.serviceWorker.getRegistration();
         if (!registration) {
-          console.log('No service worker registered, trying to register...');
           await navigator.serviceWorker.register('/service-worker.js');
-        }
-
-        // Check manifest
-        const manifestLink = document.querySelector('link[rel="manifest"]');
-        let manifest = null;
-        if (manifestLink) {
-          try {
-            const response = await fetch(manifestLink.href);
-            manifest = await response.json();
-            console.log('Manifest loaded:', manifest);
-          } catch (error) {
-            console.error('Failed to load manifest:', error);
-          }
         }
 
         // Check if we're on HTTPS or localhost
@@ -58,41 +43,20 @@ const InstallPWA = () => {
                         window.location.hostname === '127.0.0.1' ||
                         window.location.hostname.includes('localhost') ||
                         window.location.hostname.includes('127.0.0.1');
-        
-        // Additional check for development environment
-        const isDev = import.meta.env.DEV;
-        const isLocalhost = window.location.hostname === 'localhost' || 
-                           window.location.hostname === '127.0.0.1' ||
-                           window.location.hostname.includes('localhost');
-        
-        const securityInfo = {
-          protocol: window.location.protocol,
-          hostname: window.location.hostname,
-          isSecure,
-          isDev,
-          isLocalhost,
-          fullUrl: window.location.href
-        };
-        
-        console.log('Security check:', securityInfo);
-        setDebugInfo(securityInfo);
 
-        // Allow PWA install if on localhost (development) or HTTPS
-        if (!isSecure && !isLocalhost) {
-          console.log('Not on secure context or localhost, PWA install not available');
+        if (!isSecure) {
           setSupportsPWA(false);
           setIsLoading(false);
           return;
         }
 
-        // Wait a bit for beforeinstallprompt event
+        // Wait for beforeinstallprompt event
         setTimeout(() => {
           if (!promptInstall) {
-            console.log('No beforeinstallprompt event received, showing manual install option');
             setSupportsPWA(true); // Show manual install option
           }
           setIsLoading(false);
-        }, 3000); // Increased timeout for production
+        }, 2000);
 
       } catch (error) {
         console.error('Error checking installability:', error);
@@ -103,7 +67,6 @@ const InstallPWA = () => {
 
     const handler = (e) => {
       e.preventDefault();
-      console.log('beforeinstallprompt event fired');
       setPromptInstall(e);
       setSupportsPWA(true);
       setIsLoading(false);
@@ -113,7 +76,6 @@ const InstallPWA = () => {
 
     // Check for appinstalled event
     const appInstalledHandler = () => {
-      console.log('App was installed');
       setIsInstalled(true);
       setSupportsPWA(false);
       setPromptInstall(null);
@@ -134,21 +96,15 @@ const InstallPWA = () => {
   const onClick = async () => {
     if (promptInstall) {
       try {
-        console.log('Triggering install prompt...');
         promptInstall.prompt();
         const { outcome } = await promptInstall.userChoice;
-        console.log('Install prompt outcome:', outcome);
         if (outcome === 'accepted') {
-          console.log('User accepted the install prompt');
           setIsInstalled(true);
-        } else {
-          console.log('User dismissed the install prompt');
         }
         setPromptInstall(null);
         setSupportsPWA(false);
       } catch (error) {
         console.error('Error during install prompt:', error);
-        // Fallback to manual instructions
         showManualInstructions();
       }
     } else {
@@ -161,44 +117,20 @@ const InstallPWA = () => {
 
 Chrome/Edge Desktop:
 - Nhấn F12 → Application → Manifest → Install
-- Hoặc nhấn Ctrl+Shift+I → Application → Manifest → Install
 
 Chrome Mobile:
 - Menu (3 chấm) → "Cài đặt ứng dụng"
-- Hoặc "Thêm vào màn hình chính"
 
 Safari Mobile:
 - Share → "Thêm vào Màn hình chính"
 
 Firefox:
-- Menu → "Cài đặt ứng dụng"
-
-Edge Mobile:
-- Menu → "Cài đặt ứng dụng"
-
-Debug Info:
-- Protocol: ${debugInfo.protocol}
-- Hostname: ${debugInfo.hostname}
-- Is Secure: ${debugInfo.isSecure}
-- Is Dev: ${debugInfo.isDev}`;
+- Menu → "Cài đặt ứng dụng"`;
 
     alert(instructions);
   };
 
-  // Debug info
-  console.log('InstallPWA Debug:', {
-    supportsPWA,
-    isInstalled,
-    isLoading,
-    pathname: location.pathname,
-    isHome: location.pathname === '/' || location.pathname === '/home',
-    promptInstall: !!promptInstall,
-    displayMode: window.matchMedia ? window.matchMedia('(display-mode: standalone)').matches : false,
-    navigatorStandalone: window.navigator.standalone,
-    debugInfo
-  });
-
-  // Show on home page (/) or /home, and when not installed and not loading
+  // Show on public pages when not installed and not loading
   const isPublicPage = location.pathname === '/' || 
                       location.pathname === '/home' || 
                       location.pathname === '/about' ||

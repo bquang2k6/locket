@@ -15,15 +15,12 @@ const STATIC_FILES = [
 
 // Install event
 self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
-        console.log('Caching static files');
         return cache.addAll(STATIC_FILES);
       })
       .then(() => {
-        console.log('Service Worker installed');
         return self.skipWaiting();
       })
       .catch(error => {
@@ -34,21 +31,18 @@ self.addEventListener('install', event => {
 
 // Activate event
 self.addEventListener('activate', event => {
-  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
         return Promise.all(
           cacheNames.map(cacheName => {
             if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-              console.log('Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => {
-        console.log('Service Worker activated');
         return self.clients.claim();
       })
       .catch(error => {
@@ -174,8 +168,6 @@ self.addEventListener('notificationclick', function(event) {
 
 // Message event for debugging
 self.addEventListener('message', function(event) {
-  console.log('Service Worker received message:', event.data);
-  
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }

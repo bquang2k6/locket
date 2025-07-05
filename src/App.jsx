@@ -53,7 +53,6 @@ function AppContent() {
           const existingRegistration = await navigator.serviceWorker.getRegistration('/service-worker.js');
           
           if (existingRegistration) {
-            console.log('Service Worker đã được đăng ký:', existingRegistration);
             // Check for updates
             existingRegistration.update();
             return existingRegistration;
@@ -64,15 +63,12 @@ function AppContent() {
             updateViaCache: 'none'
           });
           
-          console.log('Service Worker đăng ký thành công:', registration);
-          
           // Wait for the service worker to be ready
           await navigator.serviceWorker.ready;
-          console.log('Service Worker đã sẵn sàng');
           
           return registration;
         } catch (error) {
-          console.error('Service Worker đăng ký thất bại:', error);
+          console.error('Service Worker registration failed:', error);
         }
       };
 
