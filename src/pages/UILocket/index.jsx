@@ -13,15 +13,12 @@ import ScreenCustomeStudio from "./ExtendPage/Container/CustomeStudio.jsx";
 
 const CameraCapture = () => {
   const { user, setUser } = useContext(AuthContext);
-  const [renderKey, setRenderKey] = useState(0);
+  const [renderKey, setRenderKey] = useState(Date.now());
 
-  // Force re-render to ensure unique keys
+  // Only update render key when user changes or component mounts
   useEffect(() => {
-    const timer = setInterval(() => {
-      setRenderKey(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    setRenderKey(Date.now());
+  }, [user?.uid]);
 
   return (
     <React.Fragment key={`camera-capture-${renderKey}`}>

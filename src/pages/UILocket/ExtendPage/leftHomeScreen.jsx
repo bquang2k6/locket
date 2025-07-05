@@ -13,7 +13,7 @@ const POSTS_PER_PAGE = 10;
 
 // Helper function to generate unique keys
 const generateUniqueKey = (prefix, id, index) => {
-  return `${prefix}-${id}-${index}-${Date.now()}`;
+  return `${prefix}-${id}-${index}`;
 };
 
 const LeftHomeScreen = () => {
@@ -25,7 +25,6 @@ const LeftHomeScreen = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef(null);
   const [posts, setPosts] = useState([]);
-  const [renderKey, setRenderKey] = useState(0); // Add render key to force re-render
 
   // Thêm state cho phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,7 +70,6 @@ const LeftHomeScreen = () => {
         
         console.log("Unique posts after deduplication:", uniquePosts);
         setPosts(uniquePosts);
-        setRenderKey(prev => prev + 1); // Force re-render
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -102,7 +100,6 @@ const LeftHomeScreen = () => {
 
   return (
     <div
-      key={`left-home-screen-${renderKey}`}
       className={`fixed inset-0 flex flex-col transition-transform duration-500 z-50 bg-base-100 ${
         isProfileOpen ? "translate-x-0" : "-translate-x-full"
       }`}
