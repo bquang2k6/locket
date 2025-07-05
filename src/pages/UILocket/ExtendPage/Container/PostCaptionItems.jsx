@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Check, Download, Heart, MessageCircle, Send } from "lucide-react";
+import React, { useEffect, useState, useContext } from "react";
+import { Check, Download, Heart, MessageCircle, Send, Trash2 } from "lucide-react";
+import { AuthContext } from "../../../../context/AuthLocket";
+import { deleteCaptionPost } from "../../../../services/LocketDioService/PostMoments";
+import { showSuccess, showError } from "../../../../components/Toast";
 
-const PostCard = ({ post }) => {
+const ADMIN_USERNAME = "wan206";
+
+const PostCard = ({ post, onDeleted }) => {
   const [isDownloaded, setIsDownloaded] = useState(false);
+  const { user } = useContext(AuthContext);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+
 
   useEffect(() => {
     const savedPosts = JSON.parse(localStorage.getItem("savedPosts") || "[]");
@@ -28,6 +37,22 @@ const PostCard = ({ post }) => {
     setIsDownloaded((prev) => !prev);
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm("Bạn có chắc muốn xóa caption này?")) return;
+    setIsDeleting(true);
+    try {
+      // Admin key từ config
+      const adminKey = "header";
+      await deleteCaptionPost(post.id, adminKey);
+      showSuccess("Đã xóa caption thành công!");
+      if (onDeleted) onDeleted(post.id);
+    } catch (err) {
+      showError("Xóa caption thất bại!");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
       {/* Header */}
@@ -43,7 +68,7 @@ const PostCard = ({ post }) => {
               {post?.user_info?.displayName || "Anonymous"}{" • "}
               <div className="flex items-center space-x-1">
                 {/* Badge Admin */}
-                {post?.user_info?.username === "wan206" && (
+                {post?.user_info?.username === ADMIN_USERNAME && (
                   <span
                     className="px-2 py-0.5 text-xs rounded-full text-white font-semibold shadow-md"
                     style={{
@@ -91,6 +116,7 @@ const PostCard = ({ post }) => {
             year: "numeric",
           })}
         </span>
+
       </div>
 
       {/* Caption Gradient */}
@@ -151,6 +177,21 @@ const PostCard = ({ post }) => {
               "Lưu"
             )}
           </button>
+          
+          {/* Nút xóa chỉ hiển thị với admin */}
+          {user && user.username === ADMIN_USERNAME && (
+            <button
+              className="text-xs font-medium rounded-full px-3 py-1 border transition bg-red-100 text-red-600 border-red-300 hover:bg-red-200"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              title="Xóa caption"
+            >
+              <span className="flex items-center gap-1">
+                <Trash2 className="w-4 h-4" />
+                {isDeleting ? "Đang xóa..." : "Xóa"}
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>

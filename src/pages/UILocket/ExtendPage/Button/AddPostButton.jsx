@@ -6,7 +6,7 @@ import { showError, showSuccess } from "../../../../components/Toast";
 import { API_URL } from "../../../../utils";
 import LoadingRing from "../../../../components/UI/Loading/ring";
 
-const AddPostButton = () => {
+const AddPostButton = ({ onPostAdded }) => {
   const { user, userPlan } = useContext(AuthContext);
   const [showForm, setShowForm] = useState(false);
   const [caption, setCaption] = useState("");
@@ -55,6 +55,11 @@ const AddPostButton = () => {
         setContent("");
         setType("background");
         setShowForm(false);
+        
+        // Notify parent component to refresh posts
+        if (onPostAdded) {
+          onPostAdded();
+        }
       })
       .catch((error) => {
         console.error("Error sending data:", error);

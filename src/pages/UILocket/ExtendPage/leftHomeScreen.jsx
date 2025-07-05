@@ -29,6 +29,43 @@ const LeftHomeScreen = () => {
   // Thêm state cho phân trang
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Function to refresh posts
+  const refreshPosts = async () => {
+    try {
+      const response = await axios.get(API_URL.CAPTION_POSTS_URL);
+      console.log("Fetched posts:", response.data);
+      
+      // Check for duplicate IDs
+      const ids = response.data.map(post => post.id);
+      const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+      if (duplicateIds.length > 0) {
+        console.warn("Duplicate IDs found:", duplicateIds);
+      }
+      
+      // Remove duplicates based on ID and keep the most recent one
+      const uniquePosts = response.data.reduce((acc, post) => {
+        const existingIndex = acc.findIndex(p => p.id === post.id);
+        if (existingIndex === -1) {
+          acc.push(post);
+        } else {
+          // Keep the most recent post
+          const existing = acc[existingIndex];
+          const existingDate = new Date(existing.created_at);
+          const newDate = new Date(post.created_at);
+          if (newDate > existingDate) {
+            acc[existingIndex] = post;
+          }
+        }
+        return acc;
+      }, []);
+      
+      console.log("Unique posts after deduplication:", uniquePosts);
+      setPosts(uniquePosts);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
   useEffect(() => {
     const div = scrollRef.current;
     const handleScroll = () => {
@@ -39,42 +76,7 @@ const LeftHomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    const getPosts = async () => {
-      try {
-        const response = await axios.get(API_URL.CAPTION_POSTS_URL);
-        console.log("Fetched posts:", response.data);
-        
-        // Check for duplicate IDs
-        const ids = response.data.map(post => post.id);
-        const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
-        if (duplicateIds.length > 0) {
-          console.warn("Duplicate IDs found:", duplicateIds);
-        }
-        
-        // Remove duplicates based on ID and keep the most recent one
-        const uniquePosts = response.data.reduce((acc, post) => {
-          const existingIndex = acc.findIndex(p => p.id === post.id);
-          if (existingIndex === -1) {
-            acc.push(post);
-          } else {
-            // Keep the most recent post
-            const existing = acc[existingIndex];
-            const existingDate = new Date(existing.created_at);
-            const newDate = new Date(post.created_at);
-            if (newDate > existingDate) {
-              acc[existingIndex] = post;
-            }
-          }
-          return acc;
-        }, []);
-        
-        console.log("Unique posts after deduplication:", uniquePosts);
-        setPosts(uniquePosts);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-    getPosts();
+    refreshPosts();
   }, []);
 
   useEffect(() => {
@@ -104,7 +106,7 @@ const LeftHomeScreen = () => {
         isProfileOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
-      <AddPostButton />
+              <AddPostButton onPostAdded={refreshPosts} />
 
       {/* Header */}
       <div className="flex flex-col shadow-lg px-4 py-2 text-base-content relative overflow-hidden">
@@ -172,6 +174,9 @@ const LeftHomeScreen = () => {
           <PostCard 
             key={generateUniqueKey("post", post.id, index)} 
             post={post} 
+            onDeleted={(deletedId) => {
+              setPosts(prevPosts => prevPosts.filter(post => post.id !== deletedId));
+            }}
           />
         ))}
 

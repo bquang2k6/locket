@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as utils from "../../utils";
+import { API_URL } from "../../utils/API/apiRoutes";
 
 export const uploadMedia = async (payload) => {
   try {
@@ -130,6 +131,24 @@ export const PostMoments = async (payload) => {
     } else {
       console.error("🌐 Network Error:", error.message);
     }
+    throw error;
+  }
+};
+
+export const deleteCaptionPost = async (postId, adminKey) => {
+  try {
+    const url = `https://api4.quang-tech.space/locketpro/user-themes/caption-posts/${postId}`;
+    
+    const response = await axios.delete(url, {
+      data: {
+        post_id: postId,
+        admin_key: adminKey
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Delete caption post error:", error.response?.data || error.message);
     throw error;
   }
 };
