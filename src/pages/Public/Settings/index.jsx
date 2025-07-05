@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Settings2, Server, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { Settings2, Server, Eye, EyeOff, RefreshCw, Download, Smartphone } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthLocket";
 import { showSuccess, showInfo } from "../../../components/Toast";
@@ -16,6 +16,9 @@ function SettingsPage() {
   const [isCheckingNode, setIsCheckingNode] = useState(false);
   const [refreshCountdown, setRefreshCountdown] = useState(0);
   const [lastCheckedTime, setLastCheckedTime] = useState(null);
+  const [supportsPWA, setSupportsPWA] = useState(false);
+  const [promptInstall, setPromptInstall] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(false);
   const urlRegex = /^https?:\/\/(?:[a-zA-Z0-9_-]+\.)*[a-zA-Z0-9_-]+(?:\.[a-zA-Z]{2,})?(?::\d{1,5})?(?:\/[^\s]*)?$/;
 
   const measureLatency = async (url) => {
@@ -57,6 +60,38 @@ function SettingsPage() {
       setEncryptKey(savedEncryptKey);
     }
     setIsCustomBackend(savedIsCustom);
+  }, []);
+
+  // Check PWA support and installation status
+  useEffect(() => {
+    // Check if PWA is supported
+    const checkPWASupport = () => {
+      const isSupported = 'serviceWorker' in navigator && 'PushManager' in window;
+      setSupportsPWA(isSupported);
+      
+      // Check if app is already installed
+      if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+        setIsInstalled(true);
+      }
+      
+      // Listen for beforeinstallprompt event
+      const handler = (e) => {
+        e.preventDefault();
+        setPromptInstall(e);
+        console.log('PWA install prompt available');
+      };
+      
+      window.addEventListener('beforeinstallprompt', handler);
+      
+      // Check if we already have a stored prompt
+      if (window.deferredPrompt) {
+        setPromptInstall(window.deferredPrompt);
+      }
+      
+      return () => window.removeEventListener('beforeinstallprompt', handler);
+    };
+    
+    checkPWASupport();
   }, []);
 
   const checkNodeStatus = async (url) => {
@@ -133,6 +168,41 @@ function SettingsPage() {
     showSuccess("Backend settings saved successfully");
   };
 
+  const handleInstallPWA = async () => {
+    if (!promptInstall) {
+      showInfo("Cài đặt không khả dụng. Vui lòng sử dụng menu trình duyệt.");
+      return;
+    }
+    
+    try {
+      promptInstall.prompt();
+      const { outcome } = await promptInstall.userChoice;
+      if (outcome === 'accepted') {
+        showSuccess("Ứng dụng đã được cài đặt thành công!");
+        setIsInstalled(true);
+      } else {
+        showInfo("Cài đặt đã bị hủy.");
+      }
+      setPromptInstall(null);
+    } catch (error) {
+      console.error('Install error:', error);
+      showInfo("Có lỗi xảy ra khi cài đặt ứng dụng.");
+    }
+  };
+
+  const handleManualInstall = () => {
+    // Trigger manual install prompt
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        if (registration.promptInstall) {
+          registration.promptInstall();
+        } else {
+          showInfo("Vui lòng sử dụng menu trình duyệt để cài đặt ứng dụng.");
+        }
+      });
+    }
+  };
+
   const NodeCard = ({ data }) => (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -169,6 +239,67 @@ function SettingsPage() {
   );
 
   const settingsSections = [
+    {
+      id: "pwa",
+      title: "Cài đặt ứng dụng",
+      icon: <Smartphone size={20} />,
+      description: "Cài đặt Locket Wan vào màn hình chính để sử dụng như ứng dụng riêng biệt",
+      customContent: (
+        <div className="space-y-4">
+          {/* Debug info */}
+          <div className="text-xs text-gray-500 space-y-1">
+            <p>PWA Support: {supportsPWA ? 'Yes' : 'No'}</p>
+            <p>Install Prompt: {promptInstall ? 'Available' : 'Not available'}</p>
+            <p>Is Installed: {isInstalled ? 'Yes' : 'No'}</p>
+            <p>Display Mode: {window.matchMedia && window.matchMedia('(display-mode: standalone)').matches ? 'Standalone' : 'Browser'}</p>
+          </div>
+          
+          {!supportsPWA ? (
+            <div className="alert alert-warning">
+              <Download size={20} />
+              <span>Trình duyệt của bạn không hỗ trợ cài đặt ứng dụng.</span>
+            </div>
+          ) : isInstalled ? (
+            <div className="alert alert-success">
+              <Download size={20} />
+              <span>Ứng dụng đã được cài đặt trên thiết bị của bạn!</span>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="alert alert-info">
+                <Download size={20} />
+                <span>Bạn có thể cài đặt Locket Wan vào màn hình chính để sử dụng như ứng dụng riêng biệt.</span>
+              </div>
+              <div className="flex gap-2">
+                <button 
+                  className="btn btn-primary flex-1 gap-2"
+                  onClick={handleInstallPWA}
+                  disabled={!promptInstall}
+                >
+                  <Download size={18} />
+                  Cài đặt tự động
+                </button>
+                <button 
+                  className="btn btn-outline flex-1 gap-2"
+                  onClick={handleManualInstall}
+                >
+                  <Download size={18} />
+                  Cài đặt thủ công
+                </button>
+              </div>
+              {!promptInstall && (
+                <div className="text-sm space-y-2 mt-4 p-3 bg-base-300 rounded-lg">
+                  <p className="font-medium">Hướng dẫn cài đặt thủ công:</p>
+                  <p><strong>Chrome/Edge:</strong> Menu (3 chấm) → "Cài đặt ứng dụng"</p>
+                  <p><strong>Safari (iPhone):</strong> Share → "Thêm vào Màn hình chính"</p>
+                  <p><strong>Chrome Mobile:</strong> Menu → "Cài đặt ứng dụng"</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )
+    },
     {
       id: "backend",
       title: "Backend Configuration",

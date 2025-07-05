@@ -23,9 +23,9 @@ function App() {
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
             <AppContent />
+            <InstallPWA />
           </Router>
           <ToastProvider />
-          <InstallPWA />
         </AppProvider>
       </AuthProvider>
     </ThemeProvider>

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const InstallPWA = () => {
   const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handler = (e) => {
@@ -17,20 +19,31 @@ const InstallPWA = () => {
   }, []);
 
   const onClick = async () => {
-    if (!promptInstall) {
-      return;
-    }
-    promptInstall.prompt();
-    const { outcome } = await promptInstall.userChoice;
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+    if (promptInstall) {
+      promptInstall.prompt();
+      const { outcome } = await promptInstall.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      setPromptInstall(null);
     } else {
-      console.log('User dismissed the install prompt');
+      // Fallback: show instructions
+      alert('Để cài đặt ứng dụng:\n\nChrome/Edge: Menu (3 chấm) → "Cài đặt ứng dụng"\nSafari: Share → "Thêm vào Màn hình chính"\nChrome Mobile: Menu → "Cài đặt ứng dụng"');
     }
-    setPromptInstall(null);
   };
 
-  if (!supportsPWA) {
+  // Debug info
+  console.log('InstallPWA Debug:', {
+    supportsPWA,
+    pathname: location.pathname,
+    isHome: location.pathname === '/',
+    promptInstall: !!promptInstall
+  });
+
+  // Only show on home page
+  if (location.pathname !== '/') {
     return null;
   }
 
