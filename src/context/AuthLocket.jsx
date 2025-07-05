@@ -50,6 +50,12 @@ export const AuthProvider = ({ children }) => {
       }
     }
     
+    // Chỉ trả về default plan nếu không có user đăng nhập
+    const currentUser = utils.getUser();
+    if (!currentUser) {
+      return null;
+    }
+    
     const freePlan = plans[0];
     const defaultPlan = {
       uid: "free_user",
@@ -134,6 +140,25 @@ export const AuthProvider = ({ children }) => {
     };
   }, [authTokens]);
 
+  // Thêm useEffect để fetch plan khi app khởi động với user đã đăng nhập
+  useEffect(() => {
+    const initializePlanOnAppStart = async () => {
+      if (user?.localId && authTokens?.idToken && !userPlan) {
+        try {
+          const plan = await fetchUserPlan(user.localId);
+          if (plan) {
+            setUserPlan(plan);
+            localStorage.setItem("userPlan", JSON.stringify(plan));
+          }
+        } catch (err) {
+          console.error("Lỗi khi fetch plan khi khởi động app:", err);
+        }
+      }
+    };
+
+    initializePlanOnAppStart();
+  }, [user?.localId, authTokens?.idToken, userPlan]);
+
   // Load friends
   useEffect(() => {
     const fetchFriends = async () => {
@@ -175,7 +200,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchPlan = async (user, idToken) => {
     try {
-      let plan = await fetchUserPlan();
+      let plan = await fetchUserPlan(user.localId);
       if (!plan) {
         const res = await registerFreePlan(user, idToken);
         if (res?.data) {
@@ -276,7 +301,7 @@ export const AuthProvider = ({ children }) => {
       if (!user?.localId || !authTokens?.idToken) return;
       
       try {
-        const plan = await fetchUserPlan();
+        const plan = await fetchUserPlan(user.localId);
         if (plan) {
           setUserPlan(plan);
           localStorage.setItem("userPlan", JSON.stringify(plan));
@@ -295,6 +320,37 @@ export const AuthProvider = ({ children }) => {
 
     fetchPlanOnLogin();
   }, [user?.localId, authTokens?.idToken]);
+
+  // Thêm useEffect mới để đảm bảo fetch plan khi user thay đổi
+  useEffect(() => {
+    const fetchPlanWhenUserChanges = async () => {
+      if (!user?.localId || !authTokens?.idToken) {
+        // Nếu không có user, reset userPlan về null
+        setUserPlan(null);
+        localStorage.removeItem("userPlan");
+        return;
+      }
+      
+      try {
+        const plan = await fetchUserPlan(user.localId);
+        if (plan) {
+          setUserPlan(plan);
+          localStorage.setItem("userPlan", JSON.stringify(plan));
+        } else {
+          // If no plan exists, register free plan
+          const res = await registerFreePlan(user, authTokens.idToken);
+          if (res?.data) {
+            setUserPlan(res.data);
+            localStorage.setItem("userPlan", JSON.stringify(res.data));
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi khi fetch plan khi user thay đổi:", err);
+      }
+    };
+
+    fetchPlanWhenUserChanges();
+  }, [user, authTokens]);
 
   const resetAuthContext = () => {
     setUser(null);

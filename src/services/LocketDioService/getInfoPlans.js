@@ -92,7 +92,7 @@ export const fetchUserPlan = async (userId) => {
           console.error("Error parsing stored plan:", e);
         }
       }
-      return getDefaultFreePlan();
+      return null; // Return null instead of default plan when no userId
     }
 
     const response = await axios.get(API_URL.GET_USER_SUBSCRIPTION(userId));

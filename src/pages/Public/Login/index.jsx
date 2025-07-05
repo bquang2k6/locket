@@ -9,6 +9,7 @@ import { useApp } from "../../../context/AppContext";
 import FloatingNotification from "../../../components/UI/FloatingNotification";
 import Turnstile from "react-turnstile";
 import { isUsingCustomBackend } from "../../../utils/backendConfig";
+import { fetchUserPlan } from "../../../services/LocketDioService/getInfoPlans";
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
@@ -67,6 +68,17 @@ const Login = () => {
       // ⚡️ Lưu user data toàn bộ (gồm thông tin cá nhân)
       utils.saveUser(res.data);
       setUser(res.data);
+
+      // Đảm bảo fetch plan ngay sau khi set user
+      try {
+        const plan = await fetchUserPlan(res.data.localId);
+        if (plan) {
+          // Plan sẽ được set thông qua context useEffect
+          console.log("Plan fetched successfully after login");
+        }
+      } catch (err) {
+        console.error("Error fetching plan after login:", err);
+      }
 
       showToast("success", "Đăng nhập thành công!");
     } catch (error) {
