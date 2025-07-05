@@ -1,7 +1,7 @@
 // Service Worker for PWA
-const CACHE_NAME = 'locket-wan-v4';
-const STATIC_CACHE = 'locket-wan-static-v4';
-const DYNAMIC_CACHE = 'locket-wan-dynamic-v4';
+const CACHE_NAME = 'locket-wan-v5';
+const STATIC_CACHE = 'locket-wan-static-v5';
+const DYNAMIC_CACHE = 'locket-wan-dynamic-v5';
 
 // Files to cache
 const STATIC_FILES = [
@@ -26,6 +26,9 @@ self.addEventListener('install', event => {
         console.log('Service Worker installed');
         return self.skipWaiting();
       })
+      .catch(error => {
+        console.error('Service Worker install failed:', error);
+      })
   );
 });
 
@@ -47,6 +50,9 @@ self.addEventListener('activate', event => {
       .then(() => {
         console.log('Service Worker activated');
         return self.clients.claim();
+      })
+      .catch(error => {
+        console.error('Service Worker activate failed:', error);
       })
   );
 });
@@ -99,6 +105,9 @@ self.addEventListener('fetch', event => {
             caches.open(DYNAMIC_CACHE)
               .then(cache => {
                 cache.put(event.request, responseToCache);
+              })
+              .catch(error => {
+                console.error('Cache put failed:', error);
               });
             
             return response;
@@ -113,6 +122,13 @@ self.addEventListener('fetch', event => {
               statusText: 'Service Unavailable'
             });
           });
+      })
+      .catch(error => {
+        console.error('Fetch event failed:', error);
+        return new Response('Service Worker error', { 
+          status: 500,
+          statusText: 'Internal Server Error'
+        });
       })
   );
 });
@@ -153,5 +169,14 @@ self.addEventListener('notificationclick', function(event) {
     event.waitUntil(
       clients.openWindow('/')
     );
+  }
+});
+
+// Message event for debugging
+self.addEventListener('message', function(event) {
+  console.log('Service Worker received message:', event.data);
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });

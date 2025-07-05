@@ -6,6 +6,7 @@ const InstallPWA = () => {
   const [promptInstall, setPromptInstall] = useState(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [debugInfo, setDebugInfo] = useState({});
   const location = useLocation();
 
   useEffect(() => {
@@ -40,10 +41,15 @@ const InstallPWA = () => {
 
         // Check manifest
         const manifestLink = document.querySelector('link[rel="manifest"]');
+        let manifest = null;
         if (manifestLink) {
-          const response = await fetch(manifestLink.href);
-          const manifest = await response.json();
-          console.log('Manifest loaded:', manifest);
+          try {
+            const response = await fetch(manifestLink.href);
+            manifest = await response.json();
+            console.log('Manifest loaded:', manifest);
+          } catch (error) {
+            console.error('Failed to load manifest:', error);
+          }
         }
 
         // Check if we're on HTTPS or localhost
@@ -59,14 +65,17 @@ const InstallPWA = () => {
                            window.location.hostname === '127.0.0.1' ||
                            window.location.hostname.includes('localhost');
         
-        console.log('Security check:', {
+        const securityInfo = {
           protocol: window.location.protocol,
           hostname: window.location.hostname,
           isSecure,
           isDev,
           isLocalhost,
           fullUrl: window.location.href
-        });
+        };
+        
+        console.log('Security check:', securityInfo);
+        setDebugInfo(securityInfo);
 
         // Allow PWA install if on localhost (development) or HTTPS
         if (!isSecure && !isLocalhost) {
@@ -83,7 +92,7 @@ const InstallPWA = () => {
             setSupportsPWA(true); // Show manual install option
           }
           setIsLoading(false);
-        }, 2000);
+        }, 3000); // Increased timeout for production
 
       } catch (error) {
         console.error('Error checking installability:', error);
@@ -165,7 +174,13 @@ Firefox:
 - Menu → "Cài đặt ứng dụng"
 
 Edge Mobile:
-- Menu → "Cài đặt ứng dụng"`;
+- Menu → "Cài đặt ứng dụng"
+
+Debug Info:
+- Protocol: ${debugInfo.protocol}
+- Hostname: ${debugInfo.hostname}
+- Is Secure: ${debugInfo.isSecure}
+- Is Dev: ${debugInfo.isDev}`;
 
     alert(instructions);
   };
@@ -179,7 +194,8 @@ Edge Mobile:
     isHome: location.pathname === '/' || location.pathname === '/home',
     promptInstall: !!promptInstall,
     displayMode: window.matchMedia ? window.matchMedia('(display-mode: standalone)').matches : false,
-    navigatorStandalone: window.navigator.standalone
+    navigatorStandalone: window.navigator.standalone,
+    debugInfo
   });
 
   // Show on home page (/) or /home, and when not installed and not loading
