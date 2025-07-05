@@ -15,25 +15,25 @@
   "related_applications": [],
   "icons": [
     {
-      "src": "/images/locket-pro.png",
+      "src": "/images/book.jpg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/apple-touch-icon.png",
+      "src": "/images/book.jpg",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/prvlocket.png",
+      "src": "/images/book.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/prvlocket.png",
+      "src": "/images/book.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -47,7 +47,7 @@
       "url": "/?action=camera",
       "icons": [
         {
-          "src": "/images/locket-pro.png",
+          "src": "/images/cammera.jpg",
           "sizes": "96x96"
         }
       ]
@@ -59,7 +59,7 @@
       "url": "/?action=upload",
       "icons": [
         {
-          "src": "/images/locket-pro.png",
+          "src": "/images/cammera.jpg",
           "sizes": "96x96"
         }
       ]
