@@ -1,15 +1,59 @@
-// Service Worker for PWA - No caching to avoid chrome-extension errors
-const CACHE_NAME = 'locket-wan-v3';
+// Service Worker for PWA
+const CACHE_NAME = 'locket-wan-v4';
+const STATIC_CACHE = 'locket-wan-static-v4';
+const DYNAMIC_CACHE = 'locket-wan-dynamic-v4';
 
-// Install event - minimal setup
+// Files to cache
+const STATIC_FILES = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/images/locket-pro.png',
+  '/images/apple-touch-icon.png',
+  '/images/prvlocket.png'
+];
+
+// Install event
 self.addEventListener('install', event => {
   console.log('Service Worker installing...');
-  self.skipWaiting();
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then(cache => {
+        console.log('Caching static files');
+        return cache.addAll(STATIC_FILES);
+      })
+      .then(() => {
+        console.log('Service Worker installed');
+        return self.skipWaiting();
+      })
+  );
 });
 
-// Fetch event - no caching, just pass through
+// Activate event
+self.addEventListener('activate', event => {
+  console.log('Service Worker activating...');
+  event.waitUntil(
+    caches.keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+              console.log('Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('Service Worker activated');
+        return self.clients.claim();
+      })
+  );
+});
+
+// Fetch event
 self.addEventListener('fetch', event => {
-  // Skip all non-HTTP requests immediately
+  // Skip non-HTTP requests
   if (!event.request.url.startsWith('http')) {
     return;
   }
@@ -19,25 +63,56 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // Skip external resources
-  try {
-    const url = new URL(event.request.url);
-    if (url.hostname !== location.hostname) {
-      return;
-    }
-  } catch (error) {
+  // Handle API requests differently
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => {
+          return new Response(JSON.stringify({ error: 'Network error' }), {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        })
+    );
     return;
   }
   
-  // For same-origin requests, just fetch without caching
+  // For static files, try cache first
   event.respondWith(
-    fetch(event.request)
-      .catch(error => {
-        console.log('Fetch failed:', error);
-        return new Response('Network error', { 
-          status: 503,
-          statusText: 'Service Unavailable'
-        });
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        
+        return fetch(event.request)
+          .then(response => {
+            // Don't cache if not a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            
+            // Clone the response
+            const responseToCache = response.clone();
+            
+            // Cache the response
+            caches.open(DYNAMIC_CACHE)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+            
+            return response;
+          })
+          .catch(() => {
+            // Return offline page for navigation requests
+            if (event.request.mode === 'navigate') {
+              return caches.match('/');
+            }
+            return new Response('Network error', { 
+              status: 503,
+              statusText: 'Service Unavailable'
+            });
+          });
       })
   );
 });
@@ -52,7 +127,13 @@ self.addEventListener('push', function(event) {
     data: {
       dateOfArrival: Date.now(),
       primaryKey: 1
-    }
+    },
+    actions: [
+      {
+        action: 'open',
+        title: 'Mở ứng dụng'
+      }
+    ]
   };
   
   event.waitUntil(
@@ -64,7 +145,13 @@ self.addEventListener('push', function(event) {
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   
-  event.waitUntil(
-    clients.openWindow('/')
-  );
+  if (event.action === 'open') {
+    event.waitUntil(
+      clients.openWindow('/')
+    );
+  } else {
+    event.waitUntil(
+      clients.openWindow('/')
+    );
+  }
 });

@@ -47,37 +47,26 @@ function AppContent() {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      // Clear all caches first
-      caches.keys().then(cacheNames => {
-        return Promise.all(
-          cacheNames.map(cacheName => {
-            console.log('Deleting cache:', cacheName);
-            return caches.delete(cacheName);
-          })
-        );
-      }).then(() => {
-        // Unregister old service workers
-        return navigator.serviceWorker.getRegistrations();
-      }).then(registrations => {
-        return Promise.all(
-          registrations.map(registration => {
-            console.log('Unregistering service worker:', registration);
-            return registration.unregister();
-          })
-        );
-      }).then(() => {
-        // Register new service worker
-        return navigator.serviceWorker.register('/service-worker.js', {
-          updateViaCache: 'none'
+      // Check if service worker is already registered
+      navigator.serviceWorker.getRegistration('/service-worker.js')
+        .then(registration => {
+          if (!registration) {
+            // Only register if not already registered
+            return navigator.serviceWorker.register('/service-worker.js', {
+              updateViaCache: 'none'
+            });
+          }
+          return registration;
+        })
+        .then(registration => {
+          console.log('Service Worker đăng ký thành công: ', registration);
+          
+          // Check for updates
+          registration.update();
+        })
+        .catch(error => {
+          console.log('Service Worker đăng ký thất bại: ', error);
         });
-      }).then(registration => {
-        console.log('Service Worker đăng ký thành công: ', registration);
-        
-        // Force update if needed
-        registration.update();
-      }).catch(error => {
-        console.log('Service Worker đăng ký thất bại: ', error);
-      });
     }
   }, []);
 

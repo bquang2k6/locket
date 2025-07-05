@@ -2,6 +2,7 @@
   "name": "Locket Wan",
   "short_name": "Locket Wan",
   "description": "Locket Wan giúp bạn đăng ảnh và video lên Locket nhanh chóng ngay từ trình duyệt, hỗ trợ chụp/quay trực tiếp, thêm caption đầy màu sắc và chia sẻ khoảnh khắc dễ dàng.",
+  "id": "/",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -10,6 +11,7 @@
   "scope": "/",
   "lang": "vi",
   "categories": ["social", "photo", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/images/locket-pro.png",
@@ -27,7 +29,13 @@
       "src": "/images/prvlocket.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/prvlocket.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
