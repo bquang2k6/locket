@@ -25,6 +25,7 @@ const MediaPreview = ({ capturedMedia }) => {
     cameraActive,
     setCameraActive,
     cameraMode,
+    setCameraMode,
     iscameraHD,
     setIsCameraHD,
     zoomLevel,
@@ -36,6 +37,7 @@ const MediaPreview = ({ capturedMedia }) => {
     useloading;
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [isSwitchingCamera, setIsSwitchingCamera] = useState(false);
 
   // Ref để theo dõi trạng thái camera
   const cameraInitialized = useRef(false);
@@ -80,17 +82,11 @@ const MediaPreview = ({ capturedMedia }) => {
           lastCameraHD.current !== iscameraHD)
       ) {
         stopCamera();
+        // Thêm delay nhỏ để đảm bảo camera cũ đã dừng hoàn toàn
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
 
       // Cấu hình video constraints
-      // const videoConstraints = {
-      //   deviceId: deviceId ? { exact: deviceId } : undefined,
-      //   facingMode: cameraMode || "user",
-      //   width: { ideal: 1920 },
-      //   height: { ideal: 1080 },
-      //   aspectRatio: 1 / 1,
-      // };
-      // Cấu hình video constraints linh hoạt
       let videoConstraints = {
         deviceId: deviceId ? { exact: deviceId } : undefined,
         facingMode: cameraMode || "user",
@@ -121,11 +117,19 @@ const MediaPreview = ({ capturedMedia }) => {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        // Đảm bảo video được load
+        await new Promise((resolve) => {
+          if (videoRef.current.readyState >= 2) {
+            resolve();
+          } else {
+            videoRef.current.onloadeddata = resolve;
+          }
+        });
       }
 
       console.log("🎥 Camera khởi động thành công");
     } catch (err) {
-      // console.error("🚫 Không thể truy cập camera:", err);
+      console.error("🚫 Không thể truy cập camera:", err);
       setCameraActive(false);
       cameraInitialized.current = false;
     }
@@ -208,50 +212,106 @@ const MediaPreview = ({ capturedMedia }) => {
     }
   }, [preview?.data]);
 
-  const handleCycleZoomCamera = async () => {
-    const cameras = await getAvailableCameras();
-    const isBackCamera = cameraMode === "environment";
-    const isFrontCamera = cameraMode === "user";
+  // Hàm chuyển đổi camera trước/sau
+  const handleSwitchCamera = async () => {
+    if (isSwitchingCamera) return; // Tránh spam click
+    
+    try {
+      setIsSwitchingCamera(true);
+      const cameras = await getAvailableCameras();
+      const isBackCamera = cameraMode === "environment";
+      const isFrontCamera = cameraMode === "user";
 
-    let newZoom = "1x";
-    let newDeviceId = null;
+      let newCameraMode = "user";
+      let newDeviceId = null;
 
-    if (isFrontCamera) {
-      if (zoomLevel === "1x") {
-        newZoom = "0.5x";
+      if (isFrontCamera) {
+        // Chuyển từ camera trước sang camera sau
+        newCameraMode = "environment";
+        newDeviceId = cameras?.backNormalCamera?.deviceId || cameras?.backCameras?.[0]?.deviceId;
+      } else if (isBackCamera) {
+        // Chuyển từ camera sau sang camera trước
+        newCameraMode = "user";
         newDeviceId = cameras?.frontCameras?.[0]?.deviceId;
+      }
+
+      if (newDeviceId) {
+        // Cập nhật camera mode và device ID
+        setCameraMode(newCameraMode);
+        setDeviceId(newDeviceId);
+        setZoomLevel("1x"); // Reset zoom về 1x khi chuyển camera
+        
+        // Khởi động lại camera với delay nhỏ để tránh màn hình đen
+        setCameraActive(false);
+        setTimeout(() => {
+          setCameraActive(true);
+          setIsSwitchingCamera(false);
+        }, 150);
       } else {
-        newZoom = "1x";
-        newDeviceId = cameras?.frontCameras?.[0]?.deviceId;
+        showInfo("Không tìm thấy camera phù hợp để chuyển đổi");
+        setIsSwitchingCamera(false);
       }
-    } else if (isBackCamera) {
-      if (zoomLevel === "1x") {
-        newZoom = "0.5x";
-        newDeviceId = cameras?.backUltraWideCamera?.deviceId;
-      } else if (zoomLevel === "0.5x") {
-        newZoom = "3x";
-        newDeviceId = cameras?.backZoomCamera?.deviceId;
-      } else if (zoomLevel === "3x") {
-        newZoom = "1x";
-        newDeviceId = cameras?.backNormalCamera?.deviceId;
-      }
-
-      // fallback
-      if (!newDeviceId && zoomLevel !== "1x") {
-        newZoom = "1x";
-        newDeviceId = cameras?.backNormalCamera?.deviceId;
-      }
+    } catch (error) {
+      console.error("Lỗi khi chuyển đổi camera:", error);
+      showInfo("Không thể chuyển đổi camera");
+      setIsSwitchingCamera(false);
     }
+  };
 
-    if (newDeviceId) {
-      setZoomLevel(newZoom);
-      setDeviceId(newDeviceId);
-      setCameraActive(false);
-      setTimeout(() => {
-        setCameraActive(true);
-      }, 300);
-    } else {
-      showInfo("Không tìm thấy camera phù hợp để chuyển zoom");
+  // Hàm chuyển đổi zoom camera
+  const handleCycleZoomCamera = async () => {
+    try {
+      const cameras = await getAvailableCameras();
+      const isBackCamera = cameraMode === "environment";
+      const isFrontCamera = cameraMode === "user";
+
+      let newZoom = "1x";
+      let newDeviceId = null;
+
+      if (isFrontCamera) {
+        // Camera trước chỉ có 1x và 0.5x
+        if (zoomLevel === "1x") {
+          newZoom = "0.5x";
+          newDeviceId = cameras?.frontCameras?.[0]?.deviceId;
+        } else {
+          newZoom = "1x";
+          newDeviceId = cameras?.frontCameras?.[0]?.deviceId;
+        }
+      } else if (isBackCamera) {
+        // Camera sau có nhiều zoom levels
+        if (zoomLevel === "1x") {
+          newZoom = "0.5x";
+          newDeviceId = cameras?.backUltraWideCamera?.deviceId;
+        } else if (zoomLevel === "0.5x") {
+          newZoom = "3x";
+          newDeviceId = cameras?.backZoomCamera?.deviceId;
+        } else if (zoomLevel === "3x") {
+          newZoom = "1x";
+          newDeviceId = cameras?.backNormalCamera?.deviceId;
+        }
+
+        // Fallback nếu không tìm thấy camera phù hợp
+        if (!newDeviceId && zoomLevel !== "1x") {
+          newZoom = "1x";
+          newDeviceId = cameras?.backNormalCamera?.deviceId;
+        }
+      }
+
+      if (newDeviceId) {
+        setZoomLevel(newZoom);
+        setDeviceId(newDeviceId);
+        
+        // Khởi động lại camera với delay nhỏ để tránh màn hình đen
+        setCameraActive(false);
+        setTimeout(() => {
+          setCameraActive(true);
+        }, 150);
+      } else {
+        showInfo("Không tìm thấy camera phù hợp để chuyển zoom");
+      }
+    } catch (error) {
+      console.error("Lỗi khi chuyển zoom camera:", error);
+      showInfo("Không thể chuyển zoom camera");
     }
   };
 
@@ -294,12 +354,37 @@ const MediaPreview = ({ capturedMedia }) => {
               <img src="/images/bolt.fill.png" alt="" />
             </button>
 
-            <button
-              onClick={handleCycleZoomCamera}
-              className="pointer-events-auto w-6 h-6 text-primary-content font-semibold rounded-full bg-white/30 backdrop-blur-md p-3.5 flex items-center justify-center"
-            >
-              {zoomLevel}
-            </button>
+            <div className="flex gap-2">
+              {/* Nút chuyển đổi camera trước/sau */}
+              <button
+                onClick={handleSwitchCamera}
+                disabled={isSwitchingCamera}
+                className={`pointer-events-auto w-8 h-8 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center transition-all duration-200 ${
+                  isSwitchingCamera ? 'opacity-50 animate-pulse' : 'hover:bg-white/40'
+                }`}
+                title="Chuyển đổi camera"
+              >
+                {isSwitchingCamera ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M23 4v6h-6"/>
+                    <path d="M1 20v-6h6"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
+                    <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
+                  </svg>
+                )}
+              </button>
+
+              {/* Nút zoom camera */}
+              <button
+                onClick={handleCycleZoomCamera}
+                className="pointer-events-auto w-8 h-8 text-primary-content font-semibold rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center"
+                title="Chuyển zoom"
+              >
+                {zoomLevel}
+              </button>
+            </div>
           </div>
         )}
 
