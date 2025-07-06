@@ -17,6 +17,11 @@ export const useCamera = () => {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [cameraMode, setCameraMode] = useState("user");
+  
+  // New camera properties
+  const [iscameraHD, setIsCameraHD] = useState(true);
+  const [zoomLevel, setZoomLevel] = useState("1x");
+  const [deviceId, setDeviceId] = useState(null);
 
   // Handle tab visibility changes
   useEffect(() => {
@@ -78,6 +83,10 @@ export const useCamera = () => {
     countdown,
     setCountdown,
     cameraActive, setCameraActive,
-    cameraMode, setCameraMode
+    cameraMode, setCameraMode,
+    // New properties
+    iscameraHD, setIsCameraHD,
+    zoomLevel, setZoomLevel,
+    deviceId, setDeviceId
   };
 };
