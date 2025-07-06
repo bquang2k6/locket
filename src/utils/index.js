@@ -6,3 +6,4 @@ export * from "./payload/createPayload"; // Xuất tất cả hàm từ createPa
 export * from "./storage"
 export * from "./standardize"
 export * from "./auth"
+export * from "./cameraUtils"; // Xuất tất cả hàm từ cameraUtils.js
