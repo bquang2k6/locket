@@ -3,6 +3,10 @@ import Loading from "../components/Loading";
 
 export const ThemeContext = createContext();
 
+const getThemeColor = (theme) => {
+  return theme === "dark" ? "#1f2937" : "#ffffff";
+};
+
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState("light");
   const [isMounted, setIsMounted] = useState(false);
