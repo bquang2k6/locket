@@ -11,8 +11,6 @@ const PostCard = ({ post, onDeleted }) => {
   const { user } = useContext(AuthContext);
   const [isDeleting, setIsDeleting] = useState(false);
 
-
-
   useEffect(() => {
     const savedPosts = JSON.parse(localStorage.getItem("savedPosts") || "[]");
     const exists = savedPosts.some((p) => p.id === post.id);
@@ -53,6 +51,22 @@ const PostCard = ({ post, onDeleted }) => {
     }
   };
 
+  // Function to get plan gradient color
+  const getPlanGradient = (plan) => {
+    const planLower = plan.toLowerCase();
+    
+    switch (planLower) {
+      case "pro plus":
+        return "linear-gradient(135deg,  #0250c5,  #d43f8d)"; // tím đậm gradient sang trọng
+      case "premium":
+        return "linear-gradient(135deg,   #7028e4,rgb(255, 189, 91))"; // vàng gold cao cấp
+      case "premium lite":
+        return "linear-gradient(135deg,rgb(197, 136, 107),rgb(146, 134, 24))"; // xanh tím elegant
+      case "free":
+        return "linear-gradient(135deg, #64748b, #94a3b8)"; // slate
+    }
+  };
+
   return (
     <div className="w-full max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
       {/* Header */}
@@ -80,23 +94,26 @@ const PostCard = ({ post, onDeleted }) => {
                   </span>
                 )}
 
-                {post?.user_info?.plan ? (
+                {post?.user_info?.plan && 
+                 post.user_info.plan !== "" && 
+                 post.user_info.plan.toLowerCase() !== "no plan" && 
+                 post.user_info.plan.toLowerCase() !== "none" ? (
                   <span
                     className="px-2 py-0.5 text-xs rounded-full font-semibold shadow-md text-white"
                     style={{
-                      backgroundImage:
-                        post.user_info.plan.toLowerCase() === "premium"
-                          ? "linear-gradient(45deg, #000000, #4B0082)" // đen → tím đậm
-                          : post.user_info.plan.toLowerCase() === "pro"
-                          ? "linear-gradient(45deg, #2563EB, #4F46E5)" // xanh → tím
-                          : "",
+                      backgroundImage: getPlanGradient(post.user_info.plan)
                     }}
                   >
                     {post.user_info.plan.charAt(0).toUpperCase() +
                       post.user_info.plan.slice(1)}
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 text-xs rounded-full font-semibold shadow-md text-gray-700 bg-gray-300">
+                  <span 
+                    className="px-2 py-0.5 text-xs rounded-full font-semibold shadow-md text-white"
+                    style={{
+                      backgroundImage: "linear-gradient(45deg, #64748B, #94A3B8)" // slate gradient cho No Plan
+                    }}
+                  >
                     No Plan
                   </span>
                 )}
@@ -124,8 +141,17 @@ const PostCard = ({ post, onDeleted }) => {
         <button
           className="flex flex-col whitespace-nowrap drop-shadow-lg items-center space-y-1 py-2 px-4 btn h-auto w-auto rounded-3xl font-semibold justify-center"
           style={{
-            background: `linear-gradient(to bottom, ${post?.options?.color_top}, ${post?.options?.color_bottom})`,
-            color: post?.options?.color_text,
+            background: `linear-gradient(to bottom, ${post?.options?.color_top || '#000000'}, ${post?.options?.color_bottom || '#000000'})`,
+            color: post?.options?.color_text || (() => {
+              // Tự động tính toán màu chữ tương phản
+              const bgColor = post?.options?.color_top || '#000000';
+              const hex = bgColor.replace('#', '');
+              const r = parseInt(hex.substr(0, 2), 16);
+              const g = parseInt(hex.substr(2, 2), 16);
+              const b = parseInt(hex.substr(4, 2), 16);
+              const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+              return brightness > 128 ? '#000000' : '#FFFFFF';
+            })(),
           }}
         >
           <span className="text-base">

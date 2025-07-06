@@ -11,6 +11,32 @@ const AutoResizeCaption = () => {
   const { post } = useApp();
   const { postOverlay, setPostOverlay } = post;
 
+  // Hàm để tính toán màu chữ tương phản với màu nền
+  const getContrastTextColor = (backgroundColor) => {
+    if (!backgroundColor) return '#FFFFFF';
+    
+    // Chuyển đổi hex sang RGB
+    const hex = backgroundColor.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Tính độ sáng
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    
+    // Trả về màu trắng nếu nền tối, đen nếu nền sáng
+    return brightness > 128 ? '#000000' : '#FFFFFF';
+  };
+
+  // Lấy màu chữ phù hợp
+  const getTextColor = () => {
+    if (postOverlay.text_color) return postOverlay.text_color;
+    
+    // Tự động tính toán màu chữ dựa trên màu nền
+    const bgColor = postOverlay.color_top || '#000000';
+    return getContrastTextColor(bgColor);
+  };
+
   const placeholder = "Nhập tin nhắn...";
   const defaultImageIconWidth = 200; // Thêm width mặc định cho image_icon
   const [width, setWidth] = useState(defaultImageIconWidth);
@@ -100,10 +126,10 @@ const AutoResizeCaption = () => {
     <div ref={parentRef} className="relative w-full">
       {postOverlay.type === "image_icon" ? (
         <div
-          className="flex items-center bg-white/50 backdrop-blur-2xl gap-2 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2"
+          className="flex items-center backdrop-blur-2xl gap-2 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2"
           style={{
             width: `${width}px`,
-            background: `linear-gradient(to bottom, ${postOverlay.color_top}, ${postOverlay.color_bottom})`,
+            background: `linear-gradient(to bottom, ${postOverlay.color_top || '#000000'}, ${postOverlay.color_bottom || '#000000'})`,
           }}
         >
           <img
@@ -125,13 +151,19 @@ const AutoResizeCaption = () => {
             className="font-semibold outline-none w-auto resize-none overflow-hidden transition-all"
             style={{
               width: `${width}px`,
-              color: postOverlay.text_color,
+              color: getTextColor(),
               whiteSpace: shouldWrap ? "pre-wrap" : "nowrap",
             }}
           />
         </div>
       ) : postOverlay.type === "time" ? (
-        <div className="flex items-center bg-white/50 backdrop-blur-2xl gap-1 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2 text-white font-semibold">
+        <div 
+          className="flex items-center backdrop-blur-2xl gap-1 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2 font-semibold"
+          style={{
+            background: `linear-gradient(to bottom, ${postOverlay.color_top || '#000000'}, ${postOverlay.color_bottom || '#000000'})`,
+            color: getTextColor(),
+          }}
+        >
           <PiClockFill className="w-6 h-6 rotate-270" />
           <span>{postOverlay.caption || formattedTime}</span>
           {/* <input value={postOverlay.caption || formattedTime} type="text" name="" id="" width={20}/> */}
@@ -139,9 +171,12 @@ const AutoResizeCaption = () => {
       ) : postOverlay.type === "review" ? (
         <div
           className="absolute bottom-2 left-1/2 transform -translate-x-1/2
-             bg-white/50 backdrop-blur-2xl rounded-4xl
+             backdrop-blur-2xl rounded-4xl
              px-6 pt-2 flex flex-col items-center font-semibold
              max-w-[90vw] w-max"
+          style={{
+            background: `linear-gradient(to bottom, ${postOverlay.color_top || '#000000'}, ${postOverlay.color_bottom || '#000000'})`,
+          }}
         >
           {/* Hàng trên: 5 sao */}
           <div className="flex gap-2 mb-1">
@@ -167,7 +202,10 @@ const AutoResizeCaption = () => {
             </span>
 
             {/* Text chính */}
-            <span className="inline-block text-lg font-semibold text-white max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+            <span 
+              className="inline-block text-lg font-semibold max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
+              style={{ color: getTextColor() }}
+            >
               {postOverlay.caption}
             </span>
           </div>
@@ -183,12 +221,12 @@ const AutoResizeCaption = () => {
           onChange={handleChange}
           placeholder={placeholder}
           rows={1}
-          className="absolute z-10 text-white px-4 font-semibold bottom-2 left-1/2 transform backdrop-blur-2xl -translate-x-1/2 bg-white/50 rounded-4xl py-2 text-md outline-none max-w-[90%] resize-none overflow-hidden transition-all"
+          className="absolute z-10 px-4 font-semibold bottom-2 left-1/2 transform backdrop-blur-2xl -translate-x-1/2 rounded-4xl py-2 text-md outline-none max-w-[90%] resize-none overflow-hidden transition-all"
           style={{
             width: `${width}px`,
-            color: postOverlay.text_color,
+            color: getTextColor(),
             whiteSpace: shouldWrap ? "pre-wrap" : "nowrap",
-            background: `linear-gradient(to bottom, ${postOverlay.color_top}, ${postOverlay.color_bottom})`,
+            background: `linear-gradient(to bottom, ${postOverlay.color_top || '#000000'}, ${postOverlay.color_bottom || '#000000'})`,
           }}
           disabled={!isEditable}
           wrap={shouldWrap ? "soft" : "off"}
