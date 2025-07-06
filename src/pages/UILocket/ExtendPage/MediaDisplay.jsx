@@ -35,6 +35,7 @@ const MediaPreview = ({ capturedMedia }) => {
     useloading;
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [isCameraSwitching, setIsCameraSwitching] = useState(false);
 
   // Ref để theo dõi trạng thái camera
   const cameraInitialized = useRef(false);
@@ -112,6 +113,16 @@ const MediaPreview = ({ capturedMedia }) => {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        
+        // Đợi video được load hoàn toàn
+        videoRef.current.onloadedmetadata = () => {
+          console.log("🎥 Camera khởi động thành công - metadata loaded");
+        };
+        
+        // Đảm bảo video đã sẵn sàng trước khi cho phép chụp
+        videoRef.current.oncanplay = () => {
+          console.log("🎥 Camera đã sẵn sàng để chụp");
+        };
       }
 
       console.log("🎥 Camera khởi động thành công");
@@ -200,6 +211,7 @@ const MediaPreview = ({ capturedMedia }) => {
   }, [preview?.data]);
 
   const handleCycleZoomCamera = async () => {
+    setIsCameraSwitching(true);
     const cameras = await getAvailableCameras();
     const isBackCamera = cameraMode === "environment";
     const isFrontCamera = cameraMode === "user";
@@ -237,12 +249,18 @@ const MediaPreview = ({ capturedMedia }) => {
     if (newDeviceId) {
       setZoomLevel(newZoom);
       setDeviceId(newDeviceId);
+      
+      // Tạm thời tắt camera để tránh chụp ảnh đen
       setCameraActive(false);
+      
+      // Đợi camera mới được khởi tạo hoàn toàn
       setTimeout(() => {
         setCameraActive(true);
-      }, 300);
+        setIsCameraSwitching(false);
+      }, 800); // Tăng thời gian chờ để đảm bảo camera đã sẵn sàng
     } else {
       showInfo("Không tìm thấy camera phù hợp để chuyển zoom");
+      setIsCameraSwitching(false);
     }
   };
 
@@ -255,6 +273,16 @@ const MediaPreview = ({ capturedMedia }) => {
       <div
         className={`relative w-full max-w-md aspect-square bg-gray-800 rounded-[65px] overflow-hidden transition-transform duration-500 `}
       >
+        {/* Loading indicator khi chuyển camera */}
+        {isCameraSwitching && (
+          <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/50">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+              <div className="text-sm">Đang chuyển camera...</div>
+            </div>
+          </div>
+        )}
+
         {/* Hiển thị camera nếu chưa có media */}
         {!preview && !selectedFile && !capturedMedia && cameraActive && (
           <>
@@ -287,7 +315,10 @@ const MediaPreview = ({ capturedMedia }) => {
 
             <button
               onClick={handleCycleZoomCamera}
-              className="pointer-events-auto w-6 h-6 text-primary-content font-semibold rounded-full bg-white/30 backdrop-blur-md p-3.5 flex items-center justify-center"
+              disabled={isCameraSwitching}
+              className={`pointer-events-auto w-6 h-6 text-primary-content font-semibold rounded-full bg-white/30 backdrop-blur-md p-3.5 flex items-center justify-center ${
+                isCameraSwitching ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
               {zoomLevel}
             </button>

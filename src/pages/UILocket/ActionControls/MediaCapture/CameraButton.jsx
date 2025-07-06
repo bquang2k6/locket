@@ -139,6 +139,12 @@ const CameraButton = () => {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       if (!video || !canvas) return;
+      
+      // Kiểm tra xem video đã sẵn sàng chưa
+      if (video.readyState < 2) { // HAVE_CURRENT_DATA
+        console.log("⚠️ Video chưa sẵn sàng, đợi thêm...");
+        return;
+      }
 
       const ctx = canvas.getContext("2d");
       canvas.width = 1080;
@@ -199,21 +205,48 @@ const CameraButton = () => {
     const newMode = cameraMode === "user" ? "environment" : "user";
     setCameraMode(newMode);
 
+    // Tạm thời tắt camera để tránh chụp ảnh đen
+    setCameraActive(false);
+
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
     }
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: newMode },
+        video: { 
+          facingMode: newMode,
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          aspectRatio: 1 / 1,
+        },
         audio: false,
       });
+      
       streamRef.current = stream;
+      
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        
+        // Đợi video được load hoàn toàn trước khi bật lại camera
+        videoRef.current.onloadedmetadata = () => {
+          console.log("🎥 Camera mới đã sẵn sàng");
+          // Đợi thêm một chút để đảm bảo video đã render
+          setTimeout(() => {
+            setCameraActive(true);
+          }, 500);
+        };
+        
+        // Fallback nếu onloadedmetadata không trigger
+        setTimeout(() => {
+          if (!cameraActive) {
+            setCameraActive(true);
+          }
+        }, 1000);
       }
     } catch (error) {
       console.error("Lỗi khi đổi camera:", error);
+      setCameraActive(true); // Bật lại camera nếu có lỗi
     }
   };
 
