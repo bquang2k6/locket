@@ -156,6 +156,40 @@ const AutoResizeCaption = () => {
             }}
           />
         </div>
+      ) : postOverlay.type === "image_gif" ? (
+        <div
+          className="flex items-center backdrop-blur-2xl gap-2 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2"
+          style={{
+            width: `${width}px`,
+            background: '#181A20',
+          }}
+        >
+          <img
+            src={postOverlay.icon}
+            alt="GIF"
+            className="w-8 h-8 object-contain rounded-lg"
+            style={{ maxHeight: 32, maxWidth: 32 }}
+          />
+          <textarea
+            ref={imageIconRef}
+            value={postOverlay.caption || ""}
+            onChange={(e) =>
+              setPostOverlay((prev) => ({
+                ...prev,
+                caption: e.target.value,
+              }))
+            }
+            placeholder={placeholder}
+            rows={1}
+            className="font-semibold outline-none w-auto resize-none overflow-hidden transition-all ml-2"
+            style={{
+              width: `${width - 40}px`,
+              color: '#fff',
+              whiteSpace: shouldWrap ? "pre-wrap" : "nowrap",
+              background: 'transparent',
+            }}
+          />
+        </div>
       ) : postOverlay.type === "time" ? (
         <div 
           className="flex items-center backdrop-blur-2xl gap-1 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2 font-semibold"

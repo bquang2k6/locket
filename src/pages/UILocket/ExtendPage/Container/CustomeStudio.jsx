@@ -7,6 +7,7 @@ import CaptionIconSelector from "../CaptionItems/CaptionIconSelector";
 import GeneralThemes from "../CaptionItems/GeneralThemes";
 import ThemesCustomes from "../CaptionItems/ThemesCustomes";
 import DevCustomes from "../CaptionItems/DevCustomes";
+import CaptionGifThemes from "../CaptionItems/CaptionGifThemes";
 
 const ScreenCustomeStudio = () => {
   const popupRef = useRef(null);
@@ -90,14 +91,14 @@ const ScreenCustomeStudio = () => {
   const handleCustomeSelectTest = (preset) => {
     // Kiểm tra xem preset có đủ thông tin cần thiết không
     if (!preset) return;
-    
-    // Remove permission check to allow all features
+    // Nếu là GIF, ép màu nền về #181A20
+    const isGif = preset.type === "image_gif";
     // Log để kiểm tra dữ liệu dưới dạng bảng
     console.table([
       {
         overlay_id: preset.preset_id || "standard",
-        color_top: preset.color_top || "",
-        color_bottom: preset.color_bottom || "",
+        color_top: isGif ? "#181A20" : preset.color_top || "",
+        color_bottom: isGif ? "#181A20" : preset.color_bottom || "",
         text_color: preset.text_color || "#FFFFFF",
         icon: preset.icon || "",
         caption: preset.preset_caption || "",
@@ -107,14 +108,13 @@ const ScreenCustomeStudio = () => {
     // Cập nhật postOverlay từ giá trị preset
     setPostOverlay({
       overlay_id: preset.preset_id || "standard",
-      color_top: preset.color_top || "",
-      color_bottom: preset.color_bottom || "",
+      color_top: isGif ? "#181A20" : preset.color_top || "",
+      color_bottom: isGif ? "#181A20" : preset.color_bottom || "",
       text_color: preset.text_color || "#FFFFFF",
       icon: preset.icon || "",
       caption: preset.preset_caption || "",
       type: preset.type || "image_link",
     });
-
     setIsFilterOpen(false);
   };
   const captionThemesTest = {
@@ -238,6 +238,11 @@ const ScreenCustomeStudio = () => {
           />
           <GeneralThemes
             title="🎨 General"
+            captionThemes={captionThemes}
+            onSelect={handleCustomeSelectTest}
+          />
+          <CaptionGifThemes
+            title="🎨 Caption Gif - Member"
             captionThemes={captionThemes}
             onSelect={handleCustomeSelectTest}
           />

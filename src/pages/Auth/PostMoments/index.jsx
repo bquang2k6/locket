@@ -220,8 +220,9 @@ const PostMoments = () => {
 
             {caption && !uploadLoading && (
               <div className="absolute bottom-4 w-auto px-3">
+                {console.log('DEBUG GIF ICON:', postOverlay.icon)}
                 <div
-                  className="text-white font-semibold py-2 px-4 rounded-3xl bg-black/40 backdrop-blur-3xl"
+                  className="text-white font-semibold py-2 px-4 rounded-3xl bg-black/40 backdrop-blur-3xl flex items-center gap-2"
                   style={{
                     ...(postOverlay.type !== "default" && {
                       background: `linear-gradient(to bottom, ${
@@ -231,6 +232,17 @@ const PostMoments = () => {
                     color: postOverlay.text_color || "#FFFFFF",
                   }}
                 >
+                  {postOverlay.type === "image_gif" && postOverlay.icon && (
+                    <img
+                      src={
+                        typeof postOverlay.icon === "object"
+                          ? postOverlay.icon.data
+                          : postOverlay.icon
+                      }
+                      alt="GIF"
+                      className="inline-block w-8 h-8 object-contain rounded-lg mr-2"
+                    />
+                  )}
                   {caption}
                 </div>
               </div>
