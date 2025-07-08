@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 import { StarProgress } from "../../../../components/UI/StarRating/StarProgress";
 import axios from "axios";
 import { showError, showSuccess } from "../../../../components/Toast";
-import { API_URL, useBatteryStatus } from "../../../../utils";
+// import { API_URL, useBatteryStatus } from "../../../../utils";
 import LocationInfoGenerator from "../../../../helpers/getInfoLocation";
 import { useLocationOptions } from "../../../../utils/enviroment";
 import api from "../../../../lib/axios";
