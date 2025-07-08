@@ -4,12 +4,9 @@ import { FaBatteryFull } from "react-icons/fa";
 import { useApp } from "../../../../context/AppContext";
 import { Star } from "lucide-react";
 import { StarProgress } from "../../../../components/UI/StarRating/StarProgress";
-import axios from "axios";
-import { showError, showSuccess } from "../../../../components/Toast";
 // import { API_URL, useBatteryStatus } from "../../../../utils";
-import LocationInfoGenerator from "../../../../helpers/getInfoLocation";
 import { useLocationOptions } from "../../../../utils/enviroment";
-import api from "../../../../lib/axios";
+// import axios from "axios";
 
 export default function GeneralThemes({ title }) {
   const { navigation, post, captiontheme } = useApp();
@@ -19,7 +16,7 @@ export default function GeneralThemes({ title }) {
   const { captionThemes } = captiontheme;
 
   const [time, setTime] = useState(() => new Date());
-  const { level, charging } = useBatteryStatus();
+  // const { level, charging } = useBatteryStatus();
 
   const [showSpotifyForm, setShowSpotifyForm] = useState(false);
   const [spotifyLink, setSpotifyLink] = useState("");
@@ -151,12 +148,12 @@ export default function GeneralThemes({ title }) {
         alert("Thời tiết sẽ sớm được tích hợp");
         break;
       case "battery":
-        handleCustomeSelect({
-          preset_id: "battery",
-          caption: level || "50",
-          icon: charging,
-          type: "battery",
-        });
+        // handleCustomeSelect({
+        //   preset_id: "battery",
+        //   caption: level || "50",
+        //   icon: charging,
+        //   type: "battery",
+        // });
         break;
       case "heart":
         handleCustomeSelect({
@@ -206,7 +203,7 @@ export default function GeneralThemes({ title }) {
           className="w-6 h-6 mr-1"
         />
       ),
-      label: `${level || "50"}%`,
+      label: `50%`,
     },
     {
       id: "heart",
