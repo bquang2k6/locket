@@ -91,9 +91,9 @@ export const API_URL = {
   CANCEL_PAYMENT: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/payment/cancel/${order_id}`),
   CHECK_TRIAL_ABILITY: (uid) => createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/${uid}`),
   REG_TRIAL: createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/register`),
-  CHAT_SEND_MESSAGE: "http://localhost:5004/chat/send-message",
-  CHAT_GET_MESSAGES: "http://localhost:5004/chat/get-messages",
-  CHAT_RECALL_MESSAGE: "http://localhost:5004/chat/recall-message",
-  CHAT_EDIT_MESSAGE: "http://localhost:5004/chat/edit-message",
-  CHAT_PIN_MESSAGE: "http://localhost:5004/chat/pin-message"
+  CHAT_SEND_MESSAGE: "https://api4.quang-tech.space/chat/send-message",
+  CHAT_GET_MESSAGES: "https://api4.quang-tech.space/chat/get-messages",
+  CHAT_RECALL_MESSAGE: "https://api4.quang-tech.space/chat/recall-message",
+  CHAT_EDIT_MESSAGE: "https://api4.quang-tech.space/chat/edit-message",
+  CHAT_PIN_MESSAGE: "https://api4.quang-tech.space/chat/pin-message"
 };
