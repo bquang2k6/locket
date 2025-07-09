@@ -13,6 +13,7 @@ import RegisterMemberPage from "../pages/Public/RegisterMemberPage";
 import Timeline from "../pages/Public/Timeline";
 import CameraCapture from "../pages/UILocket";
 import NodeInfo from "../pages/Auth/Nodeinfo";
+import ChatPage from "../pages/Chat";
 
 const APP_NAME = "Locket Pro - Đăng ảnh & Video lên Locket";
 
@@ -47,6 +48,7 @@ const authRoutes = [
   { path: "/locket", component: CameraCapture, title: `${APP_NAME} | Locket` },
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
   { path: "/nodeinfo", component: NodeInfo, title: `${APP_NAME} | Node Info` },
+  { path: "/chat", component: ChatPage, title: `${APP_NAME} | Chat` },
 ];
 
 // 📌 Các route dành cho locket

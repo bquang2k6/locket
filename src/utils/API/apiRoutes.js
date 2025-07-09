@@ -90,5 +90,10 @@ export const API_URL = {
   CHECK_PAYMENT_STATUS: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/check-payment-status/${order_id}`),
   CANCEL_PAYMENT: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/payment/cancel/${order_id}`),
   CHECK_TRIAL_ABILITY: (uid) => createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/${uid}`),
-  REG_TRIAL: createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/register`)
+  REG_TRIAL: createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/register`),
+  CHAT_SEND_MESSAGE: "http://localhost:5004/chat/send-message",
+  CHAT_GET_MESSAGES: "http://localhost:5004/chat/get-messages",
+  CHAT_RECALL_MESSAGE: "http://localhost:5004/chat/recall-message",
+  CHAT_EDIT_MESSAGE: "http://localhost:5004/chat/edit-message",
+  CHAT_PIN_MESSAGE: "http://localhost:5004/chat/pin-message"
 };

