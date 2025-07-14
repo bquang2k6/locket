@@ -11,40 +11,40 @@ export * from "./auth"
 export const getAvailableCameras = async () => {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter(device => device.kind === 'videoinput');
-    
-    const cameras = {
-      frontCameras: [],
-      backNormalCamera: null,
-      backUltraWideCamera: null,
-      backZoomCamera: null,
-    };
-
-    for (const device of videoDevices) {
-      // Try to determine camera type based on label
+    const videoDevices = devices.filter((d) => d.kind === "videoinput");
+    const frontCameras = [];
+    const backCameras = [];
+    let backUltraWideCamera = null;
+    let backNormalCamera = null;
+    let backZoomCamera = null;
+    videoDevices.forEach((device) => {
       const label = device.label.toLowerCase();
-      
-      if (label.includes('front') || label.includes('user')) {
-        cameras.frontCameras.push(device);
-      } else if (label.includes('back') || label.includes('environment')) {
-        if (label.includes('ultra') || label.includes('wide')) {
-          cameras.backUltraWideCamera = device;
-        } else if (label.includes('zoom') || label.includes('tele')) {
-          cameras.backZoomCamera = device;
-        } else {
-          cameras.backNormalCamera = device;
+      if (/mặt trước|front|user|trước/.test(label)) {
+        frontCameras.push(device);
+      } else if (/mặt sau|back|rear|environment|sau/.test(label)) {
+        backCameras.push(device);
+        if (/cực rộng|ultra|0.5x|góc rộng/.test(label)) {
+          backUltraWideCamera ??= device;
+        } else if (/chụp xa|tele|zoom|2x|3x|5x/.test(label)) {
+          backZoomCamera ??= device;
+        } else if (
+          /camera kép|camera|bình thường|1x|rộng/.test(label) &&
+          !/cực rộng|chụp xa|zoom|tele/.test(label)
+        ) {
+          backNormalCamera ??= device;
         }
       }
-    }
-
-    // If we couldn't categorize, assign remaining cameras
-    if (!cameras.backNormalCamera && videoDevices.length > 0) {
-      cameras.backNormalCamera = videoDevices[0];
-    }
-
-    return cameras;
+    });
+    return {
+      allCameras: videoDevices,
+      frontCameras,
+      backCameras,
+      backUltraWideCamera,
+      backNormalCamera,
+      backZoomCamera,
+    };
   } catch (error) {
-    console.error('Error getting available cameras:', error);
+    console.error("Error getting available cameras:", error);
     return null;
   }
 };
@@ -90,3 +90,4 @@ export const getCroppedImg = async (imageSrc, pixelCrop) => {
     };
   });
 };
+

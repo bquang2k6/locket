@@ -19,7 +19,21 @@ export const useCamera = () => {
   const [cameraMode, setCameraMode] = useState("user");
   
   // New camera properties
-  const [iscameraHD, setIsCameraHD] = useState(true);
+  // Khởi tạo giá trị từ localStorage nếu có
+  const initialCameraHD = localStorage.getItem("iscameraHD") === "true";
+
+  const [iscameraHD, setIsCameraHD] = useState(initialCameraHD);
+
+  // Tự động lưu vào localStorage khi thay đổi
+  useEffect(() => {
+    localStorage.setItem("iscameraHD", iscameraHD);
+  }, [iscameraHD]);
+
+  // Hằng số tối ưu camera
+  const IMAGE_SIZE_PX = 1920;
+  const VIDEO_RESOLUTION_PX = 1080;
+  const MAX_RECORD_TIME = 10;
+
   const [zoomLevel, setZoomLevel] = useState("1x");
   const [deviceId, setDeviceId] = useState(null);
 
@@ -86,7 +100,10 @@ export const useCamera = () => {
     cameraMode, setCameraMode,
     // New properties
     iscameraHD, setIsCameraHD,
-    zoomLevel, setZoomLevel,
-    deviceId, setDeviceId
+    IMAGE_SIZE_PX,
+    VIDEO_RESOLUTION_PX,
+    MAX_RECORD_TIME,
+    deviceId, setDeviceId,
+    zoomLevel, setZoomLevel
   };
 };

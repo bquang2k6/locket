@@ -12,6 +12,7 @@ const UploadFile = () => {
 
   //Handle tải file
   const handleFileChange = useCallback(async (event) => {
+    setCameraActive(false);
     setSelectedFile(null);
     const rawFile = event.target.files[0];
     if (!rawFile) return;
@@ -24,9 +25,10 @@ const UploadFile = () => {
 
     if (!fileType) {
       showToast("error", "Chỉ hỗ trợ ảnh và video.");
-      URL.revokeObjectURL(localPreviewUrl);
       return;
     }
+
+    setPreview({ type: fileType, data: localPreviewUrl });
 
     if (fileType === "video") {
       try {
@@ -56,13 +58,10 @@ const UploadFile = () => {
       }
     }
 
-    // Only disable camera and set states if all validations pass
-    setCameraActive(false);
-    setPreview({ type: fileType, data: localPreviewUrl });
-    const fileSizeInMB = rawFile.size / (1024 * 1024); 
-    setSizeMedia(fileSizeInMB.toFixed(2)); 
+    const fileSizeInMB = rawFile.size / (1024 * 1024);
+    setSizeMedia(fileSizeInMB.toFixed(2));
     setIsCaptionLoading(true);
-    setSelectedFile(rawFile); 
+    setSelectedFile(rawFile);
   }, []);
   return (
     <>
