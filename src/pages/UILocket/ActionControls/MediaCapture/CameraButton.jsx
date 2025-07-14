@@ -73,26 +73,28 @@ const CameraButton = () => {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       const side = Math.min(video.videoWidth, video.videoHeight);
-      const outputSize = 1920;
+      const outputSize = 1080;
       canvas.width = outputSize;
       canvas.height = outputSize;
-      // Điều chỉnh FPS dựa trên môi trường
-      const targetFPS = isPWA() ? 30 : undefined;
-      const canvasStream = targetFPS
-        ? canvas.captureStream(targetFPS)
-        : canvas.captureStream();
-      // Thử các MIME type khác nhau cho iOS
-      let mimeType = "video/webm";
+      // Ưu tiên 60fps nếu hỗ trợ, fallback 30fps
+      let targetFPS = 60;
+      try {
+        const testStream = canvas.captureStream(60);
+        if (!testStream) targetFPS = 30;
+      } catch {
+        targetFPS = 30;
+      }
+      const canvasStream = canvas.captureStream(targetFPS);
+      // Chọn MIME phù hợp
+      let mimeType = isPWA() ? "video/mp4" : "video/webm";
       if (!MediaRecorder.isTypeSupported(mimeType)) {
-        mimeType = "video/mp4";
+        mimeType = "video/webm";
         if (!MediaRecorder.isTypeSupported(mimeType)) {
           mimeType = "";
         }
       }
       const recorderOptions = mimeType ? { mimeType } : {};
-      if (isPWA() && mimeType) {
-        recorderOptions.videoBitsPerSecond = 2500000;
-      }
+      recorderOptions.videoBitsPerSecond = isPWA() ? 1500000 : 2500000;
       const recorder = new MediaRecorder(canvasStream, recorderOptions);
       mediaRecorderRef.current = recorder;
       const chunks = [];
