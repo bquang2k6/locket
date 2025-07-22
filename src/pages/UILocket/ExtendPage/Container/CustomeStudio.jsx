@@ -37,6 +37,44 @@ const ScreenCustomeStudio = () => {
   }, [isFilterOpen]);
 
   const [savedPosts, setSavedPosts] = useState([]);
+  const [showGifModal, setShowGifModal] = useState(false);
+  const [selectedGif, setSelectedGif] = useState(null);
+  const [bgColor, setBgColor] = useState("#181A20");
+  const [colorBottom, setColorBottom] = useState("#181A20");
+  const [captionText, setCaptionText] = useState("");
+  const [textColor, setTextColor] = useState("#FFFFFF");
+  const [mainPreview, setMainPreview] = useState(null);
+  const [gifError, setGifError] = useState("");
+
+  // Danh sách GIF từ Firebase, thêm GIF mới vào mảng này
+  const gifList = [
+    "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2FHappy-Blue-Sky.gif?alt=media&token=c20323 6c-5442-4212-9b8b-f0ff15ac996e",
+    "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2FDog-What.gif?alt=media&token=6b48e292-8d2d-45a2-9a44-8926c102837f",
+    "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2Fdeath.gif?alt=media&token=befd70fc-5d90-4575-8bd2-f88fd821ab1f",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/2c68009a28d042cd83ae9d9de5587e65.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/48eb4cfdf6bf47eea76d4309a8b301fd.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/8160a7d8756b4952ac99bf91afade11f.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/822ccb5a7c124e1c97941803ad38c91e.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9168d7c5c4b94e02a2cbc768bacdd199.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/93bd734619674dbbad4d64e9e22dcee6.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9a2a09c7076942a28f8a6aa9e3672d59.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9d9477096c204373ad3573c816694b23.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/a5eea28dd6c14a1d966a27e5561e99c8.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/b37d4c66ece243d0aeba598c24231612.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/c10d5f2da9584bf09ada65dc3a31264b.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/c7b55f1ac283483092fcaab25dc98515.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/caa0183826944deda599270edcc527c1.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/dap.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/deadline.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/f9ac1fe6c380428b8a5659b8c5c659d6.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/f9cfedb38a12461b875fff41a60912c8.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/fcf3d9f2f85f4ed2bcf6f66def68071f.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/haha.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/nhang.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/output_no_bg_square.gif"
+    
+    // Thêm các GIF mới tại đây
+  ];
 
   useEffect(() => {
     if (isFilterOpen) {
@@ -245,6 +283,18 @@ const ScreenCustomeStudio = () => {
             title="🎨 Caption Gif - Member"
             captionThemes={captionThemes}
             onSelect={handleCustomeSelectTest}
+            extraButton={
+              <button
+                className="flex flex-col whitespace-nowrap items-center space-y-1 py-2 px-4 btn btn-primary h-auto w-auto rounded-3xl font-semibold justify-center"
+                onClick={() => setShowGifModal(true)}
+                aria-label="Add GIF Caption"
+              >
+                <span className="text-base flex flex-row items-center">
+                  <span className="w-5 h-5 mr-2 flex items-center justify-center">+</span>
+                  Caption
+                </span>
+              </button>
+            }
           />
           <div className="">
             <h2 className="text-md font-semibold text-primary mb-2">
@@ -311,6 +361,127 @@ const ScreenCustomeStudio = () => {
         </div>
       </div> */}
         </div>
+        {/* Modal chọn GIF và preview */}
+        {showGifModal && (
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md relative max-h-[100vh] overflow-y-auto">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-primary"
+                onClick={() => setShowGifModal(false)}
+                aria-label="Đóng"
+              >
+                <X size={28} />
+              </button>
+              <h2 className="text-xl font-bold mb-4 text-primary">Chọn GIF</h2>
+              <div className="mb-4">
+                <h3 className="text-sm font-medium mb-2">Thư viện GIF</h3>
+                <div className="grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto p-2 border rounded-lg bg-gray-50">
+                  {gifList.map((gif, idx) => (
+                    <img
+                      key={idx}
+                      src={gif}
+                      alt={`GIF ${idx}`}
+                      className={`w-[50px] h-[50px] object-cover rounded-sm cursor-pointer border transition-all hover:scale-105 ${
+                        selectedGif === gif 
+                        ? " border-2 border-primary shadow-sm scale-130" 
+                        : "border-gray-200 hover:border-primary/50"
+                      }`}
+                      onClick={() => setSelectedGif(gif)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4 mb-4">
+                <h3 className="text-sm font-medium">Tùy chỉnh</h3>
+                <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
+                  <div className="mb-2">
+                    <label className="block mb-1 text-sm">Màu nền trên:</label>
+                    <input type="color" value={bgColor} onChange={e => setBgColor(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block mb-1 text-sm">Màu nền dưới:</label>
+                    <input type="color" value={colorBottom} onChange={e => setColorBottom(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block mb-1 text-sm">Caption:</label>
+                    <input 
+                      type="text" 
+                      value={captionText} 
+                      onChange={e => setCaptionText(e.target.value)} 
+                      className="w-full border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary" 
+                      placeholder="Nhập caption..."
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block mb-1 text-sm">Màu chữ:</label>
+                    <input type="color" value={textColor} onChange={e => setTextColor(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+              {/* Preview + Nút tích */}
+              {gifError && (
+                <span className="text-red-500 text-sm mb-5 block text-right w-full" style={{textAlign: "center"}}>{gifError}</span>
+              )}
+              <div className="flex flex-row items-center justify-center gap-2 mb-4 w-full">
+                <div className="relative w-40 h-12 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0" style={{ background: `linear-gradient(to bottom, ${bgColor}, ${colorBottom})`, borderRadius: '100px', marginBottom: '150px' }}>
+                  {selectedGif && (
+                    <img src={selectedGif} alt="Preview GIF" className="absolute inset-0 w-7 h-7 object-cover" style={{marginLeft: '13px', marginTop: '9px'}}/>
+                  )}
+                  <span
+                    className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-1 py-0.5 rounded text-base font-bold"
+                    style={{ color: textColor, background: "rgba(0,0,0,0.3)" }}
+                  >
+                    {captionText}
+                  </span>
+                </div>
+                
+                <button
+                  className="btn btn-success btn-circle flex items-center justify-center ml-2 flex-shrink-0"
+                  style={{ width: 40, height: 40, minWidth: 40, marginBottom: '150px' }}
+                  title="Chọn GIF này"
+                  onClick={() => {
+                    if (!selectedGif) {
+                      setGifError("Vui lòng chọn một GIF trước khi tiếp tục.");
+                      return;
+                    }
+                    setPostOverlay({
+                      type: "image_gif",
+                      icon: selectedGif,
+                      caption: captionText,
+                      color_top: bgColor,
+                      color_bottom: colorBottom,
+                      text_color: textColor,
+                    });
+                    setShowGifModal(false);
+                    setGifError("");
+                  }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
+              </div>
+              
+            </div>
+          </div>
+        )}
+        {/* Preview chính sau khi chọn xong */}
+        {mainPreview && (
+          <div className="flex flex-col items-center mt-4">
+            <div className="relative w-40 h-40 rounded-lg overflow-hidden" style={{ background: mainPreview.bgColor }}>
+              {mainPreview.gif && (
+                <img src={mainPreview.gif} alt="GIF Preview" className="absolute inset-0 w-full h-full object-cover" />
+              )}
+              <span
+                className="absolute bottom-2 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-lg font-bold"
+                style={{ color: mainPreview.textColor, background: "rgba(0,0,0,0.3)" }}
+              >
+                {mainPreview.captionText}
+              </span>
+            </div>
+            <span className="mt-2 text-primary font-semibold">Preview</span>
+          </div>
+        )}
       </div>
     </div>
   );

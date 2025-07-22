@@ -161,7 +161,7 @@ const AutoResizeCaption = () => {
           className="flex items-center backdrop-blur-2xl gap-2 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2"
           style={{
             width: `${width}px`,
-            background: '#181A20',
+            background: `linear-gradient(to bottom, ${postOverlay.color_top || '#181A20'}, ${postOverlay.color_bottom || postOverlay.color_top || '#181A20'})`,
           }}
         >
           <img
@@ -170,25 +170,19 @@ const AutoResizeCaption = () => {
             className="w-8 h-8 object-contain rounded-lg"
             style={{ maxHeight: 32, maxWidth: 32 }}
           />
-          <textarea
-            ref={imageIconRef}
-            value={postOverlay.caption || ""}
-            onChange={(e) =>
-              setPostOverlay((prev) => ({
-                ...prev,
-                caption: e.target.value,
-              }))
-            }
-            placeholder={placeholder}
-            rows={1}
-            className="font-semibold outline-none w-auto resize-none overflow-hidden transition-all ml-2"
+          <span
+            className="font-semibold ml-2 truncate"
             style={{
-              width: `${width - 40}px`,
-              color: '#fff',
+              color: postOverlay.text_color || '#fff',
               whiteSpace: shouldWrap ? "pre-wrap" : "nowrap",
               background: 'transparent',
+              maxWidth: `${width - 40}px`,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
-          />
+          >
+            {postOverlay.caption || ""}
+          </span>
         </div>
       ) : postOverlay.type === "time" ? (
         <div 
