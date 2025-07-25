@@ -8,6 +8,7 @@ import GeneralThemes from "../CaptionItems/GeneralThemes";
 import ThemesCustomes from "../CaptionItems/ThemesCustomes";
 import DevCustomes from "../CaptionItems/DevCustomes";
 import CaptionGifThemes from "../CaptionItems/CaptionGifThemes";
+import gifCacheDB from '../../../../helpers/gifCacheDB';
 
 const ScreenCustomeStudio = () => {
   const popupRef = useRef(null);
@@ -45,6 +46,8 @@ const ScreenCustomeStudio = () => {
   const [textColor, setTextColor] = useState("#FFFFFF");
   const [mainPreview, setMainPreview] = useState(null);
   const [gifError, setGifError] = useState("");
+  const [gifSrcMap, setGifSrcMap] = useState({}); // url -> objectURL
+  const [isCachingGifs, setIsCachingGifs] = useState(false);
 
   // Danh sách GIF từ Firebase, thêm GIF mới vào mảng này
   const gifList = [
@@ -210,6 +213,41 @@ const ScreenCustomeStudio = () => {
     type: item.options.type || "background",
     // Nếu bạn có thêm type, preset_id có thể thêm tương tự
   }));
+
+  // Cache toàn bộ GIF vào IndexedDB khi mở modal lần đầu
+  useEffect(() => {
+    if (showGifModal && !isCachingGifs) {
+      setIsCachingGifs(true);
+      (async () => {
+        const newGifSrcMap = {};
+        for (const url of gifList) {
+          try {
+            let blob = await gifCacheDB.getGif(url);
+            if (!blob) {
+              const res = await fetch(url);
+              blob = await res.blob();
+              await gifCacheDB.setGif(url, blob);
+            }
+            const objectUrl = URL.createObjectURL(blob);
+            newGifSrcMap[url] = objectUrl;
+          } catch (e) {
+            // Nếu lỗi, fallback về url gốc
+            newGifSrcMap[url] = url;
+          }
+        }
+        setGifSrcMap(newGifSrcMap);
+        setIsCachingGifs(false);
+      })();
+    }
+    // Cleanup object URLs khi đóng modal
+    if (!showGifModal) {
+      Object.values(gifSrcMap).forEach(src => {
+        if (src && src.startsWith('blob:')) URL.revokeObjectURL(src);
+      });
+      setGifSrcMap({});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showGifModal]);
 
   return (
     <div
@@ -379,7 +417,7 @@ const ScreenCustomeStudio = () => {
                   {gifList.map((gif, idx) => (
                     <img
                       key={idx}
-                      src={gif}
+                      src={gifSrcMap[gif] || gif}
                       alt={`GIF ${idx}`}
                       className={`w-[50px] h-[50px] object-cover rounded-sm cursor-pointer border transition-all hover:scale-105 ${
                         selectedGif === gif 
@@ -423,7 +461,7 @@ const ScreenCustomeStudio = () => {
                 <span className="text-red-500 text-sm mb-5 block text-right w-full" style={{textAlign: "center"}}>{gifError}</span>
               )}
               <div className="flex flex-row items-center justify-center gap-2 mb-4 w-full">
-                <div className="relative w-40 h-12 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0" style={{ background: `linear-gradient(to bottom, ${bgColor}, ${colorBottom})`, borderRadius: '100px', marginBottom: '150px' }}>
+                <div className="relative w-40 h-12 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0" style={{ background: `linear-gradient(to bottom, ${bgColor}, ${colorBottom})`, borderRadius: '100px', marginBottom: '200px' }}>
                   {selectedGif && (
                     <img src={selectedGif} alt="Preview GIF" className="absolute inset-0 w-7 h-7 object-cover" style={{marginLeft: '13px', marginTop: '9px'}}/>
                   )}
@@ -437,7 +475,7 @@ const ScreenCustomeStudio = () => {
                 
                 <button
                   className="btn btn-success btn-circle flex items-center justify-center ml-2 flex-shrink-0"
-                  style={{ width: 40, height: 40, minWidth: 40, marginBottom: '150px' }}
+                  style={{ width: 40, height: 40, minWidth: 40, marginBottom: '200px' }}
                   title="Chọn GIF này"
                   onClick={() => {
                     if (!selectedGif) {
