@@ -156,12 +156,12 @@ export default function GeneralThemes({ title }) {
         // });
         break;
       case "heart":
-        handleCustomeSelect({
-          preset_id: "heart",
-          caption: "inlove",
-          type: "heart",
-        });
-        break;
+        // handleCustomeSelect({
+        //   preset_id: "heart",
+        //   caption: "inlove",
+        //   type: "heart",
+        // });
+        // break;
       default:
         break;
     }
@@ -195,21 +195,21 @@ export default function GeneralThemes({ title }) {
       ),
       label: "Thời tiết",
     },
-    {
-      id: "battery",
-      icon: (
-        <img
-          src="https://img.icons8.com/?size=100&id=WDlpopZDVw4P&format=png&color=000000"
-          className="w-6 h-6 mr-1"
-        />
-      ),
-      label: `50%`,
-    },
-    {
-      id: "heart",
-      icon: <img src="./images/heart_icon_red.svg" className="w-6 h-6 mr-1" />,
-      label: "inlove",
-    },
+    // {
+    //   id: "battery",
+    //   icon: (
+    //     <img
+    //       src="https://img.icons8.com/?size=100&id=WDlpopZDVw4P&format=png&color=000000"
+    //       className="w-6 h-6 mr-1"
+    //     />
+    //   ),
+    //   label: `50%`,
+    // },
+    // {
+    //   id: "heart",
+    //   icon: <img src="./images/heart_icon_red.svg" className="w-6 h-6 mr-1" />,
+    //   label: "inlove",
+    // },
     {
       id: "location",
       icon: (

@@ -8,12 +8,14 @@ import GeneralThemes from "../CaptionItems/GeneralThemes";
 import ThemesCustomes from "../CaptionItems/ThemesCustomes";
 import DevCustomes from "../CaptionItems/DevCustomes";
 import CaptionGifThemes from "../CaptionItems/CaptionGifThemes";
+import { ThemeContext } from "../../../../context/ThemeContext";
 import gifCacheDB from '../../../../helpers/gifCacheDB';
 
 const ScreenCustomeStudio = () => {
   const popupRef = useRef(null);
   const { user, setUser, userPlan } = useContext(AuthContext);
   const { navigation, post, captiontheme } = useApp();
+  const { theme } = useContext(ThemeContext);
 
   const { isFilterOpen, setIsFilterOpen } = navigation;
   const {
@@ -53,7 +55,6 @@ const ScreenCustomeStudio = () => {
   const gifList = [
     "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2FHappy-Blue-Sky.gif?alt=media&token=c20323 6c-5442-4212-9b8b-f0ff15ac996e",
     "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2FDog-What.gif?alt=media&token=6b48e292-8d2d-45a2-9a44-8926c102837f",
-    "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2Fdeath.gif?alt=media&token=befd70fc-5d90-4575-8bd2-f88fd821ab1f",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/2c68009a28d042cd83ae9d9de5587e65.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/48eb4cfdf6bf47eea76d4309a8b301fd.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/8160a7d8756b4952ac99bf91afade11f.gif",
@@ -76,7 +77,7 @@ const ScreenCustomeStudio = () => {
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/nhang.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/output_no_bg_square.gif"
     
-    // Thêm các GIF mới tại đây
+    // Thêm các GIF mới tại  đây
   ];
 
   useEffect(() => {
@@ -249,6 +250,15 @@ const ScreenCustomeStudio = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showGifModal]);
 
+  // Set default background colors for GIF modal (always #181A20)
+  useEffect(() => {
+    if (showGifModal) {
+      setBgColor("#181A20");
+      setColorBottom("#181A20");
+    }
+    // eslint-disable-next-line
+  }, [showGifModal]);
+
   return (
     <div
       className={`fixed inset-0 z-90 flex justify-center items-end transition-transform duration-500 ${
@@ -399,107 +409,116 @@ const ScreenCustomeStudio = () => {
         </div>
       </div> */}
         </div>
-        {/* Modal chọn GIF và preview */}
+        {/* Modal chọn GIF và preview với header cố định */}
         {showGifModal && (
           <div className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md relative max-h-[100vh] overflow-y-auto">
-              <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-primary"
-                onClick={() => setShowGifModal(false)}
-                aria-label="Đóng"
-              >
-                <X size={28} />
-              </button>
-              <h2 className="text-xl font-bold mb-4 text-primary">Chọn GIF</h2>
-              <div className="mb-4">
-                <h3 className="text-sm font-medium mb-2">Thư viện GIF</h3>
-                <div className="grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto p-2 border rounded-lg bg-gray-50">
-                  {gifList.map((gif, idx) => (
-                    <img
-                      key={idx}
-                      src={gifSrcMap[gif] || gif}
-                      alt={`GIF ${idx}`}
-                      className={`w-[50px] h-[50px] object-cover rounded-sm cursor-pointer border transition-all hover:scale-105 ${
-                        selectedGif === gif 
-                        ? " border-2 border-primary shadow-sm scale-130" 
-                        : "border-gray-200 hover:border-primary/50"
-                      }`}
-                      onClick={() => setSelectedGif(gif)}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-4 mb-4">
-                <h3 className="text-sm font-medium">Tùy chỉnh</h3>
-                <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
-                  <div className="mb-2">
-                    <label className="block mb-1 text-sm">Màu nền trên:</label>
-                    <input type="color" value={bgColor} onChange={e => setBgColor(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
-                  </div>
-                  <div className="mb-2">
-                    <label className="block mb-1 text-sm">Màu nền dưới:</label>
-                    <input type="color" value={colorBottom} onChange={e => setColorBottom(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
-                  </div>
-                  <div className="mb-2">
-                    <label className="block mb-1 text-sm">Caption:</label>
-                    <input 
-                      type="text" 
-                      value={captionText} 
-                      onChange={e => setCaptionText(e.target.value)} 
-                      className="w-full border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary" 
-                      placeholder="Nhập caption..."
-                    />
-                  </div>
-                  <div className="mb-2">
-                    <label className="block mb-1 text-sm">Màu chữ:</label>
-                    <input type="color" value={textColor} onChange={e => setTextColor(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
-                  </div>
-                </div>
-              </div>
-              {/* Preview + Nút tích */}
-              {gifError && (
-                <span className="text-red-500 text-sm mb-5 block text-right w-full" style={{textAlign: "center"}}>{gifError}</span>
-              )}
-              <div className="flex flex-row items-center justify-center gap-2 mb-4 w-full">
-                <div className="relative w-40 h-12 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0" style={{ background: `linear-gradient(to bottom, ${bgColor}, ${colorBottom})`, borderRadius: '100px', marginBottom: '200px' }}>
-                  {selectedGif && (
-                    <img src={selectedGif} alt="Preview GIF" className="absolute inset-0 w-7 h-7 object-cover" style={{marginLeft: '13px', marginTop: '9px'}}/>
-                  )}
-                  <span
-                    className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-1 py-0.5 rounded text-base font-bold"
-                    style={{ color: textColor, background: "rgba(0,0,0,0.3)" }}
-                  >
-                    {captionText}
-                  </span>
-                </div>
-                
+            <div className="rounded-xl w-full max-w-md relative max-h-[80vh] border border-base-300 bg-base-100 text-base-content transition-colors duration-300 flex flex-col">
+              {/* Header cố định */}
+              <div className="flex justify-between h-13 items-center p-6 pb-4 border-b border-base-300 bg-base-100 sticky top-0 z-10 rounded-t-xl">
+                <h2 className="text-xl font-bold text-primary">Chọn GIF</h2>
                 <button
-                  className="btn btn-success btn-circle flex items-center justify-center ml-2 flex-shrink-0"
-                  style={{ width: 40, height: 40, minWidth: 40, marginBottom: '200px' }}
-                  title="Chọn GIF này"
-                  onClick={() => {
-                    if (!selectedGif) {
-                      setGifError("Vui lòng chọn một GIF trước khi tiếp tục.");
-                      return;
-                    }
-                    setPostOverlay({
-                      type: "image_gif",
-                      icon: selectedGif,
-                      caption: captionText,
-                      color_top: bgColor,
-                      color_bottom: colorBottom,
-                      text_color: textColor,
-                    });
-                    setShowGifModal(false);
-                    setGifError("");
-                  }}
+                  className="hover:text-primary transition-colors text-base-content"
+                  onClick={() => setShowGifModal(false)}
+                  aria-label="Đóng"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <X size={28} />
                 </button>
               </div>
-              
+
+              {/* Nội dung có thể cuộn */}
+              <div className="flex-1 overflow-y-auto px-6 pb-6">
+                <div className="mb-4">
+                  <h3 className="text-sm font-medium mb-2 mt-2 text-base-content">Thư viện GIF</h3>
+                  <div className="grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto p-2 border border-base-300 bg-base-200 rounded-lg transition-colors duration-300">
+                    {gifList.map((gif, idx) => (
+                      <img
+                        key={idx}
+                        src={gifSrcMap[gif] || gif}
+                        alt={`GIF ${idx}`}
+                        className={`w-[50px] h-[50px] object-cover rounded-sm cursor-pointer border transition-all hover:scale-105 ${
+                          selectedGif === gif 
+                          ? "border-2 border-primary shadow-sm scale-130" 
+                          : "border-base-300 hover:border-primary/50"
+                        }`}
+                        onClick={() => setSelectedGif(gif)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="space-y-4 mb-4">
+                  <h3 className="text-sm font-medium text-base-content">Tùy chỉnh</h3>
+                  <div className="space-y-3 p-3 border border-base-300 bg-base-200 rounded-lg transition-colors duration-300">
+                    <div className="mb-2">
+                      <label className="block mb-1 text-sm text-base-content">Màu nền trên:</label>
+                      <input type="color" value={bgColor} onChange={e => setBgColor(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block mb-1 text-sm text-base-content">Màu nền dưới:</label>
+                      <input type="color" value={colorBottom} onChange={e => setColorBottom(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block mb-1 text-sm text-base-content">Caption:</label>
+                      <input 
+                        type="text" 
+                        value={captionText} 
+                        onChange={e => setCaptionText(e.target.value)} 
+                        className="w-full border border-base-300 bg-base-100 text-base-content placeholder-base-content/50 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary transition-colors duration-300"
+                        placeholder="Nhập caption..."
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <label className="block mb-1 text-sm text-base-content">Màu chữ:</label>
+                      <input type="color" value={textColor} onChange={e => setTextColor(e.target.value)} className="w-full h-8 rounded cursor-pointer" />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Preview + Nút tích */}
+                {gifError && (
+                  <span className="text-error text-sm mb-5 block text-center">{gifError}</span>
+                )}
+                
+                <div className="flex flex-row items-center justify-center gap-2 mb-4 w-full">
+                  <div className="relative w-40 h-12 mb-30 rounded-lg overflow-hidden border border-base-300 flex-shrink-0" style={{ background: `linear-gradient(to bottom, ${bgColor}, ${colorBottom})`, borderRadius: '100px' }}>
+                    {selectedGif && (
+                      <img src={selectedGif} alt="Preview GIF" className="absolute inset-0 w-7 h-7 object-cover" style={{marginLeft: '13px', marginTop: '9px'}}/>
+                    )}
+                    <span
+                      className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-1 py-0.5 rounded text-base font-bold"
+                      style={{ color: textColor, background: "rgba(0,0,0,0.3)" }}
+                    >
+                      {captionText}
+                    </span>
+                  </div>
+                  
+                  <button
+                    className="btn btn-success btn-circle flex items-center justify-center ml-2 flex-shrink-0 mb-30"
+                    style={{ width: 40, height: 40, minWidth: 40 }}
+                    title="Chọn GIF này"
+                    onClick={() => {
+                      if (!selectedGif) {
+                        setGifError("Vui lòng chọn một GIF trước khi tiếp tục.");
+                        return;
+                      }
+                      setPostOverlay({
+                        type: "image_gif",
+                        icon: selectedGif,
+                        caption: captionText,
+                        color_top: bgColor,
+                        color_bottom: colorBottom,
+                        text_color: textColor,
+                      });
+                      setShowGifModal(false);
+                      setGifError("");
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
