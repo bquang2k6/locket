@@ -4,6 +4,7 @@ import { MessageCircle, Trash2, LayoutGrid } from "lucide-react";
 import { useApp } from "../../../context/AppContext";
 import { showSuccess } from "../../../components/Toast";
 import BadgePlan from "./Badge";
+import WeatherIcon from "../../../components/UI/WeatherIcon";
 
 const BottomHomeScreen = () => {
   const { user } = useContext(AuthContext);
@@ -176,20 +177,17 @@ const BottomHomeScreen = () => {
                 }}
               >
                 {imageInfo.captions[0].icon?.type === "image" ? (
-                  <span className="text-base flex flex-row items-center">
-                    <img
-                      src={imageInfo.captions[0].icon.data}
-                      alt=""
-                      className="w-5 h-5 mr-2"
-                    />
-                    {imageInfo.captions[0].text || "Caption"}
-                  </span>
-                ) : (
-                  <span className="text-base">
-                    {(imageInfo.captions[0].icon?.data || "") + " "}
-                    {imageInfo.captions[0].text || ""}
-                  </span>
-                )}
+                  <img
+                    src={imageInfo.captions[0].icon.data}
+                    alt="Icon"
+                    className="w-6 h-6 object-cover"
+                  />
+                ) : imageInfo.captions[0].type === "weather" && imageInfo.captions[0].icon ? (
+                  <WeatherIcon weatherCode={imageInfo.captions[0].icon} className="w-6 h-6" />
+                ) : imageInfo.captions[0].icon ? (
+                  <span>{imageInfo.captions[0].icon}</span>
+                ) : null}
+                <span>{imageInfo.captions[0].caption}</span>
               </div>
             </div>
           )}

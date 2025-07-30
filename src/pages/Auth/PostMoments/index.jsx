@@ -17,6 +17,7 @@ import Hourglass from "../../../components/UI/Loading/hourglass.jsx";
 import MediaSizeInfo from "../../../components/UI/MediaSizeInfo/index.jsx";
 import { defaultPostOverlay } from "../../../storages/usePost.js";
 import { validate_response_data } from "../../../utils/security.js";
+import WeatherIcon from "../../../components/UI/WeatherIcon";
 
 const PostMoments = () => {
   const { post, useloading } = useApp();
@@ -242,6 +243,9 @@ const PostMoments = () => {
                       alt="GIF"
                       className="inline-block w-8 h-8 object-contain rounded-lg mr-2"
                     />
+                  )}
+                  {postOverlay.type === "weather" && postOverlay.icon && (
+                    <WeatherIcon weatherCode={postOverlay.icon} className="w-6 h-6" />
                   )}
                   {caption}
                 </div>

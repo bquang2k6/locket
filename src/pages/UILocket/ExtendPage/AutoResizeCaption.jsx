@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useApp } from "../../../context/AppContext";
 import { PiClockFill } from "react-icons/pi";
 import { StarRating } from "../../../components/UI/StarRating/StarRating";
+import WeatherIcon from "../../../components/UI/WeatherIcon";
 
 const AutoResizeCaption = () => {
   const textareaRef = useRef(null);
@@ -72,12 +73,19 @@ const AutoResizeCaption = () => {
     adjustHeight(textareaRef);
     adjustHeight(imageIconRef);
 
-    const combinedText =
-      postOverlay.type === "image_icon"
-        ? postOverlay.caption || placeholder
-        : `${postOverlay.icon || ""} ${
-            postOverlay.caption || placeholder
-          }`.trim();
+    let combinedText;
+    if (postOverlay.type === "weather") {
+      // Cho weather type, chỉ sử dụng caption
+      combinedText = postOverlay.caption || placeholder;
+    } else if (postOverlay.type === "image_icon") {
+      combinedText = postOverlay.caption || placeholder;
+    } else {
+      // Cho các type khác, kết hợp icon + caption
+      combinedText = `${postOverlay.icon || ""} ${
+        postOverlay.caption || placeholder
+      }`.trim();
+    }
+
     const baseWidth = getTextWidth(
       combinedText,
       postOverlay.type === "image_icon" ? imageIconRef : textareaRef
@@ -103,24 +111,40 @@ const AutoResizeCaption = () => {
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
-    const icon = postOverlay.icon || "";
-    const prefix = icon ? `${icon} ` : "";
-
-    if (inputValue.startsWith(prefix)) {
-      const newCaption = inputValue.slice(prefix.length);
-      setPostOverlay((prev) => ({
-        ...prev,
-        caption: newCaption,
-      }));
-    } else {
+    
+    if (postOverlay.type === "weather") {
+      // Cho weather type, chỉ cập nhật caption
       setPostOverlay((prev) => ({
         ...prev,
         caption: inputValue,
       }));
+    } else {
+      // Cho các type khác, xử lý icon + caption
+      const icon = postOverlay.icon || "";
+      const prefix = icon ? `${icon} ` : "";
+
+      if (inputValue.startsWith(prefix)) {
+        const newCaption = inputValue.slice(prefix.length);
+        setPostOverlay((prev) => ({
+          ...prev,
+          caption: newCaption,
+        }));
+      } else {
+        setPostOverlay((prev) => ({
+          ...prev,
+          caption: inputValue,
+        }));
+      }
     }
   };
 
   const isEditable = !["decorative", "custome"].includes(postOverlay?.type);
+
+  // Tạo formattedTime cho time type
+  const formattedTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <div ref={parentRef} className="relative w-full">
@@ -194,7 +218,17 @@ const AutoResizeCaption = () => {
         >
           <PiClockFill className="w-6 h-6 rotate-270" />
           <span>{postOverlay.caption || formattedTime}</span>
-          {/* <input value={postOverlay.caption || formattedTime} type="text" name="" id="" width={20}/> */}
+        </div>
+      ) : postOverlay.type === "weather" ? (
+        <div 
+          className="flex items-center backdrop-blur-2xl gap-2 py-2 px-4 rounded-4xl absolute bottom-2 left-1/2 transform -translate-x-1/2 font-semibold"
+          style={{
+            background: `linear-gradient(to bottom, ${postOverlay.color_top || '#000000'}, ${postOverlay.color_bottom || '#000000'})`,
+            color: getTextColor(),
+          }}
+        >
+          <WeatherIcon weatherCode={postOverlay.icon || "01d"} className="w-6 h-6" />
+          <span>{postOverlay.caption || "25°C trời đẹp"}</span>
         </div>
       ) : postOverlay.type === "review" ? (
         <div
@@ -242,9 +276,11 @@ const AutoResizeCaption = () => {
         <textarea
           ref={textareaRef}
           value={
-            postOverlay.icon
-              ? `${postOverlay.icon} ${postOverlay.caption || ""}`.trim()
-              : postOverlay.caption || ""
+            postOverlay.type === "weather" 
+              ? postOverlay.caption || "25°C trời đẹp"
+              : postOverlay.icon
+                ? `${postOverlay.icon} ${postOverlay.caption || ""}`.trim()
+                : postOverlay.caption || ""
           }
           onChange={handleChange}
           placeholder={placeholder}

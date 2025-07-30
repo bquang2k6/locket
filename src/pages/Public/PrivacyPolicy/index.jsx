@@ -58,7 +58,7 @@ const PrivacyPolicy = () => {
           <p>
             <strong>Company</strong> (referred to as either &quot;the
             Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in
-            this Agreement) refers to Locket Dio.
+            this Agreement) refers to Locket Wan.
           </p>
         </li>
         <li className="mb-4">
@@ -110,13 +110,13 @@ const PrivacyPolicy = () => {
         </li>
         <li className="mb-4">
           <p>
-            <strong>Website</strong> refers to Locket Dio, accessible from{" "}
+            <strong>Website</strong> refers to Locket Wan, accessible from{" "}
             <a
-              href="https://locket-dio.web.app"
+              href="https://locket.quang-tech.space"
               rel="external nofollow noopener"
               target="_blank"
             >
-              https://locket-dio.web.app
+              https://locket.quang-tech.space
             </a>
           </p>
         </li>

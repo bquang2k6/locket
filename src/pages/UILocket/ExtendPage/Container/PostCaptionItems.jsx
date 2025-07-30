@@ -3,6 +3,8 @@ import { Check, Download, Heart, MessageCircle, Send, Trash2 } from "lucide-reac
 import { AuthContext } from "../../../../context/AuthLocket";
 import { deleteCaptionPost } from "../../../../services/LocketDioService/PostMoments";
 import { showSuccess, showError } from "../../../../components/Toast";
+import { useApp } from "../../../../context/AppContext";
+import WeatherIcon from "../../../../components/UI/WeatherIcon";
 
 const ADMIN_USERNAME = "wan206";
 
@@ -154,8 +156,12 @@ const PostCard = ({ post, onDeleted }) => {
             })(),
           }}
         >
-          <span className="text-base">
-            {(post?.options?.icon || "") + " "}
+          <span className="text-base flex items-center gap-2">
+            {post?.options?.type === "weather" && post?.options?.icon ? (
+              <WeatherIcon weatherCode={post.options.icon} className="w-5 h-5" />
+            ) : post?.options?.icon ? (
+              <span>{post.options.icon}</span>
+            ) : null}
             {post?.options?.caption || post?.options?.caption || "Caption"}
           </span>
         </button>

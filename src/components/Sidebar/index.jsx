@@ -272,7 +272,7 @@ const Sidebar = () => {
                     }`}
                     onClick={() => setIsSidebarOpen(false)}
                   >
-                    <Info size={22} /> Locket Pro
+                    <Info size={22} /> Locket Wan
                   </Link>
                 </li>
 

@@ -28,6 +28,7 @@ firebase.json
 
 .env.development
 .env.production
+.env
 
 LocketUploader_*
 app-private.pem
