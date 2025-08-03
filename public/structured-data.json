@@ -1,0 +1,44 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Locket Wan",
+  "description": "Ứng dụng web giúp đăng ảnh và video lên Locket nhanh chóng",
+  "url": "https://locket.quang-tech.space",
+  "applicationCategory": "SocialNetworkingApplication",
+  "operatingSystem": "Web Browser",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "softwareVersion": "1.0",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "VND",
+    "availability": "https://schema.org/InStock"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Locket Wan Team",
+    "url": "https://locket.quang-tech.space"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Locket Wan",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://locket.quang-tech.space/images/locket-pro.png"
+    }
+  },
+  "featureList": [
+    "Chụp ảnh trực tiếp",
+    "Quay video",
+    "Tải lên ảnh/video",
+    "Thêm caption",
+    "Chia sẻ với bạn bè",
+    "Giao diện hiện đại"
+  ],
+  "screenshot": "https://locket.quang-tech.space/images/prvlocket.png",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "ratingCount": "100"
+  }
+} 
