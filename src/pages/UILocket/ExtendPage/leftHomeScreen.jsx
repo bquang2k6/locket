@@ -165,7 +165,7 @@ const LeftHomeScreen = () => {
         <div className="flex items-center justify-between">
           <BadgePlan />
           <div className="flex items-center gap-3">
-            <button
+            {/* <button
               onClick={() => navigate("/chat")}
               className="rounded-lg hover:bg-base-200 transition cursor-pointer"
               style={{ zIndex: 100 }}
@@ -191,7 +191,7 @@ const LeftHomeScreen = () => {
                   />
                 </g>
               </svg>
-            </button>
+            </button> */}
             <button
               onClick={() => setIsProfileOpen(false)}
               className="rounded-lg hover:bg-base-200 transition cursor-pointer"
