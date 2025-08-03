@@ -357,7 +357,7 @@ const ProfileSidebar = () => {
 
           {/* Dangerous Zone */}
           <SectionTitle title="Vùng nguy hiểm" />
-          <div className={`${colors.bg} mx-4 rounded-lg mb-8`}>
+          <div className={`${colors.bg} mx-4 rounded-lg mb-20`}>
             <MenuItem 
               icon={LogOut} 
               text="Đăng xuất" 

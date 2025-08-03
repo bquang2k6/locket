@@ -53,8 +53,14 @@ const ScreenCustomeStudio = () => {
 
   // Danh sách GIF từ Firebase, thêm GIF mới vào mảng này
   const gifList = [
-    "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2FHappy-Blue-Sky.gif?alt=media&token=c20323 6c-5442-4212-9b8b-f0ff15ac996e",
-    "https://firebasestorage.googleapis.com/v0/b/webdio-20ca8.appspot.com/o/locket-dio-gif%2FDog-What.gif?alt=media&token=6b48e292-8d2d-45a2-9a44-8926c102837f",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0803.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0804.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0805.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0806.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0807.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0808.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0809.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0810.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/2c68009a28d042cd83ae9d9de5587e65.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/48eb4cfdf6bf47eea76d4309a8b301fd.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/8160a7d8756b4952ac99bf91afade11f.gif",
@@ -63,6 +69,8 @@ const ScreenCustomeStudio = () => {
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/93bd734619674dbbad4d64e9e22dcee6.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9a2a09c7076942a28f8a6aa9e3672d59.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9d9477096c204373ad3573c816694b23.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/Dog-What.gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/Happy-Blue-Sky.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/a5eea28dd6c14a1d966a27e5561e99c8.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/b37d4c66ece243d0aeba598c24231612.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/c10d5f2da9584bf09ada65dc3a31264b.gif",
