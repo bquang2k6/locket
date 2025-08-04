@@ -226,7 +226,9 @@ export default function ChatPage() {
         {/* Khung cuộn tin nhắn thường */}
         <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 pt-0 md:pt-0">
           {normalMessages.length === 0 ? (
-            <div className="text-gray-400 text-center">Chưa có tin nhắn nào.</div>
+            <div className="text-gray-400 text-center mt-10">Chưa có tin nhắn nào. chức năng này tạm đóng</div>
+            
+            
           ) : (
             normalMessages.map((msg, idx) => (
               <div

@@ -245,6 +245,16 @@ export const registerPaidPlan = async (user, planId) => {
     }
   } catch (error) {
     console.error("Error registering paid plan:", error);
-    throw error;
+    
+    // Handle specific error messages
+    if (error.response?.status === 503) {
+      throw new Error("Dịch vụ thanh toán tạm thời không khả dụng. Vui lòng thử lại sau hoặc liên hệ hỗ trợ.");
+    } else if (error.response?.data?.detail) {
+      throw new Error(error.response.data.detail);
+    } else if (error.message) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Đăng ký gói thất bại. Vui lòng thử lại sau.");
+    }
   }
 };

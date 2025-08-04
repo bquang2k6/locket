@@ -253,7 +253,7 @@ export default function RegisterMemberPage() {
     }
 
     const confirmed = window.confirm(
-      "Bạn có chắc muốn đăng ký gói dùng thử 14 ngày?"
+      "Bạn có chắc muốn đăng ký gói dùng thử 3 ngày?"
     );
     if (!confirmed) return;
 
@@ -498,7 +498,7 @@ export default function RegisterMemberPage() {
                   ) : userPlan?.plan_id === plan.id ? (
                     "Đang sử dụng"
                   ) : (
-                    "Dùng thử 14 ngày"
+                    "Dùng thử 3 ngày"
                   )}
                 </button>
               ) : (
