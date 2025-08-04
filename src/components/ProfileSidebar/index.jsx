@@ -244,14 +244,14 @@ const ProfileSidebar = () => {
                 setIsSidebarOpen(false);
               }}
             />
-            <MenuItem 
+            {/* <MenuItem 
               icon={MessageCircle} 
               text="Phòng chat chung" 
               onClick={() => {
                 navigate('/chat');
                 setIsSidebarOpen(false);
               }}
-            />
+            /> */}
             <MenuItem 
               icon={Upload} 
               text=" Đăng ảnh, video" 
@@ -307,7 +307,7 @@ const ProfileSidebar = () => {
               icon={AlertCircle} 
               text="Gửi đề xuất, Báo cáo sự cố" 
               onClick={() => {
-                window.open('https://quang-tech.space', '_blank');
+                window.open('https://t.me/+HbLv8oI4no01MGU1', '_blank');
                 setIsSidebarOpen(false);
               }}
             />
@@ -339,7 +339,7 @@ const ProfileSidebar = () => {
                 if (navigator.share) {
                   navigator.share({
                     title: 'Locket Wan',
-                    url: 'https://locket.cam'
+                    url: 'https://locket.quang-tech.space'
                   });
                 }
                 setIsSidebarOpen(false);
