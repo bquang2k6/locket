@@ -15,6 +15,7 @@ import CameraCapture from "../pages/UILocket";
 import NodeInfo from "../pages/Auth/Nodeinfo";
 import ChatPage from "../pages/Chat";
 import ThemePage from "../pages/Public/Theme";
+import CacheManagement from "../pages/Public/CacheManagement";
 
 const APP_NAME = "Locket Wan - Đăng ảnh & Video lên Locket";
 
@@ -33,6 +34,7 @@ const publicRoutes = [
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
   { path: "/theme", component: ThemePage, title: `${APP_NAME} | Tùy Chỉnh Giao Diện` },
+  { path: "/cache", component: CacheManagement, title: `${APP_NAME} | Quản lý Cache` },
 ];
 
 // 📌 Các route yêu cầu đăng nhập
@@ -51,6 +53,7 @@ const authRoutes = [
   { path: "/nodeinfo", component: NodeInfo, title: `${APP_NAME} | Node Info` },
   { path: "/chat", component: ChatPage, title: `${APP_NAME} | Chat` },
   { path: "/theme", component: ThemePage, title: `${APP_NAME} | Tùy Chỉnh Giao Diện` },
+  { path: "/cache", component: CacheManagement, title: `${APP_NAME} | Quản lý Cache` },
 ];
 
 // 📌 Các route dành cho locket

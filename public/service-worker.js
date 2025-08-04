@@ -1,7 +1,8 @@
 // Service Worker for PWA
-const CACHE_NAME = 'locket-wan-v5';
-const STATIC_CACHE = 'locket-wan-static-v5';
-const DYNAMIC_CACHE = 'locket-wan-dynamic-v5';
+const CACHE_VERSION = 'v6'; // Tăng version để force update
+const CACHE_NAME = `locket-wan-${CACHE_VERSION}`;
+const STATIC_CACHE = `locket-wan-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `locket-wan-dynamic-${CACHE_VERSION}`;
 
 // Files to cache
 const STATIC_FILES = [
@@ -9,18 +10,20 @@ const STATIC_FILES = [
   '/index.html',
   '/manifest.json',
   '/images/book.jpg',
-  '/images/book.jpg',
   '/images/cammera.jpg'
 ];
 
 // Install event
 self.addEventListener('install', event => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
+        console.log('Caching static files...');
         return cache.addAll(STATIC_FILES);
       })
       .then(() => {
+        console.log('Service Worker installed successfully');
         return self.skipWaiting();
       })
       .catch(error => {
@@ -29,20 +32,24 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate event
+// Activate event - Xóa cache cũ và claim clients
 self.addEventListener('activate', event => {
+  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
         return Promise.all(
           cacheNames.map(cacheName => {
+            // Xóa tất cả cache cũ
             if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+              console.log('Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => {
+        console.log('Service Worker activated successfully');
         return self.clients.claim();
       })
       .catch(error => {
@@ -51,7 +58,7 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch event
+// Fetch event với cache strategy cải tiến
 self.addEventListener('fetch', event => {
   // Skip non-HTTP requests
   if (!event.request.url.startsWith('http')) {
@@ -63,7 +70,7 @@ self.addEventListener('fetch', event => {
     return;
   }
   
-  // Handle API requests differently
+  // Handle API requests - không cache API calls
   if (event.request.url.includes('/api/')) {
     event.respondWith(
       fetch(event.request)
@@ -76,8 +83,31 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
+
+  // Network first strategy cho HTML files
+  if (event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Cache successful responses
+          if (response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(DYNAMIC_CACHE)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Fallback to cache
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
   
-  // For static files, try cache first
+  // Cache first strategy cho static assets
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -166,9 +196,22 @@ self.addEventListener('notificationclick', function(event) {
   }
 });
 
-// Message event for debugging
+// Message event for debugging và force update
 self.addEventListener('message', function(event) {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+  
+  // Thêm message để clear cache
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            return caches.delete(cacheName);
+          })
+        );
+      })
+    );
   }
 });

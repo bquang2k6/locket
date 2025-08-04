@@ -8,8 +8,12 @@
     "start": "npm run dev",
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "npm run update-version && vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "update-version": "node scripts/update-version.js",
+    "clear-cache": "node scripts/clear-cache.js",
+    "deploy": "npm run build:prod && echo 'Build completed. Deploy to your server.'"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.9",

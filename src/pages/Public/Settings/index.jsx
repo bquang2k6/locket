@@ -392,6 +392,21 @@ function SettingsPage() {
         <h1 className="text-2xl font-bold">Settings</h1>
       </div>
 
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">🛠️ Developer Tools</h2>
+        <div className="space-y-3">
+          <a
+            href="/cache"
+            className="block w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg transition-colors text-center mt-10"
+          >
+            🛠️ Cache Management
+          </a>
+          <p className="text-sm text-gray-600">
+            Quản lý cache và debug cho website
+          </p>
+        </div>
+      </div>
+
       <div className="space-y-6">
         {settingsSections.map((section) => (
           <div

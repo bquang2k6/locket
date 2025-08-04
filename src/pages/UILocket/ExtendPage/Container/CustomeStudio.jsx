@@ -231,15 +231,24 @@ const ScreenCustomeStudio = () => {
         const newGifSrcMap = {};
         for (const url of gifList) {
           try {
-            let blob = await gifCacheDB.getGif(url);
-            if (!blob) {
-              const res = await fetch(url);
-              blob = await res.blob();
-              await gifCacheDB.setGif(url, blob);
+            // Sử dụng updateGifIfNeeded để tự động cập nhật GIF mới
+            const result = await gifCacheDB.updateGifIfNeeded(url, {
+              version: '1.0', // Có thể thay đổi version khi có GIF mới
+              headers: {
+                'Cache-Control': 'no-cache'
+              }
+            });
+            
+            if (result.updated) {
+              console.log(`GIF updated: ${url}`);
+            } else {
+              console.log(`GIF already cached: ${url}`);
             }
-            const objectUrl = URL.createObjectURL(blob);
+            
+            const objectUrl = URL.createObjectURL(result.blob);
             newGifSrcMap[url] = objectUrl;
           } catch (e) {
+            console.error(`Error caching GIF ${url}:`, e);
             // Nếu lỗi, fallback về url gốc
             newGifSrcMap[url] = url;
           }

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { MdOutlineUpdate } from 'react-icons/md';
 import { 
   ChevronRight, 
   Settings, 
@@ -257,6 +258,14 @@ const ProfileSidebar = () => {
               text=" Đăng ảnh, video" 
               onClick={() => {
                 navigate('/postmoments');
+                setIsSidebarOpen(false);
+              }}
+            />
+            <MenuItem 
+              icon={MdOutlineUpdate} 
+              text="Cập nhật web lên phiên bản mới" 
+              onClick={() => {
+                navigate('/cache');
                 setIsSidebarOpen(false);
               }}
             />

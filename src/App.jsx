@@ -14,6 +14,7 @@ import Loading from "./components/Loading";
 import ToastProvider from "./components/Toast";
 import NotFoundPage from "./components/404";
 import InstallPWA from "./components/InstallPWA";
+import CacheManager from "./components/CacheManager";
 import getLayout from "./layouts";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Router>
             <AppContent />
             <InstallPWA />
+            <CacheManager />
           </Router>
           <ToastProvider />
         </AppProvider>
