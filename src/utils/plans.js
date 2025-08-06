@@ -98,7 +98,7 @@ export const plans = [
   {
     id: "pro_plus",
     name: "Pro Plus",
-    price: 25000,
+    price: 20000,
     duration_days: 30,
     max_uploads: 999999,
     storage_limit: 999999,
