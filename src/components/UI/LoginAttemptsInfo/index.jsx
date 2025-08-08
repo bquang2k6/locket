@@ -20,7 +20,7 @@ const LoginAttemptsInfo = ({ email }) => {
             <div className="mt-2 text-sm text-red-700">
               <p>
                 Email <span className="font-semibold">{email}</span> Đăng nhập thất bại nhiều lần. Vui lòng thử lại sau{' '}
-                <span className="font-semibold">{attemptsInfo.remainingTime} phút</span>.
+                <span className="font-semibold">{attemptsInfo.remainingTime} phút</span>. Nếu muốn đăng nhập tài khoản khác vui lòng load lại trang.
               </p>
             </div>
           </div>
