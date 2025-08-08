@@ -19,7 +19,7 @@ const LoginAttemptsInfo = ({ email }) => {
             </h3>
             <div className="mt-2 text-sm text-red-700">
               <p>
-                Email <span className="font-semibold">{email}</span> đã bị khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau{' '}
+                Email <span className="font-semibold">{email}</span> Đăng nhập thất bại nhiều lần. Vui lòng thử lại sau{' '}
                 <span className="font-semibold">{attemptsInfo.remainingTime} phút</span>.
               </p>
             </div>

@@ -141,7 +141,7 @@ const Login = () => {
           case 400:
           case 401:
             if (attemptResult.isLocked) {
-              showToast("error", `Email ${email} đã bị khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ${attemptResult.remainingTime} phút.`);
+              showToast("error", `Email ${email} Đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ${attemptResult.remainingTime} phút. Nếu muốn đăng nhập tài khoản khác vui lòng load lại trang`);
             } else {
               showToast("error", `Tài khoản hoặc mật khẩu không đúng! Email ${email} còn ${attemptResult.remainingAttempts} lần thử.`);
             }
