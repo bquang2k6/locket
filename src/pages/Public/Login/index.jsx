@@ -10,6 +10,13 @@ import FloatingNotification from "../../../components/UI/FloatingNotification";
 import Turnstile from "react-turnstile";
 import { isUsingCustomBackend } from "../../../utils/backendConfig";
 import { fetchUserPlan } from "../../../services/LocketDioService/getInfoPlans";
+import { 
+  checkLoginLockout, 
+  incrementLoginAttempts, 
+  resetLoginAttempts, 
+  getLoginAttemptsInfo 
+} from "../../../utils/auth";
+import LoginAttemptsInfo from "../../../components/UI/LoginAttemptsInfo";
 
 const Login = () => {
   const { setUser } = useContext(AuthContext);
@@ -20,6 +27,10 @@ const Login = () => {
     const stored = localStorage.getItem("rememberMe");
     return stored === null ? true : stored === "true";
   });
+
+  // State cho việc giới hạn đăng nhập theo email
+  const [loginAttemptsInfo, setLoginAttemptsInfo] = useState(() => getLoginAttemptsInfo(email));
+  const [lockoutTimer, setLockoutTimer] = useState(null);
 
   const { useloading } = useApp();
   const { isStatusServer, isLoginLoading, setIsLoginLoading } = useloading;
@@ -40,8 +51,42 @@ const Login = () => {
     setIsTurnstileEnabled(!isUsingCustomBackend());
   }, []);
 
+  // Cập nhật thông tin đăng nhập khi email thay đổi
+  useEffect(() => {
+    const info = getLoginAttemptsInfo(email);
+    setLoginAttemptsInfo(info);
+  }, [email]);
+
+  // Timer để cập nhật thời gian khóa
+  useEffect(() => {
+    if (loginAttemptsInfo.isLocked && loginAttemptsInfo.remainingTime > 0) {
+      const timer = setInterval(() => {
+        const updatedInfo = getLoginAttemptsInfo(email);
+        setLoginAttemptsInfo(updatedInfo);
+        
+        if (!updatedInfo.isLocked) {
+          clearInterval(timer);
+          setLockoutTimer(null);
+        }
+      }, 1000); // Cập nhật mỗi giây
+      
+      setLockoutTimer(timer);
+      
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [loginAttemptsInfo.isLocked, email]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    // Kiểm tra xem email có đang bị khóa không
+    const lockoutCheck = checkLoginLockout(email);
+    if (lockoutCheck.isLocked) {
+      showToast("error", `Email ${email} đã bị khóa. Vui lòng thử lại sau ${lockoutCheck.remainingTime} phút.`);
+      return;
+    }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -69,6 +114,10 @@ const Login = () => {
       utils.saveUser(res.data);
       setUser(res.data);
 
+      // Reset số lần đăng nhập thất bại cho email này khi thành công
+      resetLoginAttempts(email);
+      setLoginAttemptsInfo(getLoginAttemptsInfo(email));
+
       // Đảm bảo fetch plan ngay sau khi set user
       try {
         const plan = await fetchUserPlan(res.data.localId);
@@ -82,12 +131,20 @@ const Login = () => {
 
       showToast("success", "Đăng nhập thành công!");
     } catch (error) {
+      // Tăng số lần đăng nhập thất bại cho email này
+      const attemptResult = incrementLoginAttempts(email);
+      setLoginAttemptsInfo(getLoginAttemptsInfo(email));
+      
       if (error.status) {
         const { status, message } = error;
         switch (status) {
           case 400:
           case 401:
-            showToast("error", "Tài khoản hoặc mật khẩu không đúng!");
+            if (attemptResult.isLocked) {
+              showToast("error", `Email ${email} đã bị khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ${attemptResult.remainingTime} phút.`);
+            } else {
+              showToast("error", `Tài khoản hoặc mật khẩu không đúng! Email ${email} còn ${attemptResult.remainingAttempts} lần thử.`);
+            }
             break;
           case 403:
             showToast("error", "Bạn không có quyền truy cập.");
@@ -95,7 +152,11 @@ const Login = () => {
             break;
           case 500:
             if (error.message.includes("Bad Request")) {
-              showToast("error", "Email hoặc mật khẩu không đúng!");
+              if (attemptResult.isLocked) {
+                showToast("error", `Email ${email} đã bị khóa do đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ${attemptResult.remainingTime} phút.`);
+              } else {
+                showToast("error", `Email hoặc mật khẩu không đúng! Email ${email} còn ${attemptResult.remainingAttempts} lần thử.`);
+              }
             } else {
               showToast("error", "Lỗi hệ thống, vui lòng thử lại sau!");
             }
@@ -114,11 +175,22 @@ const Login = () => {
     }
   };
 
+  // Tính toán trạng thái disabled cho button
+  const isButtonDisabled = 
+    isStatusServer !== true || 
+    isLoginLoading || 
+    (isTurnstileEnabled && !turnstileToken) ||
+    loginAttemptsInfo.isLocked;
+
   return (
     <>
       <div className="flex items-center justify-center h-screen bg-base-200 px-6">
         <div className="w-full max-w-md p-7 shadow-lg rounded-xl bg-opacity-50 backdrop-blur-3xl bg-base-100 border-base-300 text-base-content">
           <h1 className="text-3xl font-bold text-center">Đăng Nhập Locket</h1>
+          
+          {/* Component hiển thị thông tin khóa đăng nhập theo email */}
+          {email && <LoginAttemptsInfo email={email} />}
+          
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <legend className="fieldset-legend">Email</legend>
@@ -129,6 +201,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loginAttemptsInfo.isLocked}
               />
             </div>
             <div>
@@ -140,6 +213,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loginAttemptsInfo.isLocked}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -149,6 +223,7 @@ const Login = () => {
                 className="checkbox checkbox-primary checkbox-sm"
                 checked={rememberMe}
                 onChange={() => setRememberMe(!rememberMe)}
+                disabled={loginAttemptsInfo.isLocked}
               />
               <label
                 htmlFor="rememberMe"
@@ -173,18 +248,20 @@ const Login = () => {
               className={`
                 w-full btn btn-primary py-2 text-lg font-semibold rounded-lg transition flex items-center justify-center gap-2
                 ${
-                  isStatusServer !== true
+                  isButtonDisabled
                     ? "bg-blue-400 cursor-not-allowed opacity-80"
                     : ""
                 }
               `}
-              disabled={isStatusServer !== true || isLoginLoading || (isTurnstileEnabled && !turnstileToken)}
+              disabled={isButtonDisabled}
             >
               {isLoginLoading ? (
                 <>
                   <LoadingRing size={20} stroke={3} speed={2} color="white" />
                   Đang đăng nhập...
                 </>
+              ) : loginAttemptsInfo.isLocked ? (
+                `Thử lại sau (${loginAttemptsInfo.remainingTime} phút)`
               ) : (
                 "Đăng Nhập"
               )}
