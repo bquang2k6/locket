@@ -333,7 +333,7 @@ const DualPhoneMockup = () => {
         
         {/* Phone trái */}
         <MockupiPhone 
-          imageSrc="./images/locket_dio_preview.jpg"
+          imageSrc="./images/locket_wan_preview.jpg"
           altText="Left Phone Preview"
           position="left"
           frameStyle={currentFrame.left}
@@ -341,7 +341,7 @@ const DualPhoneMockup = () => {
         
         {/* Phone phải */}
         <MockupiPhone 
-          imageSrc="./images/locket_dio_preview.jpg"
+          imageSrc="./images/locket_wan_preview2.jpg"
           altText="Right Phone Preview" 
           position="right"
           frameStyle={currentFrame.right}
