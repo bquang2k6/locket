@@ -353,7 +353,7 @@ const DualPhoneMockup = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slideDown {
           0% { transform: translateY(-100vh); }
           100% { transform: translateY(100vh); }

@@ -22,6 +22,7 @@ import {
   Upload,
   Smartphone,
   TrendingUp,
+  Home,
   X
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthLocket';
@@ -213,6 +214,14 @@ const ProfileSidebar = () => {
           {/* Menu thay thể side bar*/}
           <SectionTitle title="Locket Wan" />
           <div className={`${colors.bg} mx-4 rounded-lg`}>
+            <MenuItem 
+              icon={Home} 
+              text="Home"
+              onClick={() => {
+                navigate('/home');
+                setIsSidebarOpen(false);
+              }}
+            />
             <MenuItem 
               icon={Smartphone} 
               text="Quay về giao diện chính" 

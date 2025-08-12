@@ -8,9 +8,9 @@ const Footer = () => {
           © {new Date().getFullYear()} <span className="font-semibold font-lovehouse">Wan</span>. All rights reserved.
         </p>
         <p className="text-center md:text-right text-xs">
-          <span className="cursor-pointer hover:text-blue-500 transition hover:underline">Version 3.3.0</span>
+          <span className="cursor-pointer hover:text-blue-500 transition hover:underline">Version 3.3.5</span>
           <span> • </span>
-          <a href='https://github.com/ShindouAris/LocketUploader_BE-main.git' className="cursor-pointer hover:text-blue-500 transition hover:underline">API v2.0</a>
+          <a href='https://github.com/ShindouAris/LocketUploader_BE-main.git' className="cursor-pointer hover:text-blue-500 transition hover:underline">API v2.2</a>
           <span className="cursor-pointer ml-2 hidden sm:inline text-secondary hover:underline">• Read more</span>
         </p>
       </div>
