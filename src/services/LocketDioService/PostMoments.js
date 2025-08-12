@@ -102,12 +102,26 @@ export const PostMoments = async (payload) => {
       console.log("⏳ Uploading is taking longer than expected...");
     }, timeoutDuration);
 
+    // Lấy userPlan từ localStorage để gửi plan_id
+    const userPlanStr = localStorage.getItem("userPlan");
+    let plan_id = 'free'; // Default to free plan
+    
+    if (userPlanStr) {
+      try {
+        const userPlan = JSON.parse(userPlanStr);
+        plan_id = userPlan.plan_id || 'free';
+      } catch (e) {
+        console.error("Error parsing userPlan:", e);
+      }
+    }
+
     // Create FormData
     const formData = new FormData();
     formData.append("userId", payload.userData.localId);
     formData.append("idToken", payload.userData.idToken);
     formData.append("options", JSON.stringify(payload.options));
     formData.append("caption", payload.options.caption || "");
+    formData.append("plan_id", plan_id); // Gửi plan_id để backend kiểm tra giới hạn
     
     // Add the actual file
     if (fileType === "image") {

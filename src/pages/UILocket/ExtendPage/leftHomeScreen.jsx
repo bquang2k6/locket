@@ -8,6 +8,7 @@ import LoadingRing from "../../../components/UI/Loading/ring";
 import PostCard from "./Container/PostCaptionItems";
 import { API_URL } from "../../../utils/API/apiRoutes";
 import BadgePlan from "./Badge";
+import UsageDisplay from "../../../components/UsageDisplay";
 import { useNavigate } from "react-router-dom";
 
 const POSTS_PER_PAGE = 10;
@@ -34,14 +35,6 @@ const LeftHomeScreen = () => {
   const refreshPosts = async () => {
     try {
       const response = await axios.get(API_URL.CAPTION_POSTS_URL);
-      console.log("Fetched posts:", response.data);
-      
-      // Check for duplicate IDs
-      const ids = response.data.map(post => post.id);
-      const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
-      if (duplicateIds.length > 0) {
-        console.warn("Duplicate IDs found:", duplicateIds);
-      }
       
       // Remove duplicates based on ID and keep the most recent one
       const uniquePosts = response.data.reduce((acc, post) => {
@@ -60,7 +53,6 @@ const LeftHomeScreen = () => {
         return acc;
       }, []);
       
-      console.log("Unique posts after deduplication:", uniquePosts);
       setPosts(uniquePosts);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -238,6 +230,11 @@ const LeftHomeScreen = () => {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Usage Display */}
+        <div className="mt-3 px-4">
+          <UsageDisplay className="mx-0" />
         </div>
       </div>
 

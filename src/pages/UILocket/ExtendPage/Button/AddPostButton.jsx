@@ -4,6 +4,8 @@ import { AuthContext } from "../../../../context/AuthLocket";
 import axios from "axios";
 import { showError, showSuccess } from "../../../../components/Toast";
 import { API_URL } from "../../../../utils";
+import { validateCaptionCreation, recordCaptionUsage } from "../../../../utils/limitValidation";
+import { checkServerUsageLimits, recordServerUsage } from "../../../../utils/serverValidation";
 import LoadingRing from "../../../../components/UI/Loading/ring";
 
 const AddPostButton = ({ onPostAdded }) => {
@@ -17,10 +19,26 @@ const AddPostButton = ({ onPostAdded }) => {
   const [type, setType] = useState("background");
   const [isLoading, setIsLoading] = useState(false); // thêm state loading
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isLoading) return; // tránh gửi nhiều lần
+
+    // Validate caption creation limits (prefer server-side)
+    try {
+      const serverValidation = await checkServerUsageLimits(user?.uid || user?.localId, 'caption');
+      if (!serverValidation.valid) {
+        showError(serverValidation.message);
+        return;
+      }
+    } catch (error) {
+      // Fallback to client-side validation
+      const captionValidation = validateCaptionCreation(user?.uid || user?.localId, userPlan);
+      if (!captionValidation.valid) {
+        showError(captionValidation.message);
+        return;
+      }
+    }
 
     setIsLoading(true); // bật loading khi bắt đầu gửi
 
@@ -44,7 +62,14 @@ const AddPostButton = ({ onPostAdded }) => {
 
     axios
       .post(API_URL.CAPTION_POSTS_URL, postData)
-      .then((response) => {
+      .then(async (response) => {
+        // Record successful caption usage (prefer server-side)
+        try {
+          await recordServerUsage(user?.uid || user?.localId, 'caption', userPlan?.plan_id || 'free');
+        } catch (error) {
+          // Fallback to client-side recording
+          recordCaptionUsage(user?.uid || user?.localId);
+        }
         showSuccess("Bài viết đã được thêm thành công! 🎉");
 
         // Reset form

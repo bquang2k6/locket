@@ -1,10 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { useApp } from "../../../../context/AppContext";
+import { AuthContext } from "../../../../context/AuthLocket";
 import { showToast } from "../../../../components/Toast";
+import { validateFileSize } from "../../../../utils/limitValidation";
 import { ImageUp } from "lucide-react";
 
 const UploadFile = () => {
   const { post, useloading, camera } = useApp();
+  const { user, userPlan } = useContext(AuthContext);
   const { selectedFile, setSelectedFile, preview, setPreview, setSizeMedia } =
     post;
   const { uploadLoading, setUploadLoading, setIsCaptionLoading } = useloading;
@@ -25,6 +28,14 @@ const UploadFile = () => {
 
     if (!fileType) {
       showToast("error", "Chỉ hỗ trợ ảnh và video.");
+      return;
+    }
+
+    // Validate file size against user plan limits
+    const sizeValidation = validateFileSize(rawFile, userPlan);
+    if (!sizeValidation.valid) {
+      showToast("error", sizeValidation.message);
+      URL.revokeObjectURL(localPreviewUrl);
       return;
     }
 

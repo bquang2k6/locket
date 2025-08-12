@@ -91,6 +91,14 @@ export const API_URL = {
   CANCEL_PAYMENT: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/payment/cancel/${order_id}`),
   CHECK_TRIAL_ABILITY: (uid) => createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/${uid}`),
   REG_TRIAL: createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/register`),
+  
+  // Usage Limits API
+  CHECK_USAGE_LIMITS: (userId, limitType) => createDbApiUrlString(`/api/usage/check/${userId}/${limitType}`),
+  RECORD_USAGE: createDbApiUrlString(`/api/usage/record`),
+  GET_USAGE_STATS: (userId) => createApiUrlString(`/usage/stats/${userId}`), // For gif_caption (Lk_upload-js-master)
+  GET_CAPTION_USAGE_STATS: (userId) => createDbApiUrlString(`/api/usage/stats/${userId}`), // For caption (DB-LK-master)
+  VALIDATE_FILE_SIZE: createDbApiUrlString(`/api/usage/validate-file`),
+  
   // CHAT_SEND_MESSAGE: "https://api4.quang-tech.space/chat/send-message",
   // CHAT_GET_MESSAGES: "https://api4.quang-tech.space/chat/get-messages",
   // CHAT_RECALL_MESSAGE: "https://api4.quang-tech.space/chat/recall-message",

@@ -9,6 +9,8 @@ import ThemesCustomes from "../CaptionItems/ThemesCustomes";
 import DevCustomes from "../CaptionItems/DevCustomes";
 import CaptionGifThemes from "../CaptionItems/CaptionGifThemes";
 import { ThemeContext } from "../../../../context/ThemeContext";
+import { validateGifCaptionCreation, recordGifCaptionUsage } from "../../../../utils/limitValidation";
+import { showToast } from "../../../../components/Toast";
 import gifCacheDB from '../../../../helpers/gifCacheDB';
 
 const ScreenCustomeStudio = () => {
@@ -518,6 +520,14 @@ const ScreenCustomeStudio = () => {
                         setGifError("Vui lòng chọn một GIF trước khi tiếp tục.");
                         return;
                       }
+                      
+                      // Validate gif caption limits (always allowed)
+                      // const gifValidation = validateGifCaptionCreation(user?.uid || user?.localId, userPlan);
+                      // if (!gifValidation.valid) {
+                      //   setGifError(gifValidation.message);
+                      //   return;
+                      // }
+                      
                       setPostOverlay({
                         type: "image_gif",
                         icon: selectedGif,
@@ -526,6 +536,11 @@ const ScreenCustomeStudio = () => {
                         color_bottom: colorBottom,
                         text_color: textColor,
                       });
+                      
+                      // Record successful gif caption usage (no need to record)
+                      // recordGifCaptionUsage(user?.uid || user?.localId);
+                      showToast("success", "Đã áp dụng GIF caption thành công!");
+                      
                       setShowGifModal(false);
                       setGifError("");
                     }}
