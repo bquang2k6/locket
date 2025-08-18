@@ -68,6 +68,7 @@ export const API_URL = {
   GET_USER: "https://api.locketcamera.com/fetchUserV2",
   GET_INCOMING_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/get-incoming_friends`)),
   DELETE_FRIEND_REQUEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/delete-incoming_friends`)),
+  GET_MOMENT_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getMomentV2`)),
 
   // API lấy dữ liệu từ máy chủ
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),
