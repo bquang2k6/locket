@@ -74,11 +74,77 @@ const PostCard = ({ post, onDeleted }) => {
       {/* Header */}
       <div className="flex items-center justify-between p-3 ">
         <div className="flex items-center gap-3">
-          <img
+          {/* <img
             src={post?.user_info?.profilePicture}
             alt="Avatar"
             className="w-10 h-10 rounded-full object-cover"
-          />
+          /> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <div className="relative w-10 h-10">
+  <img
+    src={post?.user_info?.profilePicture}
+    alt="Avatar"
+    className="w-10 h-10 rounded-full object-cover relative z-0"
+  />
+  <img
+    src="/29.png"  // ảnh bạn muốn đè lên
+    alt="Overlay"
+    className="absolute inset-0 w-10 h-10 rounded-full object-cover z-10"
+  />
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <div>
             <div className="text-sm font-semibold text-gray-800 flex items-center gap-1">
               {post?.user_info?.displayName || "Anonymous"}{" • "}

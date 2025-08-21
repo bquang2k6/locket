@@ -251,7 +251,7 @@ const FriendsContainer = () => {
               className="flex items-center justify-between p-3 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
               onClick={() => handleFriendClick(friend)}
             >
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <img
                   src={friend.profilePic || "./default-avatar.png"}
                   alt={`${friend.firstName} ${friend.lastName}`}
@@ -265,7 +265,74 @@ const FriendsContainer = () => {
                     {friend.username || "Không có username"}
                   </p>
                 </div>
-              </div>
+              </div> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div className="flex items-center gap-3">
+  <div className="relative w-16 h-16">
+    <img
+      src={friend.profilePic || "./default-avatar.png"}
+      alt={`${friend.firstName} ${friend.lastName}`}
+      className="w-16 h-16 rounded-full border-[3.5px] p-0.5 border-amber-400 object-cover relative z-0"
+    />
+    {/* Lớp ảnh đè lên avatar */}
+    <img
+      src="/29.png" // thay bằng đường dẫn ảnh khung/hiệu ứng
+      alt="Overlay"
+      className="absolute inset-0 w-16 h-16 rounded-full object-cover z-10 pointer-events-none"
+    />
+  </div>
+
+  <div>
+    <h2 className="font-medium">
+      {friend.firstName} {friend.lastName}
+    </h2>
+    <p className="text-sm text-gray-500">
+      {friend.username || "Không có username"}
+    </p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
           ))}
         </div>

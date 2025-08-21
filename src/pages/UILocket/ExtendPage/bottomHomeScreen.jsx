@@ -348,16 +348,93 @@ const BottomHomeScreen = () => {
 
           {imageInfo.user && (() => {
             const info = resolveUserInfo(imageInfo.user);
+            // return (
+            //   <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
+            //     {info.avatar ? (
+            //       <img src={info.avatar} alt={info.name} className="w-6 h-6 rounded-full border border-base-300 object-cover" />
+            //     ) : (
+            //       <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
+            //     )}
+            //     <span>{info.name}</span>
+            //   </div>
+            // );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
             return (
-              <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
-                {info.avatar ? (
-                  <img src={info.avatar} alt={info.name} className="w-6 h-6 rounded-full border border-base-300 object-cover" />
-                ) : (
-                  <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
-                )}
-                <span>{info.name}</span>
-              </div>
-            );
+  <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
+    {info.avatar ? (
+      <div className="relative w-6 h-6">
+        <img
+          src={info.avatar}
+          alt={info.name}
+          className="w-6 h-6 rounded-full border border-base-300 object-cover relative z-0"
+        />
+        {/* Ảnh layer đè lên avatar */}
+        <img
+          src="/29.png" // thay bằng ảnh khung/hiệu ứng bạn muốn
+          alt="overlay"
+          className="absolute inset-0 w-6 h-6 rounded-full object-cover z-10 pointer-events-none"
+        />
+      </div>
+    ) : (
+      <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
+    )}
+    <span>{info.name}</span>
+  </div>
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           })()}
 
 
