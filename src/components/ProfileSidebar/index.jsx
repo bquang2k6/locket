@@ -325,7 +325,7 @@ const ProfileSidebar = () => {
               icon={AlertCircle} 
               text="Gửi đề xuất, Báo cáo sự cố" 
               onClick={() => {
-                window.open('https://t.me/+HbLv8oI4no01MGU1', '_blank');
+                window.open('https://quang-tech.space', '_blank');
                 setIsSidebarOpen(false);
               }}
             />
