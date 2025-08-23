@@ -44,8 +44,8 @@ const ScreenCustomeStudio = () => {
   const [savedPosts, setSavedPosts] = useState([]);
   const [showGifModal, setShowGifModal] = useState(false);
   const [selectedGif, setSelectedGif] = useState(null);
-  const [bgColor, setBgColor] = useState("#181A20");
-  const [colorBottom, setColorBottom] = useState("#181A20");
+  const [bgColor, setBgColor] = useState("");
+  const [colorBottom, setColorBottom] = useState("");
   const [captionText, setCaptionText] = useState("");
   const [textColor, setTextColor] = useState("#FFFFFF");
   const [mainPreview, setMainPreview] = useState(null);
@@ -149,8 +149,8 @@ const ScreenCustomeStudio = () => {
     console.table([
       {
         overlay_id: preset.preset_id || "standard",
-        color_top: isGif ? "#181A20" : preset.color_top || "",
-        color_bottom: isGif ? "#181A20" : preset.color_bottom || "",
+        color_top: isGif ? "" : preset.color_top || "",
+        color_bottom: isGif ? "" : preset.color_bottom || "",
         text_color: preset.text_color || "#FFFFFF",
         icon: preset.icon || "",
         caption: preset.preset_caption || "",
@@ -160,8 +160,8 @@ const ScreenCustomeStudio = () => {
     // Cập nhật postOverlay từ giá trị preset
     setPostOverlay({
       overlay_id: preset.preset_id || "standard",
-      color_top: isGif ? "#181A20" : preset.color_top || "",
-      color_bottom: isGif ? "#181A20" : preset.color_bottom || "",
+      color_top: isGif ? "" : preset.color_top || "",
+      color_bottom: isGif ? "" : preset.color_bottom || "",
       text_color: preset.text_color || "#FFFFFF",
       icon: preset.icon || "",
       caption: preset.preset_caption || "",
@@ -272,8 +272,8 @@ const ScreenCustomeStudio = () => {
   // Set default background colors for GIF modal (always #181A20)
   useEffect(() => {
     if (showGifModal) {
-      setBgColor("#181A20");
-      setColorBottom("#181A20");
+      setBgColor("");
+      setColorBottom("");
     }
     // eslint-disable-next-line
   }, [showGifModal]);

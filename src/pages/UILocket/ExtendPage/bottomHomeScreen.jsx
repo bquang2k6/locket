@@ -348,55 +348,57 @@ const isOwner = useMemo(() => {
             </div>
 
             {/* Caption hiển thị */}
-            {imageInfo.captions?.[0] && (
-              <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2">
-                <div
-                  className={`flex flex-col items-center px-4 py-2 rounded-full font-semibold border-2 ${
-                    imageInfo.captions[0].background?.colors?.length
-                      ? "border-transparent"
-                      : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
-                  }`}
-                  style={{
-                    background: imageInfo.captions[0].background?.colors?.length
-                      ? `linear-gradient(to bottom, ${imageInfo.captions[0].background.colors[0]}, ${imageInfo.captions[0].background.colors[1]})`
-                      : undefined,
-                    color: imageInfo.captions[0].text_color || undefined,
-                  }}
-                >
-                  {(() => {
-                    const icon = imageInfo.captions[0].icon;
-                    if (!icon) return null;
-                    if (typeof icon === "string" || typeof icon === "number") {
-                      return <span className="text-lg">{icon}</span>;
+            {imageInfo?.captions?.[0] && (
+            <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2">
+              <div
+                className={`flex flex-row items-center gap-2 px-4 py-2 rounded-full font-semibold max-w-[90vw] whitespace-nowrap overflow-hidden text-ellipsis ${
+                  imageInfo.captions[0].background?.colors?.length
+                    ? "border-transparent"
+                    : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
+                }`}
+                style={{
+                  background: imageInfo.captions[0].background?.colors?.length
+                    ? `linear-gradient(to bottom, ${imageInfo.captions[0].background.colors[0]}, ${imageInfo.captions[0].background.colors[1]})`
+                    : undefined,
+                  color: imageInfo.captions[0].text_color || undefined,
+                }}
+              >
+                {(() => {
+                  const icon = imageInfo.captions[0].icon;
+                  if (!icon) return null;
+                  if (typeof icon === "string" || typeof icon === "number") {
+                    return <span className="text-lg">{icon}</span>;
+                  }
+                  if (typeof icon === "object") {
+                    if (icon.type === "image" && icon.data) {
+                      return (
+                        <img
+                          src={icon.data}
+                          alt="Icon"
+                          className="w-6 h-6 object-cover"
+                        />
+                      );
                     }
-                    if (typeof icon === "object") {
-                      if (icon.type === "image" && icon.data) {
-                        return (
-                          <img
-                            src={icon.data}
-                            alt="Icon"
-                            className="w-6 h-6 object-cover"
-                          />
-                        );
-                      }
-                      if (icon.type === "weather") {
-                        return (
-                          <WeatherIcon
-                            weatherCode={icon.data || icon.code}
-                            className="w-6 h-6"
-                          />
-                        );
-                      }
-                      if (icon.emoji) {
-                        return <span className="text-lg">{icon.emoji}</span>;
-                      }
+                    if (icon.type === "weather") {
+                      return (
+                        <WeatherIcon
+                          weatherCode={icon.data || icon.code}
+                          className="w-6 h-6"
+                        />
+                      );
                     }
-                    return null;
-                  })()}
-                  <span>{imageInfo.captions[0].caption}</span>
-                </div>
+                    if (icon.emoji) {
+                      return <span className="text-lg">{icon.emoji}</span>;
+                    }
+                  }
+                  return null;
+                })()}
+                <span className="truncate">{imageInfo.captions[0].caption}</span>
               </div>
-            )}
+            </div>
+          )}
+
+
           </div>
 
           {imageInfo.user && (() => {
