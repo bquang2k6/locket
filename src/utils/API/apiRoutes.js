@@ -70,6 +70,7 @@ export const API_URL = {
   DELETE_FRIEND_REQUEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/delete-incoming_friends`)),
   GET_MOMENT_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getMomentV2`)),
   SEND_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactMomentV2`)),
+  INFO_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactinfoMomentV2`)),
 
   // API lấy dữ liệu từ máy chủ
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),
