@@ -32,6 +32,13 @@ export const usePost = () => {
 
   const [audience, setAudience] = useState("all"); // "all" | "selected"
   const [selectedRecipients, setSelectedRecipients] = useState([]); // array userId hoặc object bạn bè
+  
+  // Add selectedFriendUid state
+  const [selectedFriendUid, setSelectedFriendUid] = useState(null);
+  
+  // Add selectedMoment and selectedQueue states
+  const [selectedMoment, setSelectedMoment] = useState(null);
+  const [selectedQueue, setSelectedQueue] = useState(null);
 
   return {
     caption,
@@ -54,5 +61,11 @@ export const usePost = () => {
     setAudience,
     selectedRecipients,
     setSelectedRecipients,
+    selectedFriendUid,
+    setSelectedFriendUid,
+    selectedMoment,
+    setSelectedMoment,
+    selectedQueue,
+    setSelectedQueue,
   };
 };
