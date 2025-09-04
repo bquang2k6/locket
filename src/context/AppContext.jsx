@@ -1,5 +1,5 @@
 // src/context/AppContext.jsx
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useNavigation } from "../storages/useNavigation";
 import { useCamera } from "../storages/useCamera";
 import { useLoading } from "../storages/useLoading";
@@ -10,7 +10,6 @@ import { ModalState } from "../storages/ModalState";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Sử dụng custom hooks
   const navigation = useNavigation();
   const camera = useCamera();
   const useloading = useLoading();
@@ -18,15 +17,17 @@ export const AppProvider = ({ children }) => {
   const captiontheme = useThemes();
   const modal = ModalState();
 
+  // console.log("AppProvider post keys:", Object.keys(post));
+
   return (
     <AppContext.Provider
       value={{
         navigation,
         camera,
-        useloading,
+        useloading, 
         post,
         captiontheme,
-        modal
+        modal,
       }}
     >
       {children}

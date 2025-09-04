@@ -10,18 +10,13 @@ import api from "../../../lib/axios";
 import ThemeSelector from "../../../components/Theme/ThemeSelector";
 import ActivityModal from "./components/ActivityModal";
 import Activityavt from "./components/Activityavt";
-
-
-
-
-
-
+import HeaderBeforeCaptureavt from "./Header/HeaderBeforeCaptureavt";
 
 const BottomHomeScreen = () => {
   const { user, friendDetails } = useContext(AuthContext);
   const { navigation, post } = useApp();
   const { isBottomOpen, setIsBottomOpen } = navigation;
-  const { recentPosts, setRecentPosts } = post;
+  const { recentPosts, setRecentPosts, selectedFriendUid } = post;
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -38,7 +33,8 @@ const BottomHomeScreen = () => {
   // State cho activity modal
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [openActivity, setOpenActivity] = useState(false);
-
+  
+  // REMOVED: const [setSelectedFriendUid] = useState(null); // This was causing the conflict!
 
   // Load local + cache khi mở bottom sheet
   useEffect(() => {
@@ -47,8 +43,9 @@ const BottomHomeScreen = () => {
       setRecentPosts(localData);
       const cachedServer = JSON.parse(localStorage.getItem("serverMoments") || "[]");
       setServerMoments(cachedServer);
+      fetchServerMoments();
     }
-  }, [isBottomOpen, setRecentPosts]);
+  }, [isBottomOpen, setRecentPosts, selectedFriendUid]);
 
   // Chuẩn hoá dữ liệu từ server
   const transformServerMoment = (m) => {
@@ -85,7 +82,7 @@ const BottomHomeScreen = () => {
       const res = await api.post(String(API_URL.GET_MOMENT_URL), {
         limit: 50,
         pageToken: null,
-        userUid: null,
+        userUid: selectedFriendUid,
       });
       const data = res?.data?.data || [];
       const mapped = Array.isArray(data) ? data.map(transformServerMoment) : [];
@@ -186,7 +183,41 @@ const BottomHomeScreen = () => {
     }
   };
 
-  const displayPosts = [...serverMoments, ...recentPosts];
+  // Helper function để check user ID match
+  const isUserMatch = (postUser, targetUid) => {
+    if (!targetUid) return true; // null = "Mọi người"
+    if (!postUser) return false;
+
+    // Nếu postUser là string/number
+    if (typeof postUser === "string" || typeof postUser === "number") {
+      return String(postUser) === String(targetUid);
+    }
+
+    // Nếu postUser là object
+    if (typeof postUser === "object") {
+      return (
+        String(postUser.uid) === String(targetUid) ||
+        String(postUser.localId) === String(targetUid) ||
+        String(postUser.username) === String(targetUid) ||
+        String(postUser.id) === String(targetUid)
+      );
+    }
+
+    return false;
+  };
+
+  // Filter posts dựa trên selectedFriendUid
+  const displayPosts = useMemo(() => {
+    const allPosts = [...serverMoments, ...recentPosts];
+    
+    if (!selectedFriendUid) {
+      // "Mọi người" - hiển thị tất cả
+      return allPosts;
+    }
+
+    // Filter theo user được chọn
+    return allPosts.filter(post => isUserMatch(post.user, selectedFriendUid));
+  }, [serverMoments, recentPosts, selectedFriendUid]);
 
   const resolveUserInfo = useMemo(() => {
     const map = new Map();
@@ -222,34 +253,34 @@ const BottomHomeScreen = () => {
       return { name: String(identifier), avatar: "/prvlocket.png" };
     };
   }, [friendDetails, user]);
+
   // Xác định đây có phải bài viết của chính mình không
-const isOwner = useMemo(() => {
-  if (!user || !imageInfo?.user) return false;
+  const isOwner = useMemo(() => {
+    if (!user || !imageInfo?.user) return false;
 
-  // Tập các định danh có thể có ở user hiện tại
-  const myIds = [
-    user.localId,
-    user.uid,
-    user.username,
-  ].filter(Boolean).map(String);
+    // Tập các định danh có thể có ở user hiện tại
+    const myIds = [
+      user.localId,
+      user.uid,
+      user.username,
+    ].filter(Boolean).map(String);
 
-  const u = imageInfo.user;
+    const u = imageInfo.user;
 
-  // Server có thể trả user là chuỗi, số, hoặc object
-  if (typeof u === "string" || typeof u === "number") {
-    return myIds.includes(String(u));
-  }
-  if (typeof u === "object") {
-    return (
-      myIds.includes(String(u.uid)) ||
-      myIds.includes(String(u.localId)) ||
-      myIds.includes(String(u.username)) ||
-      myIds.includes(String(u.id))
-    );
-  }
-  return false;
-}, [imageInfo, user]);
-
+    // Server có thể trả user là chuỗi, số, hoặc object
+    if (typeof u === "string" || typeof u === "number") {
+      return myIds.includes(String(u));
+    }
+    if (typeof u === "object") {
+      return (
+        myIds.includes(String(u.uid)) ||
+        myIds.includes(String(u.localId)) ||
+        myIds.includes(String(u.username)) ||
+        myIds.includes(String(u.id))
+      );
+    }
+    return false;
+  }, [imageInfo, user]);
 
   return (
     <div
@@ -259,20 +290,13 @@ const isOwner = useMemo(() => {
     >
       {/* Header */}
       <div className="flex flex-col shadow px-4 py-2 text-base-content relative">
-        <div className="flex items-center justify-between">
-          <BadgePlan />
-          <button
-            onClick={() => setIsBottomOpen(false)}
-
-            className="rounded-full p-2 backdrop-blur-2xl relative"
-          >
-            <MessageCircle size={30} />
-          </button>
+        <div className="absolute w-full top-0 z-60">
+          <HeaderBeforeCaptureavt/>
         </div>
       </div>
 
       {/* Action buttons */}
-      <div className="flex justify-center gap-2 pt-4">
+      <div className="flex justify-center gap-2 pt-4 mt-9">
         <button
           className="btn btn-sm btn-primary"
           onClick={fetchServerMoments}
@@ -285,12 +309,21 @@ const isOwner = useMemo(() => {
         </button>
       </div>
 
+      {/* Hiển thị filter hiện tại */}
+      {selectedFriendUid && (
+        <div className="text-center text-sm text-base-content/70 mb-2 mt-2">
+          Đang xem bài viết của: {(() => {
+            const friend = friendDetails.find(f => f.uid === selectedFriendUid);
+            return friend ? `${friend.firstName} ${friend.lastName}` : 'Người dùng';
+          })()}
+        </div>
+      )}
+
       {/* Media grid */}
       <div
         className={`grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 p-2 overflow-y-auto transition-all ${
           selectedAnimate ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
-        
       >
         {loadingServer && <div className="col-span-full text-center py-4">Đang tải lịch sử...</div>}
         {!loadingServer && displayPosts.length === 0 ? (
