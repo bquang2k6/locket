@@ -1,1 +1,1 @@
-locket.quang-tech.space
+https://locket.wangtech.top

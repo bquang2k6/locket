@@ -377,7 +377,7 @@ const ProfileSidebar = () => {
               icon={AlertCircle} 
               text="Gửi đề xuất, Báo cáo sự cố" 
               onClick={() => {
-                window.open('https://quang-tech.space', '_blank');
+                window.open('https://locket.wangtech.top', '_blank');
                 setIsSidebarOpen(false);
               }}
             />
@@ -393,7 +393,7 @@ const ProfileSidebar = () => {
               icon={TrendingUp} 
               text="Trend lý tuân các kiểu tại đây" 
               onClick={() => {
-                window.open('https://quang-tech.space', '_blank');
+                window.open('https://locket.wangtech.top', '_blank');
                 setIsSidebarOpen(false);
               }}
             />
@@ -409,7 +409,7 @@ const ProfileSidebar = () => {
                 if (navigator.share) {
                   navigator.share({
                     title: 'Locket Wan',
-                    url: 'https://locket.quang-tech.space'
+                    url: 'https://locket.wangtech.top'
                   });
                 }
                 setIsSidebarOpen(false);

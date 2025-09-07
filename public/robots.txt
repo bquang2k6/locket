@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://locket.quang-tech.space/sitemap.xml
+Sitemap: https://locket.wangtech.top/sitemap.xml
 
 # Disallow admin or private areas (if any)
 # Disallow: /admin/
