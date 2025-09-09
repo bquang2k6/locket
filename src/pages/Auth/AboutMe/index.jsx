@@ -1,26 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { API_URL } from "../../../utils";
 
-// Enhanced DonateHistory component with real data
+
 const DonateHistory = () => {
-  const donations = [
-    {
-        "id": "7ae05d05-6f28-4e05-8fbd-df371e7f8a02",
-        "donorname": "Quang",
-        "amount": 100000,
-        "date": "2025-06-08T13:02:11",
-        "message": "Tự donate cho chính mình",
-        "created_at": "2025-06-08T13:02:11+00:00"
-    },
-    {
-        "id": "7ae05d05-6f28-4e05-8fbd-df371e7f8a03",
-        "donorname": "Ẩn danh",
-        "amount": 5000,
-        "date": "2025-08-08T18:29:21",
-        "message": "CTCP DICH VU DI DONG 96724496581--CHUYEN TIEN-OQCH00010S gg-MOMO96724496581MOMO. TU: M SERVICE JSC",
-        "created_at": "2025-06-08T13:02:11+00:00"
-    },
+  const [donations, setDonations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchDonations = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${API_URL.DONATE_URL}`);
+        setDonations(res.data);
+        setError(null);
+      } catch (err) {
+        console.error("Lỗi khi fetch donations:", err);
+        setError("Không thể tải dữ liệu donate. Vui lòng thử lại sau.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  ];
+    fetchDonations();
+  }, []);
+  
+  // const donations = [
+    // {
+    //     "id": "7ae05d05-6f28-4e05-8fbd-df371e7f8a02",
+    //     "donorname": "Quang",
+    //     "amount": 100000,
+    //     "date": "2025-06-08T13:02:11",
+    //     "message": "Tự donate cho chính mình",
+    //     "created_at": "2025-06-08T13:02:11+00:00"
+    // },
+    // {
+    //     "id": "7ae05d05-6f28-4e05-8fbd-df371e7f8a03",
+    //     "donorname": "Ẩn danh",
+    //     "amount": 5000,
+    //     "date": "2025-08-08T18:29:21",
+    //     "message": "CTCP DICH VU DI DONG 96724496581--CHUYEN TIEN-OQCH00010S gg-MOMO96724496581MOMO. TU: M SERVICE JSC",
+    //     "created_at": "2025-06-08T13:02:11+00:00"
+    // },
+
+  // ];
 
   const formatAmount = (amount) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -49,8 +72,51 @@ const DonateHistory = () => {
         </h3>
         <div className="w-24 h-1 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto rounded-full"></div>
       </div>
-
-      {donations.length > 0 ? (
+            {loading ? (
+        // Loading skeleton
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/30 animate-pulse">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <div>
+                      <div className="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+                      <div className="h-3 bg-gray-300 rounded w-32"></div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-200 rounded-lg p-3 mt-3">
+                    <div className="h-3 bg-gray-300 rounded w-full mb-1"></div>
+                    <div className="h-3 bg-gray-300 rounded w-3/4"></div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="bg-gray-200 rounded-xl p-3">
+                    <div className="h-6 bg-gray-300 rounded w-20 mb-1"></div>
+                    <div className="h-3 bg-gray-300 rounded w-16"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        // Error state
+        <div className="text-center py-12">
+          <div className="w-24 h-24 bg-gradient-to-r from-red-200 to-red-300 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-red-500 text-4xl">⚠️</span>
+          </div>
+          <p className="text-red-500 text-lg font-semibold mb-2">Có lỗi xảy ra!</p>
+          <p className="text-gray-500 text-sm">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+          >
+            Thử lại
+          </button>
+        </div>
+      ) : donations.length > 0 ? (
         <div className="space-y-4">
           {donations.map((donation) => (
             <div 
@@ -106,6 +172,7 @@ const DonateHistory = () => {
           </div>
         </div>
       ) : (
+        // Empty state - không có dữ liệu
         <div className="text-center py-12">
           <div className="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-gray-400 text-4xl">🎁</span>
@@ -114,14 +181,15 @@ const DonateHistory = () => {
           <p className="text-gray-400 text-sm mt-2">Hãy là người đầu tiên ủng hộ nhé! 💖</p>
         </div>
       )}
+
     </div>
   );
 };
 
 const DonationInfo = () => {
   // Mock data để demo
-  const BankAccount = "0889075231";
-  const BankName = "MB Bank";
+  const BankAccount = "088907XXXX";
+  const BankName = "MB Bank, Momo";
   const BankAccountName = "Phạm Bá Quang";
 
   return {

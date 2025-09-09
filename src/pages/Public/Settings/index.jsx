@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Settings2, Server, Eye, EyeOff, RefreshCw, Download, Smartphone } from "lucide-react";
+import { Server, Eye, EyeOff, RefreshCw, Download, Smartphone } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthLocket";
 import { showSuccess, showInfo } from "../../../components/Toast";
