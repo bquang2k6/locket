@@ -325,7 +325,7 @@ const ProfileSidebar = () => {
               icon={AlertCircle} 
               text="Gửi đề xuất, Báo cáo sự cố" 
               onClick={() => {
-                window.open('https://locket.wangtech.top', '_blank');
+                window.open('https://wangtech.top', '_blank');
                 setIsSidebarOpen(false);
               }}
             />
@@ -341,7 +341,7 @@ const ProfileSidebar = () => {
               icon={TrendingUp} 
               text="Trend lý tuân các kiểu tại đây" 
               onClick={() => {
-                window.open('https://locket.wangtech.top', '_blank');
+                window.open('https://wangtech.top', '_blank');
                 setIsSidebarOpen(false);
               }}
             />

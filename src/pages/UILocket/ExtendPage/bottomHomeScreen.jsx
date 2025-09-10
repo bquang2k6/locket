@@ -483,7 +483,7 @@ const BottomHomeScreen = () => {
       
 
           <span className="text-sm font-medium text-base-content">Hoạt động</span>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-70">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-[60%]">
             <Activityavt
                 momentId={imageInfo?.id}
                 friendDetails={friendDetails}
