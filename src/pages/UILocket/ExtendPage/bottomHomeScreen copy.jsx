@@ -172,7 +172,7 @@ const BottomHomeScreen = () => {
     try {
       (friendDetails || []).forEach((f) => {
         const name = `${f.firstName || ""} ${f.lastName || ""}`.trim() || f.username || f.display_name || f.uid || "Người dùng";
-        const avatar = f.profilePic || f.avatar || "./default-avatar.png";
+        const avatar = f.profilePic || f.avatar || "./prvlocket.png";
         if (f.uid) map.set(String(f.uid), { name, avatar });
         if (f.username) map.set(String(f.username), { name, avatar });
       });
@@ -180,14 +180,14 @@ const BottomHomeScreen = () => {
     // also index current user as fallback
     if (user) {
       const selfName = user.display_name || user.username || user.email || "Bạn";
-      const selfAvatar = user.photoURL || user.avatar || "./default-avatar.png";
+      const selfAvatar = user.photoURL || user.avatar || "./prvlocket.png";
       if (user.localId) map.set(String(user.localId), { name: selfName, avatar: selfAvatar });
       if (user.username) map.set(String(user.username), { name: selfName, avatar: selfAvatar });
     }
     return (identifier) => {
-      if (!identifier) return { name: "Người dùng", avatar: "./default-avatar.png" };
+      if (!identifier) return { name: "Người dùng", avatar: "/prvlocket.png" };
       if (typeof identifier === "string") {
-        return map.get(identifier) || { name: identifier, avatar: "./default-avatar.png" };
+        return map.get(identifier) || { name: identifier, avatar: "/prvlocket.png" };
       }
       if (typeof identifier === "object") {
         const byUid = identifier.uid && map.get(String(identifier.uid));
@@ -195,10 +195,10 @@ const BottomHomeScreen = () => {
         const byUsername = identifier.username && map.get(String(identifier.username));
         if (byUsername) return byUsername;
         const name = identifier.display_name || identifier.name || identifier.username || identifier.uid || "Người dùng";
-        const avatar = identifier.profilePic || identifier.avatar || "./default-avatar.png";
+        const avatar = identifier.profilePic || identifier.avatar || "/prvlocket.png";
         return { name, avatar };
       }
-      return { name: String(identifier), avatar: "./default-avatar.png" };
+      return { name: String(identifier), avatar: "/prvlocket.png" };
     };
   }, [friendDetails, user]);
 
@@ -358,82 +358,6 @@ const BottomHomeScreen = () => {
             //     <span>{info.name}</span>
             //   </div>
             // );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-            return (
-  <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
-    {info.avatar ? (
-      <div className="relative w-6 h-6">
-        <img
-          src={info.avatar}
-          alt={info.name}
-          className="w-6 h-6 rounded-full border border-base-300 object-cover relative z-0"
-        />
-        {/* Ảnh layer đè lên avatar */}
-        <img
-          src="/29.png" // thay bằng ảnh khung/hiệu ứng bạn muốn
-          alt="overlay"
-          className="absolute inset-0 w-6 h-6 rounded-full object-cover z-10 pointer-events-none"
-        />
-      </div>
-    ) : (
-      <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
-    )}
-    <span>{info.name}</span>
-  </div>
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
           })()}
 

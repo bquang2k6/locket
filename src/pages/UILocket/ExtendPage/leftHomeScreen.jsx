@@ -198,7 +198,7 @@ const LeftHomeScreen = () => {
             isScrolled ? "h-0 opacity-0" : "h-19 mt-2"
           }`}
         >
-          {/* <div className="flex flex-row justify-between items-center text-base-content w-full">
+          <div className="flex flex-row justify-between items-center text-base-content w-full">
             <div className="flex flex-col text-center items-start space-y-1">
               <p className="text-2xl font-semibold">
                 {user?.displayName || "Name"}
@@ -229,7 +229,7 @@ const LeftHomeScreen = () => {
                 />
               </div>
             </div>
-          </div> */}
+          </div>
 
 
 
@@ -250,69 +250,7 @@ const LeftHomeScreen = () => {
 
 
 
-          
-          <div className="flex flex-row justify-between items-center text-base-content w-full">
-  <div className="flex flex-col text-center items-start space-y-1">
-    <p className="text-2xl font-semibold">
-      {user?.displayName || "Name"}
-    </p>
-    <a
-      href={`https://locket.cam/${user?.username}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="link underline font-semibold flex items-center justify-between"
-    >
-      @{user?.username} <Link className="ml-2" size={18} />
-    </a>
-  </div>
-
-  {/* Avatar có lớp phủ */}
-  <div className="avatar w-18 h-18 disable-select relative">
-    <div className="rounded-full shadow-md outline-4 outline-amber-400 p-1 flex justify-center items-center overflow-hidden relative z-10">
-      {!imageLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-20">
-          <LoadingRing size={40} stroke={2} color="blue" />
-        </div>
-      )}
-      <img
-        src={user?.profilePicture || "/prvlocket.png"}
-        alt="Profile"
-        className={`w-full h-full transition-opacity duration-300 rounded-full ${
-          imageLoaded ? "opacity-100" : "opacity-0"
-        }`}
-        onLoad={() => setImageLoaded(true)}
-      />
-    </div>
-
-    {/* Lớp phủ trên avatar (làm avatar chìm xuống) */}
-    <img
-      src="/29.png"  // PNG trong suốt hoặc viền khung
-      alt="Overlay"
-      className="absolute inset-0 w-full h-full rounded-full z-20 pointer-events-none"
-    />
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+     
 
 
 

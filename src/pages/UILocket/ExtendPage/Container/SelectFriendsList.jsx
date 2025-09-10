@@ -89,7 +89,7 @@ const SelectFriendsList = () => {
         </div>
 
         {/* Danh sách bạn bè */}
-        {/* {friendDetails.map((friend) => {
+        {friendDetails.map((friend) => {
           const isSelected = selectedFriends.includes(friend.uid);
           return (
             <div
@@ -117,77 +117,7 @@ const SelectFriendsList = () => {
               </span>
             </div>
           );
-        })} */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        {friendDetails.map((friend) => {
-  const isSelected = selectedFriends.includes(friend.uid);
-  return (
-    <div
-      key={friend.uid}
-      onClick={() => handleToggle(friend.uid)}
-      className="flex flex-col items-center cursor-pointer transition-opacity hover:opacity-80 active:opacity-60 snap-center shrink-0"
-    >
-      <div className="relative w-11 h-11">
-        {/* Overlay ảnh nằm trên cùng */}
-        <img 
-          src="/29.png" // PNG trong suốt nếu muốn thấy avatar
-          alt="Overlay"
-          className="absolute inset-0 z-20 rounded-full pointer-events-none"
-        />
-
-        {/* Avatar nằm dưới */}
-        <div
-          className={clsx(
-            "w-11 h-11 border-2 p-[1px] rounded-full transition-all duration-300 transform overflow-hidden relative z-10",
-            isSelected
-              ? "border-primary scale-100"
-              : "border-transparent scale-95"
-          )}
-        >
-          <img
-            src={friend.profilePic || "./prvlocket.png"}
-            alt={friend.firstName}
-            className="w-full h-full rounded-full object-cover"
-          />
-        </div>
-      </div>
-
-      <span className="text-xs mt-1 text-center max-w-[4rem] truncate text-base-content">
-        {friend.firstName}
-      </span>
-    </div>
-  );
-})}
-
-
-
-
-
-
-
-
-
-
-
-
-
+        })}
       </div>
     </div>
   );

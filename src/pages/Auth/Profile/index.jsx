@@ -158,7 +158,7 @@ export default function Profile() {
 
       {/* Thông tin cơ bản */}
       <div className="flex flex-row items-center bg-base-100 border-base-300 text-base-content p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        {/* <div className="avatar relative w-24 h-24  disable-select">
+        <div className="avatar relative w-24 h-24  disable-select">
           <div className=" rounded-full shadow-md outline-4 outline-amber-400 flex justify-items-center">
             {!imageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -166,7 +166,7 @@ export default function Profile() {
               </div>
             )}
             <img
-              src={user?.profilePicture || "/default-avatar.png"}
+              src={user?.profilePicture || "/prvlocket.png"}
               alt="Profile"
               className={`w-24 h-24 transition-opacity duration-300 ${
                 imageLoaded ? "opacity-100" : "opacity-0"
@@ -174,92 +174,7 @@ export default function Profile() {
               onLoad={() => setImageLoaded(true)}
             />
           </div>
-        </div> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <div className="relative w-24 h-24">
-  {/* Lớp phủ phía trên avatar */}
-  <img 
-    src="/29.png" // ảnh overlay, có thể là PNG trong suốt
-    alt="Overlay" 
-    className="absolute inset-0 z-20 rounded-full pointer-events-none"
-  />
-
-  {/* Avatar */}
-  <div className="avatar relative w-24 h-24 disable-select z-10">
-    <div className="rounded-full shadow-md outline-4 outline-amber-400 flex justify-items-center overflow-hidden">
-      {!imageLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-20">
-          <LoadingRing size={40} stroke={2} color="blue" />
         </div>
-      )}
-      <img
-        src={user?.profilePicture || "/default-avatar.png"}
-        alt="Profile"
-        className={`w-24 h-24 transition-opacity duration-300 ${
-          imageLoaded ? "opacity-100" : "opacity-0"
-        }`}
-        onLoad={() => setImageLoaded(true)}
-      />
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div className="flex flex-col pl-5 text-center items-start space-y-1">
           <h2 className="text-2xl font-semibold">
             {user?.displayName}

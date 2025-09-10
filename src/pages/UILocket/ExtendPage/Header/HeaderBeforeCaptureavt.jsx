@@ -129,10 +129,7 @@ const HeaderBeforeCaptureavt = () => {
             }`}
           />
 
-          {/* Lớp phủ nằm trên avatar */}
-          <div className="absolute inset-0 rounded-full pointer-events-none">
-            <img src="/29.png" alt="overlay" className="w-full h-full rounded-full object-cover" />
-          </div>
+          
         </button>
 
         {/* Container để canh giữa */}
@@ -236,7 +233,7 @@ const HeaderBeforeCaptureavt = () => {
                   </div>
 
                   {/* Danh sách bạn bè */}
-                  {/* {filteredFriends.map((friend) => (
+                  {filteredFriends.map((friend) => (
                     <div
                       key={friend.uid}
                       onClick={() =>
@@ -261,10 +258,10 @@ const HeaderBeforeCaptureavt = () => {
                       </div>
                       <ChevronRight className="w-5 h-5 text-base-content" />
                     </div>
-                  ))} */}
+                  ))}
 
                   {/* Bạn */}
-                  {/* <div
+                  <div
                     onClick={() => handleSelectFriend(user?.uid, "Bạn")}
                     className={`flex items-center justify-between hover:bg-base-200 px-3 py-2 rounded-lg transition cursor-pointer pt-2 mt-2 ${
                       selectedFriendUid === user?.uid ? 'bg-primary/20 border border-primary/30' : ''
@@ -279,109 +276,7 @@ const HeaderBeforeCaptureavt = () => {
                       <span className="text-base font-medium">Bạn</span>
                     </div>
                     <ChevronRight className="w-5 h-5 text-base-content" />
-                  </div> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  {filteredFriends.map((friend) => (
-                    <div
-                      key={friend.uid}
-                      onClick={() =>
-                        handleSelectFriend(
-                          friend.uid,
-                          `${friend.firstName || ""} ${friend.lastName || ""}`.trim()
-                        )
-                      }
-                      className={`flex items-center justify-between hover:bg-base-200 px-3 py-2 rounded-lg transition cursor-pointer ${
-                        selectedFriendUid === friend.uid ? 'bg-primary/20 border border-primary/30' : ''
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="relative w-11 h-11">
-                          {/* Avatar */}
-                          <img
-                            src={friend.profilePic || "/prvlocket.png"}
-                            alt={friend.name || "avatar"}
-                            className="w-11 h-11 rounded-full border-[2.5px] p-0.5 border-amber-400 object-cover"
-                          />
-
-                          {/* Lớp phủ nằm trên avatar */}
-                          <div className="absolute inset-0 rounded-full pointer-events-none">
-                            <img
-                              src="/29.png"
-                              alt="overlay"
-                              className="w-full h-full rounded-full object-cover"
-                            />
-                          </div>
-                        </div>
-
-                        <span className="text-base font-medium">
-                          {friend.firstName} {friend.lastName}
-                        </span>
-                      </div>
-
-                      <ChevronRight className="w-5 h-5 text-base-content" />
-                    </div>
-                  ))}
-
-                  <div
-                    onClick={() => handleSelectFriend(user?.uid, "Bạn")}
-                    className={`flex items-center justify-between hover:bg-base-200 px-3 py-2 rounded-lg transition cursor-pointer pt-2 mt-2 ${
-                      selectedFriendUid === user?.uid ? 'bg-primary/20 border border-primary/30' : ''
-                    }`}
-                  >
-                      <div className="flex items-center gap-3">
-                        <div className="relative w-11 h-11">
-                          {/* Avatar */}
-                          <img
-                            src={user?.profilePicture || "/prvlocket.png"}
-                            alt="Bạn"
-                            className="w-11 h-11 rounded-full border-[2.5px] p-0.5 border-base-300 object-cover"
-                          />
-                          {/* Lớp phủ */}
-                            <div className="absolute inset-0 rounded-full pointer-events-none">
-                              <img
-                                src="/29.png"
-                                alt="overlay"
-                                className="w-full h-full rounded-full object-cover"
-                              />
-                            </div>
-                          </div>
-
-                      <span className="text-base font-medium">Bạn</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-base-content" />
                   </div>
-
-
-
-
-
-
-
 
 
 

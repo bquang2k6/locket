@@ -162,68 +162,16 @@ const ProfileSidebar = () => {
           {/* Profile Section */}
           <div className="flex flex-col items-center px-4 mb-6 pt-4">
             <div className="relative mb-3">
-              {/* <div className="w-20 h-20 rounded-full border-4 border-orange-400 overflow-hidden">
+              <div className="w-20 h-20 rounded-full border-4 border-orange-400 overflow-hidden">
                 <img 
-                  src={user?.profilePicture || "/default-avatar.png"}
+                  src={user?.profilePicture || "/prvlocket.png"}
                   alt="Profile" 
                   className={`w-full h-full object-cover transition-opacity duration-300 ${
                     imageLoaded ? "opacity-100" : "opacity-0"
                   }`}
                   onLoad={() => setImageLoaded(true)}
                 />
-              </div> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div className="relative w-20 h-20 rounded-full border-4 border-orange-400 overflow-hidden">
-  <img 
-    src={user?.profilePicture || "/default-avatar.png"}
-    alt="Profile" 
-    className={`w-full h-full object-cover transition-opacity duration-300 ${
-      imageLoaded ? "opacity-100" : "opacity-0"
-    }`}
-    onLoad={() => setImageLoaded(true)}
-  />
-  
-  {/* Lớp ảnh đè lên avatar */}
-  <img
-    src="/29.png" // ảnh khung PNG trong suốt
-    alt="Overlay frame"
-    className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
-  />
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              </div>
             </div>
             <h1 className={`${colors.text} text-xl font-semibold mb-1`}>
               {user?.username || "User"}

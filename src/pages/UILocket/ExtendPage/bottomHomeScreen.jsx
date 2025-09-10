@@ -444,21 +444,9 @@ const BottomHomeScreen = () => {
           {imageInfo.user && (() => {
             const info = resolveUserInfo(imageInfo.user);
             return (
-              <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm">
+              <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
                 {info.avatar ? (
-                  <div className="relative w-6 h-6">
-                    <img
-                      src={info.avatar}
-                      alt={info.name}
-                      className="w-6 h-6 rounded-full border border-base-300 object-cover relative z-0"
-                    />
-                    {/* Ảnh layer đè lên avatar */}
-                    <img
-                      src="/29.png" // thay bằng ảnh khung/hiệu ứng bạn muốn
-                      alt="overlay"
-                      className="absolute inset-0 w-6 h-6 rounded-full object-cover z-10 pointer-events-none"
-                    />
-                  </div>
+                  <img src={info.avatar} alt={info.name} className="w-6 h-6 rounded-full border border-base-300 object-cover" />
                 ) : (
                   <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
                 )}
@@ -467,47 +455,47 @@ const BottomHomeScreen = () => {
             );
           })()}
 
-          {/* Emoji reaction input */}
           
           
-
-              {/* Reaction or Activity depending on owner */}
-            
-            <div className="mt-4 w-full max-w-md">
-              {isOwner ? (
-                // 👉 Bài viết của mình: hiện "Hoạt động"
-                <div
+        
+          {/* Reaction or Activity depending on owner */}
+        <div className="translate-y-full -mt-50 mb-40 w-full max-w-md">
+          {isOwner ? (
+            // 👉 Bài viết của mình: hiện "Hoạt động"
+            <div
               onClick={handleOpenActivityModal}
               className="flex items-center gap-2 bg-base-300/90 backdrop-blur-sm rounded-full px-3 py-2 border border-base-300 cursor-pointer"
             >
-          {/* Activity button - NEW */}
-          {imageInfo && imageInfo._origin === "server" && (
-            <button
-              className="p-1 text-base-content tooltip tooltip-left cursor-pointer"
-              onClick={handleOpenActivityModal}
-              data-tip="Xem hoạt động bài viết"
-            >
-              <img 
-                src="/start.png" 
-                alt="activity" 
-                className="w-[30px] h-[30px] object-contain text-primary"
-              />
-            </button>
-          )}
-          
-  
+            {/* Activity button - NEW */}
+            {imageInfo && imageInfo._origin === "server" && (
+              <button
+                className="p-1 text-base-content tooltip tooltip-left cursor-pointer "
+                onClick={handleOpenActivityModal}
+                data-tip="Xem hoạt động bài viết"
+              >
+                <img 
+                  src="/start.png" 
+                  alt="activity" 
+                  className="w-[30px] h-[30px] object-contain text-primary"
+                />
+              </button>
+            )}
+      
+
           <span className="text-sm font-medium text-base-content">Hoạt động</span>
-          <div className="ml-[15vh]">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-70">
             <Activityavt
                 momentId={imageInfo?.id}
                 friendDetails={friendDetails}
                 // user={user}
               />
           </div>
+            
+        
         </div>
         ) : (
           // 👉 Bài viết của người khác: ô nhập emoji như cũ
-          <div className="bg-base-300/90 backdrop-blur-sm rounded-full px-4 py-2 border border-base-300 flex items-center gap-1 mb-20">
+          <div className="bg-base-300/90 backdrop-blur-sm rounded-full px-4 py-2 border border-base-300 flex items-center gap-1 -mt-15 mb-30">
             <input
               type="text"
               placeholder="Nhập icon"
@@ -607,7 +595,7 @@ const BottomHomeScreen = () => {
             onClick={handleCloseMedia}
             data-tip="Chức năng đang phát triển"
           >
-            <MoreHorizontal size={15} />
+            <MoreHorizontal size={10} />
           </button>
 
           {/* Delete button (chỉ cho ảnh local) */}

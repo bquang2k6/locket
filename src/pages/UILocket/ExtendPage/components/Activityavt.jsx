@@ -99,9 +99,10 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
     });
   })();
 
-  return (
-    
-       
+
+
+      
+      return (
         <div className="">
           {loading ? (
             <div className="">
@@ -117,7 +118,8 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
                     src={info.avatar}
                     className={clsx(
                       "w-10 h-10 rounded-full border border-base-100 object-cover",
-                      i > 0 && "-ml-[10px]"
+                      i > 0 && "-ml-[10px]",
+                      i >= 5 && "hidden" // ẩn avatar từ số 6 trở đi
                     )}
                     onError={(e) => {
                       e.target.src = "/prvlocket.png";
@@ -132,8 +134,7 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
             </p>
           )}
         </div>
-      
-  );
+      );
 };
 
 export default Activityavt;
