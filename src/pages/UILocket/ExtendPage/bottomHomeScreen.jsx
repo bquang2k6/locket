@@ -371,7 +371,7 @@ const BottomHomeScreen = () => {
       {selectedAnimate && imageInfo && (
         <div className="fixed inset-0 bg-base-100/90 z-50 overflow-y-auto">
           <div className="flex flex-col items-center p-4 min-h-full">
-            <div className="relative w-full max-w-md aspect-square border-4 border-primary rounded-[50px] overflow-hidden overflow-hidden mt-15">
+            <div className="relative w-full max-w-md aspect-square border-4 border-primary rounded-[50px] overflow-hidden overflow-hidden mt-20">
               {selectedVideo ? (
                 <video src={selectedVideo} autoPlay loop className="object-cover w-full h-full" />
               ) : (
@@ -387,56 +387,57 @@ const BottomHomeScreen = () => {
               ✕
             </button>
 
-              {/* Caption hiển thị */}
-              {imageInfo?.captions?.[0] && (
-              <div className="mt-3 w-full max-w-md">
-                <div
-                  className={`flex flex-row items-center gap-2 px-4 py-2 rounded-full font-semibold max-w-[90vw] whitespace-nowrap overflow-hidden text-ellipsis ${
-                    imageInfo.captions[0].background?.colors?.length
-                      ? "border-transparent"
-                      : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
-                  }`}
-                  style={{
-                    background: imageInfo.captions[0].background?.colors?.length
-                      ? `linear-gradient(to bottom, ${imageInfo.captions[0].background.colors[0]}, ${imageInfo.captions[0].background.colors[1]})`
-                      : undefined,
-                    color: imageInfo.captions[0].text_color || undefined,
-                  }}
-                >
-                  {(() => {
-                    const icon = imageInfo.captions[0].icon;
-                    if (!icon) return null;
-                    if (typeof icon === "string" || typeof icon === "number") {
-                      return <span className="text-lg">{icon}</span>;
-                    }
-                    if (typeof icon === "object") {
-                      if (icon.type === "image" && icon.data) {
-                        return (
-                          <img
-                            src={icon.data}
-                            alt="Icon"
-                            className="w-6 h-6 object-cover"
-                          />
-                        );
-                      }
-                      if (icon.type === "weather") {
-                        return (
-                          <WeatherIcon
-                            weatherCode={icon.data || icon.code}
-                            className="w-6 h-6"
-                          />
-                        );
-                      }
-                      if (icon.emoji) {
-                        return <span className="text-lg">{icon.emoji}</span>;
-                      }
-                    }
-                    return null;
-                  })()}
-                  <span className="truncate">{imageInfo.captions[0].caption}</span>
-                </div>
+            {/* Caption hiển thị */}
+            <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2">
+            <div
+              className={`inline-flex flex-row items-center gap-2 px-4 py-2 rounded-full font-semibold 
+                overflow-hidden max-w-[90vw] mx-auto
+                ${
+                  imageInfo.captions[0].background?.colors?.length
+                    ? "border-transparent"
+                    : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
+                }`}
+              style={{
+                background: imageInfo.captions[0].background?.colors?.length
+                  ? `linear-gradient(to bottom, ${imageInfo.captions[0].background.colors[0]}, ${imageInfo.captions[0].background.colors[1]})`
+                  : undefined,
+                color: imageInfo.captions[0].text_color || undefined,
+                width: "fit-content",
+              }}
+            >
+              {/* icon + caption */}
+              <div className="relative overflow-hidden h-6 flex items-center justify-center">
+                {(() => {
+                  const caption = imageInfo.captions[0].caption;
+                  const wordCount = caption.trim().split(/\s+/).length;
+                  const isMarquee = wordCount > 8;
+
+                  return (
+                    <span
+                      className={`whitespace-nowrap ${
+                        isMarquee ? "inline-block" : "w-full text-center"
+                      }`}
+                      style={{
+                        animation: isMarquee ? "marquee 1s linear infinite" : "none",
+                      }}
+                    >
+                      {caption}
+                    </span>
+                  );
+                })()}
               </div>
-            )}
+            </div>
+
+            <style>{`
+              @keyframes marquee {
+                0% { transform: translateX(5%); }
+                100% { transform: translateX(-5%); }
+              }
+            `}</style>
+          </div>
+
+
+          
           </div>
 
           
@@ -459,7 +460,7 @@ const BottomHomeScreen = () => {
           
         
           {/* Reaction or Activity depending on owner */}
-        <div className="translate-y-full -mt-50 mb-40 w-full max-w-md">
+        <div className="translate-y-full -mt-50 mb-25 w-full max-w-md">
           {isOwner ? (
             // 👉 Bài viết của mình: hiện "Hoạt động"
             <div
@@ -483,7 +484,7 @@ const BottomHomeScreen = () => {
       
 
           <span className="text-sm font-medium text-base-content">Hoạt động</span>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-[60%]">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-[55%]">
             <Activityavt
                 momentId={imageInfo?.id}
                 friendDetails={friendDetails}
