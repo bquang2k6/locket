@@ -8,9 +8,9 @@ const Footer = () => {
           © {new Date().getFullYear()} <span className="font-semibold font-lovehouse">Wan</span>. All rights reserved.
         </p>
         <p className="text-center md:text-right text-xs">
-          <span className="cursor-pointer hover:text-blue-500 transition hover:underline">Version 4.4.0</span> {/* phiên bản */}
+          <span className="cursor-pointer hover:text-blue-500 transition hover:underline">Version 4.5.0</span> {/* phiên bản */}
           <span> • </span>
-          <a className="cursor-pointer hover:text-blue-500 transition hover:underline">API v3.0</a>
+          <a className="cursor-pointer hover:text-blue-500 transition hover:underline">API v3.1</a>
           <span className="cursor-pointer ml-2 hidden sm:inline text-secondary hover:underline">• Read more</span>
         </p>
       </div>
