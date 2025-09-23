@@ -142,9 +142,6 @@ function AppContent() {
 
 
 
-
-
-
 const SnowEffect = () => {
   const canvasRefs = [useRef(null), useRef(null), useRef(null)];
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -419,9 +416,5 @@ const SnowEffect = () => {
     </div>
   );
 };
-
-
-
-
 
 export default App;
