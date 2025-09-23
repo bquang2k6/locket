@@ -23,7 +23,8 @@ import {
   Smartphone,
   TrendingUp,
   Home,
-  X
+  X,
+  Power
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthLocket';
 import { useApp } from '../../context/AppContext';
@@ -254,14 +255,6 @@ const ProfileSidebar = () => {
                 setIsSidebarOpen(false);
               }}
             />
-            {/* <MenuItem 
-              icon={MessageCircle} 
-              text="Phòng chat chung" 
-              onClick={() => {
-                navigate('/chat');
-                setIsSidebarOpen(false);
-              }}
-            /> */}
             <MenuItem 
               icon={Upload} 
               text=" Đăng ảnh, video" 
@@ -275,6 +268,14 @@ const ProfileSidebar = () => {
               text="Cập nhật web lên phiên bản mới" 
               onClick={() => {
                 navigate('/cache');
+                setIsSidebarOpen(false);
+              }}
+            />
+            <MenuItem 
+              icon={Power} 
+              text="Bật / Tắt hiệu ứng tuyết" 
+              onClick={() => {
+                navigate('/onoff');
                 setIsSidebarOpen(false);
               }}
             />

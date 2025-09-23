@@ -6,7 +6,7 @@ import HistoryArrow from "./Button/HistoryButton";
 import SelectFiendsList from "./Container/SelectFriendsList";
 import HeaderAfterCapture from "./Header/HeaderAfterCapture";
 import HeaderBeforeCapture from "./Header/HeaderBeforeCapture";
-import PopupNotification from "../../../components/UI/PopupNotification";
+// import PopupNotification from "../../../components/UI/PopupNotification";
 
 const MainHomeScreen = () => {
   const { navigation, camera, useloading, post } = useApp();
@@ -46,7 +46,7 @@ const MainHomeScreen = () => {
         <ActionControls />
         {selectedFile ? <SelectFiendsList /> : <HistoryArrow />}{" "}
         <canvas ref={canvasRef} className="hidden" />
-        <PopupNotification />
+        {/* <PopupNotification /> */}
       </div>
     </div>
   );

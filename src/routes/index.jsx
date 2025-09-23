@@ -13,9 +13,9 @@ import RegisterMemberPage from "../pages/Public/RegisterMemberPage";
 import Timeline from "../pages/Public/Timeline";
 import CameraCapture from "../pages/UILocket";
 import NodeInfo from "../pages/Auth/Nodeinfo";
-import ChatPage from "../pages/Chat";
 import ThemePage from "../pages/Public/Theme";
 import CacheManagement from "../pages/Public/CacheManagement";
+import SnowEffect from "../animation/OnOff";
 
 const APP_NAME = "Locket Wan - Đăng ảnh & Video lên Locket";
 
@@ -35,6 +35,7 @@ const publicRoutes = [
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
   { path: "/theme", component: ThemePage, title: `${APP_NAME} | Tùy Chỉnh Giao Diện` },
   { path: "/cache", component: CacheManagement, title: `${APP_NAME} | Quản lý Cache` },
+  { path: "/onoff", component: SnowEffect, title: `${APP_NAME} | Bật/Tắt Hiệu Ứng tuyết` },
 ];
 
 // 📌 Các route yêu cầu đăng nhập
@@ -51,9 +52,9 @@ const authRoutes = [
   { path: "/locket", component: CameraCapture, title: `${APP_NAME} | Locket` },
   { path: "/settings", component: SettingsPage, title: `${APP_NAME} | Cài đặt` },
   { path: "/nodeinfo", component: NodeInfo, title: `${APP_NAME} | Node Info` },
-  { path: "/chat", component: ChatPage, title: `${APP_NAME} | Chat` },
   { path: "/theme", component: ThemePage, title: `${APP_NAME} | Tùy Chỉnh Giao Diện` },
   { path: "/cache", component: CacheManagement, title: `${APP_NAME} | Quản lý Cache` },
+  { path: "/onoff", component: SnowEffect, title: `${APP_NAME} | Bật/Tắt Hiệu Ứng tuyết` },
 ];
 
 // 📌 Các route dành cho locket

@@ -101,10 +101,4 @@ export const API_URL = {
   GET_USAGE_STATS: (userId) => createApiUrlString(`/usage/stats/${userId}`), // For gif_caption (Lk_upload-js-master)
   GET_CAPTION_USAGE_STATS: (userId) => createDbApiUrlString(`/api/usage/stats/${userId}`), // For caption (DB-LK-master)
   VALIDATE_FILE_SIZE: createDbApiUrlString(`/api/usage/validate-file`),
-  
-  // CHAT_SEND_MESSAGE: "https://api4.quang-tech.space/chat/send-message",
-  // CHAT_GET_MESSAGES: "https://api4.quang-tech.space/chat/get-messages",
-  // CHAT_RECALL_MESSAGE: "https://api4.quang-tech.space/chat/recall-message",
-  // CHAT_EDIT_MESSAGE: "https://api4.quang-tech.space/chat/edit-message",
-  // CHAT_PIN_MESSAGE: "https://api4.quang-tech.space/chat/pin-message"
 };
