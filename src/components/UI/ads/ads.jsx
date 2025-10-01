@@ -12,7 +12,7 @@ export default function Ads() {
   return (
     <ins
       className="adsbygoogle"
-      style={{ display: "block" }}
+      style={{ display: "inline-block", width: "300px", height: "250px" }}
       data-ad-client="ca-pub-1905437736346974"
       data-ad-slot="5128836736"
       data-ad-format="auto"

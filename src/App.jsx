@@ -25,10 +25,10 @@ function App() {
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
             <SnowEffect />  {/* Hiệu ứng tuyết ❄️ */}
-            <Ads />
             <AppContent />
             <InstallPWA />
             <CacheManager />
+            <Ads />
           </Router>
           <ToastProvider />
         </AppProvider>
