@@ -16,6 +16,7 @@ import NotFoundPage from "./components/404";
 import InstallPWA from "./components/InstallPWA";
 import CacheManager from "./components/CacheManager";
 import getLayout from "./layouts";
+import Ads from "./components/UI/ads/ads"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
             <SnowEffect />  {/* Hiệu ứng tuyết ❄️ */}
+            <Ads />
             <AppContent />
             <InstallPWA />
             <CacheManager />

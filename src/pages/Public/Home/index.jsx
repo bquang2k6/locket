@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { Link } from "react-router-dom";
-import PopupNotification from "../../../components/UI/PopupNotification";
+// import PopupNotification from "../../../components/UI/PopupNotification";
 
 const words = [
   "Welcome to Locket Wan! 🚀",
@@ -39,7 +39,7 @@ const Home = () => {
       >
         Login now
       </Link>
-      <PopupNotification />
+      {/* <PopupNotification /> */}
     </div>
   );
 };
