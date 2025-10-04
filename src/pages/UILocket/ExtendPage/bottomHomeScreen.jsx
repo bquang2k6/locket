@@ -43,7 +43,7 @@ const BottomHomeScreen = () => {
       setRecentPosts(localData);
       const cachedServer = JSON.parse(localStorage.getItem("serverMoments") || "[]");
       setServerMoments(cachedServer);
-      fetchServerMoments();
+      // fetchServerMoments();
     }
   }, [isBottomOpen, setRecentPosts, selectedFriendUid]);
 
