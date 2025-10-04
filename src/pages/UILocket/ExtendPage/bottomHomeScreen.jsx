@@ -388,53 +388,56 @@ const BottomHomeScreen = () => {
             </button>
 
             {/* Caption hiển thị */}
-            <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2">
-            <div
-              className={`inline-flex flex-row items-center gap-2 px-4 py-2 rounded-full font-semibold 
-                overflow-hidden max-w-[90vw] mx-auto
-                ${
-                  imageInfo.captions[0].background?.colors?.length
-                    ? "border-transparent"
-                    : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
-                }`}
-              style={{
-                background: imageInfo.captions[0].background?.colors?.length
-                  ? `linear-gradient(to bottom, ${imageInfo.captions[0].background.colors[0]}, ${imageInfo.captions[0].background.colors[1]})`
-                  : undefined,
-                color: imageInfo.captions[0].text_color || undefined,
-                width: "fit-content",
-              }}
-            >
-              {/* icon + caption */}
-              <div className="relative overflow-hidden h-6 flex items-center justify-center">
-                {(() => {
-                  const caption = imageInfo.captions[0].caption;
-                  const wordCount = caption.trim().split(/\s+/).length;
-                  const isMarquee = wordCount > 8;
+            {imageInfo?.captions?.[0] && (
+              <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2">
+                <div
+                  className={`inline-flex flex-row items-center gap-2 px-4 py-2 rounded-full font-semibold 
+                    overflow-hidden max-w-[90vw] mx-auto
+                    ${
+                      imageInfo?.captions?.[0]?.background?.colors?.length
+                        ? "border-transparent"
+                        : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
+                    }`}
+                  style={{
+                    background: imageInfo?.captions?.[0]?.background?.colors?.length
+                      ? `linear-gradient(to bottom, ${imageInfo?.captions?.[0]?.background?.colors?.[0]}, ${imageInfo?.captions?.[0]?.background?.colors?.[1]})`
+                      : undefined,
+                    color: imageInfo?.captions?.[0]?.text_color || undefined,
+                    width: "fit-content",
+                  }}
+                >
+                  {/* icon + caption */}
+                  <div className="relative overflow-hidden h-6 flex items-center justify-center">
+                    {(() => {
+                      const caption = imageInfo?.captions?.[0]?.caption || "";
+                      const wordCount = caption.trim().split(/\s+/).length;
+                      const isMarquee = wordCount > 8;
 
-                  return (
-                    <span
-                      className={`whitespace-nowrap ${
-                        isMarquee ? "inline-block" : "w-full text-center"
-                      }`}
-                      style={{
-                        animation: isMarquee ? "marquee 1s linear infinite" : "none",
-                      }}
-                    >
-                      {caption}
-                    </span>
-                  );
-                })()}
+                      return (
+                        <span
+                          className={`whitespace-nowrap ${
+                            isMarquee ? "inline-block" : "w-full text-center"
+                          }`}
+                          style={{
+                            animation: isMarquee ? "marquee 1s linear infinite" : "none",
+                          }}
+                        >
+                          {caption}
+                        </span>
+                      );
+                    })()}
+                  </div>
+                </div>
+
+                <style>{`
+                  @keyframes marquee {
+                    0% { transform: translateX(5%); }
+                    100% { transform: translateX(-5%); }
+                  }
+                `}</style>
               </div>
-            </div>
+            )}
 
-            <style>{`
-              @keyframes marquee {
-                0% { transform: translateX(5%); }
-                100% { transform: translateX(-5%); }
-              }
-            `}</style>
-          </div>
 
 
           
