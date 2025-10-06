@@ -33,17 +33,16 @@ const BottomHomeScreen = () => {
   // State cho activity modal
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [openActivity, setOpenActivity] = useState(false);
+
+  const [pageToken, setPageToken] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
   
   // REMOVED: const [setSelectedFriendUid] = useState(null); // This was causing the conflict!
 
   // Load local + cache khi mở bottom sheet
   useEffect(() => {
     if (isBottomOpen) {
-      const localData = JSON.parse(localStorage.getItem("uploadedMoments") || "[]").reverse();
-      setRecentPosts(localData);
-      const cachedServer = JSON.parse(localStorage.getItem("serverMoments") || "[]");
-      setServerMoments(cachedServer);
-      // fetchServerMoments();
+      fetchServerMoments();
     }
   }, [isBottomOpen, setRecentPosts, selectedFriendUid]);
 
@@ -76,22 +75,33 @@ const BottomHomeScreen = () => {
   };
 
   // Lấy moments từ server
-  const fetchServerMoments = async () => {
+  const fetchServerMoments = async (append = false) => {
     try {
       setLoadingServer(true);
-      const res = await api.post(String(API_URL.GET_MOMENT_URL), {
+
+      const res = await api.post(String(API_URL.GET_MOMENTV2_URL), {
         limit: 50,
-        pageToken: null,
-        userUid: selectedFriendUid,
+        pageToken: append ? pageToken : null,
+        userId: user?.uid,
       });
-      const data = res?.data?.data || [];
+
+      const data = res?.data?.moments || [];
+      const nextToken = res?.data?.nextPageToken || null;
+
       const mapped = Array.isArray(data) ? data.map(transformServerMoment) : [];
-      setServerMoments(mapped);
-      localStorage.setItem("serverMoments", JSON.stringify(mapped));
-      showSuccess("Đã cập nhật bài viết từ server!");
+
+      setServerMoments((prev) => {
+        const newList = append ? [...prev, ...mapped] : mapped;
+        // localStorage.setItem("serverMoments", JSON.stringify(newList));
+        return newList;
+      });
+
+      setPageToken(nextToken);
+      setHasMore(!!nextToken); // nếu có nextToken → còn dữ liệu
+      if (!append) showSuccess("Đã cập nhật bài viết từ server!");
     } catch (e) {
       console.error("Fetch server moments failed", e?.response?.data || e);
-      setServerMoments([]);
+      if (!append) setServerMoments([]);
     } finally {
       setLoadingServer(false);
     }
@@ -126,16 +136,7 @@ const BottomHomeScreen = () => {
 
   // Xoá cache local
   const handleClearCache = () => {
-    try {
-      localStorage.removeItem("uploadedMoments");
-      setRecentPosts([]);
-      setSelectedImage(null);
-      setSelectedVideo(null);
-      setImageInfo(null);
-      showSuccess("Đã xoá cache ảnh local.");
-    } catch (e) {
-      console.error("Clear cache failed", e);
-    }
+    showSuccess("Không có dữ liệu local để xoá.");
   };
 
   const handleClick = () => setIsBottomOpen(false);
@@ -304,9 +305,6 @@ const BottomHomeScreen = () => {
         >
           {loadingServer ? "Đang tải..." : "Lấy bài viết"}
         </button>
-        <button className="btn btn-sm btn-secondary" onClick={handleClearCache}>
-          Xoá Cache
-        </button>
       </div>
 
       {/* Hiển thị filter hiện tại */}
@@ -316,11 +314,32 @@ const BottomHomeScreen = () => {
             const friend = friendDetails.find(f => f.uid === selectedFriendUid);
             return friend ? `${friend.firstName} ${friend.lastName}` : 'Người dùng';
           })()}
+          <p>Nếu muốn xem thêm thì ấn nút lấy bài viết</p>
         </div>
       )}
 
       {/* Media grid */}
       <div
+        onScroll={(e) => {
+          const target = e.target;
+
+          // Khoảng cách từ đáy còn lại (pixels)
+          const remainingScroll = target.scrollHeight - target.scrollTop - target.clientHeight;
+
+          // Nếu còn ít hơn 200px => load thêm
+          if (remainingScroll < 400 && !loadingServer && hasMore) {
+            // Ngăn load liên tục bằng cờ lock nhỏ
+            if (!target._loadingTriggered) {
+              target._loadingTriggered = true;
+              fetchServerMoments(true).finally(() => {
+                // reset flag sau 1s để tránh spam khi người dùng cuộn nhanh
+                setTimeout(() => {
+                  target._loadingTriggered = false;
+                }, 1000);
+              });
+            }
+          }
+        }}
         className={`grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 p-2 overflow-y-auto transition-all ${
           selectedAnimate ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
