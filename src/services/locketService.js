@@ -122,7 +122,7 @@ export const getInfo = async (idToken, localId) => {
       throw new Error("Thiếu idToken hoặc localId! Vui lòng đăng nhập lại.");
     }
 
-    const res = await axios.post(utils.API_URL.getMomentV2, {
+    const res = await axios.post(utils.API_URL.GET_INFO_URL, {
       idToken,
       localId,
     });
