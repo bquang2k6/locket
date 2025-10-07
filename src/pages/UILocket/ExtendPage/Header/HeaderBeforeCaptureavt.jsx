@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { useApp } from "../../../../context/AppContext";
 import { AuthContext } from "../../../../context/AuthLocket";
 import { ChevronRight, Menu, MessageCircle, Users } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const HeaderBeforeCaptureavt = () => {
   const { user, friendDetails } = useContext(AuthContext);
@@ -173,9 +174,13 @@ const HeaderBeforeCaptureavt = () => {
 
         {/* Nút bên phải */}
         <div className="flex items-center gap-3">
-          <button className="p-2 bg-base-200 mr-2 rounded-lg hover:bg-base-300 transition">
+          {/* Thay <button> bằng <Link> và chuyển className vào */}
+          <Link 
+            to="/chat" 
+            className="p-2 bg-base-200 mr-2 rounded-lg hover:bg-base-300 transition inline-block"
+          >
             <MessageCircle size={26} className="text-base-content" />
-          </button>
+          </Link>
         </div>
       </div>
 

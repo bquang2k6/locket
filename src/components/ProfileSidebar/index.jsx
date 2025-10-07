@@ -232,6 +232,14 @@ const ProfileSidebar = () => {
               }}
             />
             <MenuItem 
+              icon={MessageCircle} 
+              text="Chat locket" 
+              onClick={() => {
+                navigate('/Chat');
+                setIsSidebarOpen(false);
+              }}
+            />
+            <MenuItem 
               icon={Settings} 
               text="Cài đặt" 
               onClick={() => {

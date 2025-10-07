@@ -16,6 +16,7 @@ import NodeInfo from "../pages/Auth/Nodeinfo";
 import ThemePage from "../pages/Public/Theme";
 import CacheManagement from "../pages/Public/CacheManagement";
 import SnowEffect from "../animation/OnOff";
+import ChatListPage from "../pages/chat/ChatListPage"
 
 const APP_NAME = "Locket Wan - Đăng ảnh & Video lên Locket";
 
@@ -43,6 +44,7 @@ const authRoutes = [
   { path: "/home", component: AuthHome, title: `${APP_NAME} | Trang chủ` },
   { path: "/profile", component: Profile, title: `${APP_NAME} | Hồ sơ` },
   { path: "/postmoments", component: PostMoments, title: `${APP_NAME} | Đăng Moment Mới` },
+  { path: "/chat", component: ChatListPage, title: `${APP_NAME} | Chat locket` },
   { path: "/test", component: CameraCapture, title: `${APP_NAME} | Đăng Video Mới` },
   { path: "/timeline", component: Timeline, title: `${APP_NAME} | Dòng Thời Gian` },
   { path: "/aboutme", component: AboutMe, title: `${APP_NAME} | Về tôi` },
