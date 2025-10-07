@@ -3,13 +3,10 @@ import { ArrowLeft } from "lucide-react";
 import { AuthContext } from "../../context/AuthLocket";
 import { createResolveUserInfo } from "../UILocket/ExtendPage/components/resolveUserInfo";
 import Listmsg from "./components/Listmsg";
-import {
-  onNewListMessages,
-  onNewMessagesWithUser,
-  emitGetListMessages,
-  emitGetMessagesWithUser,
-  getSocket,
-} from "../../lib/socket";
+import { useRef } from "react";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:8000"); // hoặc URL server WebSocket của bạn
 
 
 export default function ChatListPage() {
@@ -95,75 +92,53 @@ export default function ChatListPage() {
     fetchMessages();
   }, [resolveUserInfo]);
 
-  // ======= SUBSCRIBE REALTIME DANH SÁCH CUỘC TRÒ CHUYỆN =======
+
+
+
+
+
+  //cuộn xuống cuối mỗi khi có tin nhắn mới
+  const chatEndRef = useRef(null);
+
   useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages]);
+  useEffect(() => {
+    if (!selectedChat) return;
+
     const token =
       localStorage.getItem("authToken") || localStorage.getItem("idToken");
-    if (!token) return;
 
-    // Bắt đầu lắng nghe realtime danh sách hội thoại
-    const off = onNewListMessages((batch = []) => {
-      if (!Array.isArray(batch) || batch.length === 0) return;
-
-      // Map sang cấu trúc UI hiện tại
-      const mapped = batch.map((item) => {
-        const resolved = resolveUserInfo(item.with_user);
-        const userName = resolved?.name || item.with_user || "Người dùng";
-        const avatarUrl =
-          resolved?.avatar ||
-          resolved?.avatar_url ||
-          resolved?.photoURL ||
-          resolved?.profilePicture ||
-          resolved?.image ||
-          item.avatar ||
-          item.avatar_url ||
-          "/prvlocket.png";
-
-        return {
-          uid: item.uid,
-          name: userName,
-          avatarText: userName.substring(0, 2).toUpperCase(),
-          avatarImage: avatarUrl,
-          lastMessage: item.latestMessage?.body || item.body || "",
-          time: item.latestMessage?.createdAt || item.updateTime || item.createdAt,
-          unreadCount: item.unreadCount || 0,
-          sender: item.sender,
-          withUser: item.with_user,
-        };
-      });
-
-      setMessages((prev) => {
-        const byId = new Map(prev.map((c) => [c.uid, c]));
-        for (const conv of mapped) {
-          const existing = byId.get(conv.uid);
-          if (!existing) {
-            byId.set(conv.uid, conv);
-          } else {
-            byId.set(conv.uid, {
-              ...existing,
-              ...conv,
-            });
-          }
-        }
-        const merged = Array.from(byId.values());
-        merged.sort((a, b) => parseInt(b.time) - parseInt(a.time));
-        return merged;
-      });
+    // Gửi yêu cầu mở stream gRPC qua WebSocket
+    socket.emit("chatWithUserV2", {
+      token,
+      messageId: selectedChat.uid,
+      timestamp: null,
     });
 
-    // Gửi yêu cầu bắt đầu stream danh sách
-    emitGetListMessages({ timestamp: null, token });
+    // Lắng nghe tin nhắn mới
+    socket.on("NEW_MESSAGE_WITH_USER", (newMessages) => {
+      setChatMessages((prev) => [...prev, ...newMessages]);
+    });
 
-    // Re-emit khi socket reconnect
-    const socket = getSocket();
-    const onReconnect = () => emitGetListMessages({ timestamp: null, token });
-    socket.on("connect", onReconnect);
-
+    // Cleanup khi unmount hoặc đổi selectedChat
     return () => {
-      off?.();
-      socket.off("connect", onReconnect);
+      socket.off("NEW_MESSAGE_WITH_USER");
     };
-  }, [resolveUserInfo]);
+  }, [selectedChat]);
+
+
+
+
+
+
+
+
+
+
+
 
   // ======= GỌI CHI TIẾT CUỘC TRÒ CHUYỆN =======
   useEffect(() => {
@@ -200,47 +175,6 @@ export default function ChatListPage() {
     };
 
     fetchChatDetail();
-  }, [selectedChat]);
-
-  // ======= SUBSCRIBE REALTIME CHI TIẾT CUỘC TRÒ CHUYỆN =======
-  useEffect(() => {
-    if (!selectedChat) return;
-    const token =
-      localStorage.getItem("authToken") || localStorage.getItem("idToken");
-    if (!token) return;
-
-    // Lắng nghe tin nhắn mới trong cuộc trò chuyện hiện tại
-    const off = onNewMessagesWithUser((batch = []) => {
-      if (!Array.isArray(batch) || batch.length === 0) return;
-
-      setChatMessages((prev) => {
-        const map = new Map((prev || []).map((m) => [m.id, m]));
-        for (const m of batch) {
-          map.set(m.id, m);
-        }
-        const merged = Array.from(map.values());
-        merged.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-        return merged;
-      });
-    });
-
-    // Bắt đầu stream cho cuộc hội thoại được chọn
-    emitGetMessagesWithUser({
-      messageId: selectedChat.uid,
-      timestamp: null,
-      token,
-    });
-
-    // Re-emit khi socket reconnect
-    const socket = getSocket();
-    const onReconnect = () =>
-      emitGetMessagesWithUser({ messageId: selectedChat.uid, timestamp: null, token });
-    socket.on("connect", onReconnect);
-
-    return () => {
-      off?.();
-      socket.off("connect", onReconnect);
-    };
   }, [selectedChat]);
 
   // ======= GIAO DIỆN =======
@@ -288,12 +222,12 @@ export default function ChatListPage() {
               </div>
             </div>
 
-            <div className="flex flex-col h-[calc(100vh-64px)]">
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {loadingChat ? (
-                  <div className="text-center text-gray-500">Đang tải tin nhắn...</div>
-                ) : (
-                  chatMessages.map((msg) => {
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {loadingChat ? (
+                <div className="text-center text-gray-500">Đang tải tin nhắn...</div>
+              ) : (
+                <>
+                  {chatMessages.map((msg) => {
                     const isOwn = msg.sender === user?.uid;
                     return (
                       <div
@@ -309,9 +243,12 @@ export default function ChatListPage() {
                         </div>
                       </div>
                     );
-                  })
-                )}
-              </div>
+                  })}
+                  <div ref={chatEndRef} />
+                </>
+              )}
+
+
 
               <div className="border-t border-base-300 p-3 flex bg-base-200/30">
                 <input
