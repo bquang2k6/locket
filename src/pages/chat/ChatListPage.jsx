@@ -20,6 +20,9 @@ export default function ChatListPage() {
   const [loadingChat, setLoadingChat] = useState(false);
   const [error, setError] = useState(null);
   const { friendDetails, user } = useContext(AuthContext);
+  const [newMessage, setNewMessage] = useState("");
+  const [lastEnterTime, setLastEnterTime] = useState(0);
+  const [activeReactionMsg, setActiveReactionMsg] = useState(null);
 
   const resolveUserInfo = useMemo(
     () => createResolveUserInfo(friendDetails, user),
@@ -201,6 +204,35 @@ export default function ChatListPage() {
 
     fetchChatDetail();
   }, [selectedChat]);
+  // ======= ĐÁNH DẤU ĐÃ ĐỌC =======
+  useEffect(() => {
+    if (!selectedChat) return;
+    const markAsRead = async () => {
+      try {
+        const token =
+          localStorage.getItem("authToken") || localStorage.getItem("idToken");
+        if (!token) return;
+
+        await fetch("https://api.wangtech.top/locket/markAsRead", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // thêm nếu API yêu cầu token
+          },
+          body: JSON.stringify({
+            data: {
+              conversation_uid: selectedChat.uid,
+            },
+          }),
+        });
+      } catch (err) {
+        console.error("Lỗi markAsRead:", err);
+      }
+    };
+
+    markAsRead();
+  }, [selectedChat]);
+
 
   // ======= SUBSCRIBE REALTIME CHI TIẾT CUỘC TRÒ CHUYỆN =======
   useEffect(() => {
@@ -242,6 +274,127 @@ export default function ChatListPage() {
       socket.off("connect", onReconnect);
     };
   }, [selectedChat]);
+  //gửi tn
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !selectedChat) return;
+    try {
+      const token =
+        localStorage.getItem("authToken") || localStorage.getItem("idToken");
+      if (!token) {
+        alert("Vui lòng đăng nhập lại");
+        return;
+      }
+
+      const payload = {
+        data: {
+          msg: newMessage.trim(),
+          moment_uid: null,
+          receiver_uid: selectedChat.withUser, // uid người nhận
+        },
+      };
+
+      const res = await fetch("https://api.wangtech.top/locket/sendChatMessageV2", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Gửi tin nhắn thất bại");
+      const result = await res.json();
+
+      // ✅ Cập nhật hiển thị ngay trên UI
+      const newMsgObj = {
+        id: result.data?.id || Date.now(),
+        text: newMessage.trim(),
+        sender: user?.uid,
+        createdAt: Date.now(),
+      };
+
+      setChatMessages((prev) => [...prev, newMsgObj]);
+      setNewMessage("");
+    } catch (err) {
+      console.error(err);
+      alert("Không thể gửi tin nhắn");
+    }
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      const now = Date.now();
+      const diff = now - lastEnterTime;
+
+      if (diff < 400) {
+        // Ấn Enter hai lần nhanh → gửi
+        e.preventDefault();
+        handleSendMessage();
+      } else {
+        // Ấn Enter một lần → thêm xuống dòng (\n)
+        e.preventDefault();
+        setNewMessage((prev) => prev + "\n");
+        setLastEnterTime(now);
+      }
+    }
+  };
+
+  const handleReactMessage = async (messageId, emoji) => {
+    try {
+      const token =
+        localStorage.getItem("authToken") || localStorage.getItem("idToken");
+      if (!token) {
+        alert("Vui lòng đăng nhập lại");
+        return;
+      }
+
+      if (!selectedChat?.uid) {
+        console.error("Không có conversation_id hợp lệ");
+        return;
+      }
+
+      const payload = {
+        data: {
+          message_id: messageId,
+          emoji: emoji,
+          conversation_id: selectedChat.uid,
+        },
+      };
+
+      const res = await fetch("http://localhost:5001/locket/sendChatMessageReaction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Gửi reaction thất bại");
+      const result = await res.json();
+
+      // ✅ cập nhật local ngay nếu API trả về reactions mới
+      setChatMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId
+            ? {
+                ...m,
+                reactions: result?.data?.reactions || m.reactions || [],
+              }
+            : m
+        )
+      );
+    } catch (err) {
+      console.error("Lỗi khi gửi reaction:", err);
+    }
+  };
+  useEffect(() => {
+    const handleClickOutside = () => setActiveReactionMsg(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+
+
 
   // ======= GIAO DIỆN =======
   return (
@@ -295,34 +448,105 @@ export default function ChatListPage() {
                 ) : (
                   chatMessages.map((msg) => {
                     const isOwn = msg.sender === user?.uid;
+                    const textWithBreaks = msg.text
+                      ?.split("\n")
+                      .map((line, i) => (
+                        <span key={i}>
+                          {line}
+                          <br />
+                        </span>
+                      ));
+
                     return (
                       <div
                         key={msg.id}
-                        className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+                        className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
+                        onMouseDown={() => {
+                          // bắt đầu đếm thời gian nhấn giữ
+                          this.pressTimer = setTimeout(() => {
+                            setActiveReactionMsg(msg.id); // hiển thị popup emoji
+                          }, 500);
+                        }}
+                        onMouseUp={() => clearTimeout(this.pressTimer)} // thả chuột -> hủy
+                        onMouseLeave={() => clearTimeout(this.pressTimer)} // rời khỏi vùng -> hủy
+                        onTouchStart={() => {
+                          this.pressTimer = setTimeout(() => {
+                            setActiveReactionMsg(msg.id);
+                          }, 500);
+                        }}
+                        onTouchEnd={() => clearTimeout(this.pressTimer)}
                       >
+                        {/* Nội dung tin nhắn */}
                         <div
-                          className={`px-3 py-2 rounded-lg max-w-[70%] ${
-                            isOwn ? "bg-primary text-primary-content" : "bg-base-300"
+                          className={`px-3 py-2 rounded-2xl text-sm md:text-base shadow-sm max-w-[75%] whitespace-pre-wrap break-words relative group ${
+                            isOwn
+                              ? "bg-primary text-primary-content rounded-br-none"
+                              : "bg-base-300 rounded-bl-none"
                           }`}
                         >
-                          {msg.text}
+                          {textWithBreaks}
+
+                          {/* Hiển thị reactions đã có */}
+                          {msg.reactions?.length > 0 && (
+                            <div className="flex gap-1 mt-1 flex-wrap">
+                              {msg.reactions.map((r, i) => (
+                                <span
+                                  key={i}
+                                  className="text-sm bg-base-100/60 px-1.5 py-0.5 rounded-full shadow-sm border border-base-300 cursor-default"
+                                >
+                                  {r.emoji}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Nếu tin nhắn này đang được ấn giữ -> hiện popup emoji */}
+                          {activeReactionMsg === msg.id && (
+                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-base-200 shadow-lg rounded-full px-3 py-1 flex gap-2 z-50">
+                              {["👍", "❤️", "😂", "😮", "😢", "🔥", "😍"].map((emo) => (
+                                <button
+                                  key={emo}
+                                  onClick={() => {
+                                    handleReactMessage(msg.id, emo);
+                                    setActiveReactionMsg(null); // ẩn sau khi chọn
+                                  }}
+                                  className="text-xl hover:scale-125 transition-transform"
+                                >
+                                  {emo}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
+
                     );
                   })
+
+
                 )}
               </div>
 
               <div className="border-t border-base-300 p-3 flex bg-base-200/30">
-                <input
-                  type="text"
+                <textarea
                   placeholder="Nhập tin nhắn..."
-                  className="flex-1 bg-base-100 rounded-lg px-3 py-2 outline-none border border-base-300"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  rows={1}
+                  className="flex-1 bg-base-100 rounded-lg px-3 py-2 outline-none border border-base-300 resize-none overflow-hidden"
+                  style={{ minHeight: "40px", maxHeight: "120px" }}
                 />
-                <button className="ml-3 bg-primary text-primary-content px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition">
+                <button
+                  onClick={handleSendMessage}
+                  className="ml-3 bg-primary text-primary-content px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition"
+                >
                   Gửi
                 </button>
               </div>
+
+
+
             </div>
           </>
         )}

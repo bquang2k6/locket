@@ -24,7 +24,7 @@ const Listmsg = ({ messages, onSelect, loading }) => {
     <div className="flex-1 overflow-y-auto">
       {messages.map((msg) => (
         <Uimsg
-          key={msg.id}
+          key={msg.uid}
           name={msg.name}
           avatarText={msg.avatarText}
           avatarImage={msg.avatarImage}
