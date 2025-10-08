@@ -2,16 +2,16 @@ import { io } from "socket.io-client";
 
 let socketInstance = null;
 
-function getBaseUrl() {
-  const envUrl = import.meta?.env?.VITE_API_URL;
-  return envUrl || "http://localhost:8000";
+function getBaseWsUrl() {
+  const wsUrl = import.meta?.env?.VITE_BASE_API_URL_WS;
+  return wsUrl || "https://ws-locket.wangtech.top";
 }
 
 export function getSocket() {
   if (socketInstance && socketInstance.connected) return socketInstance;
 
   if (!socketInstance) {
-    socketInstance = io(`${getBaseUrl()}/chat`, {
+    socketInstance = io(`${getBaseWsUrl()}/chat`, {
       transports: ["websocket", "polling"],
       autoConnect: true,
       reconnection: true,
@@ -25,6 +25,7 @@ export function getSocket() {
 
   return socketInstance;
 }
+
 
 export function onNewListMessages(callback) {
   const socket = getSocket();

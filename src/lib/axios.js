@@ -74,9 +74,9 @@ function handleLogout() {
   localStorage.removeItem("idToken");
 
   // Chỉ redirect một lần và tránh loop
-  if (window.location.pathname !== "/login") {
-    window.location.href = "/login";
-  }
+  // if (window.location.pathname !== "/login") {
+  //   window.location.href = "/login";
+  // }
 }
 
 // Khởi tạo axios instance

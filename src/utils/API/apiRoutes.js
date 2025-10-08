@@ -8,9 +8,14 @@ const getBaseDbUrl = () => {
   return import.meta.env.VITE_BASE_API_URL_DB;
 };
 
+const getBaseWsUrl = () => {
+  return import.meta.env.VITE_BASE_API_URL_WS;
+};
+
 // Initialize with default backend URL
 let BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
 const BASE_DB_API_URL = getBaseDbUrl();
+let BASE_WS_API_URL = getBaseWsUrl(); // 👈 Thêm dòng này
 
 const initializeApiUrl = async () => {
   try {
@@ -18,10 +23,22 @@ const initializeApiUrl = async () => {
     if (newUrl) {
       BASE_API_URL = newUrl;
     }
+
+    // Nếu custom backend có WebSocket tương ứng
+    if (newUrl?.startsWith("https://")) {
+      BASE_WS_API_URL = newUrl.replace("https://", "wss://");
+    } else if (newUrl?.startsWith("http://")) {
+      BASE_WS_API_URL = newUrl.replace("http://", "ws://");
+    } else if (getBaseWsUrl()) {
+      // 👇 Ưu tiên dùng VITE_BASE_API_URL_WS nếu có
+      BASE_WS_API_URL = getBaseWsUrl();
+    }
   } catch (error) {
-    console.warn('Failed to initialize API URL:', error);
+    console.warn("Failed to initialize API URL:", error);
   }
 };
+
+
 
 // Initialize custom backend URL if configured
 initializeApiUrl();
@@ -39,6 +56,10 @@ const createApiUrlString = (path) => {
 const createDbApiUrlString = (path) => {
   return `${BASE_DB_API_URL}${path}`;
 };
+const createWsUrlString = (path) => {
+  return `${BASE_WS_API_URL}${path}`;
+};
+
 
 class DynamicUrl {
   constructor(urlGetter) {
@@ -68,10 +89,16 @@ export const API_URL = {
   GET_USER: "https://api.locketcamera.com/fetchUserV2",
   GET_INCOMING_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/get-incoming_friends`)),
   DELETE_FRIEND_REQUEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/delete-incoming_friends`)),
+  MARK_AS_READ: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/markAsRead`)),
+  SEND_CHAT_MESSAGE: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/sendChatMessageV2`)),
 
   SEND_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactMomentV3`)),
   INFO_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactinfoMomentV3`)),
   GET_MOMENTV2_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getPost`)),
+
+  GET_All_MESSAGE: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getAllMessageV2`)),
+  GET_All_MESSAGE_WITH_USER: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getMessageWithUserV2`)),
+  SEND_CHAT_MESSAGE_REACTION: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/sendChatMessageReaction`)),
 
   // API lấy dữ liệu từ máy chủ
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),

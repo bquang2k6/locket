@@ -3,6 +3,10 @@ import { ArrowLeft } from "lucide-react";
 import { AuthContext } from "../../context/AuthLocket";
 import { createResolveUserInfo } from "../UILocket/ExtendPage/components/resolveUserInfo";
 import Listmsg from "./components/Listmsg";
+import { API_URL } from "../../utils/API/apiRoutes";
+import * as utils from "../../utils";
+import axios from "axios";
+
 import {
   onNewListMessages,
   onNewMessagesWithUser,
@@ -38,23 +42,19 @@ export default function ChatListPage() {
           localStorage.getItem("authToken") || localStorage.getItem("idToken");
         if (!token) throw new Error("Chưa đăng nhập. Vui lòng đăng nhập lại.");
 
-        const response = await fetch(
-          "http://localhost:8000/locket/getAllMessageV2",
+        const res = await axios.post(
+          API_URL.GET_All_MESSAGE,
+          { timestamp: null, userId: user?.uid },
           {
-            method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ timestamp: null }),
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Không thể tải danh sách tin nhắn");
-        }
+        const data = res.data;
 
-        const data = await response.json();
 
         const transformedMessages = data.data.map((item) => {
           const resolved = resolveUserInfo(item.with_user);
@@ -176,24 +176,22 @@ export default function ChatListPage() {
         setLoadingChat(true);
         const token =
           localStorage.getItem("authToken") || localStorage.getItem("idToken");
-        const response = await fetch(
-          "http://localhost:8000/locket/getMessageWithUserV2",
+        const res = await axios.post(
+          String(API_URL.GET_All_MESSAGE_WITH_USER),
           {
-            method: "POST",
+            messageId: selectedChat.uid,
+            timestamp: null,
+          },
+          {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              messageId: selectedChat.uid,
-              timestamp: null,
-            }),
           }
         );
 
-        if (!response.ok) throw new Error("Không thể tải tin nhắn chi tiết");
 
-        const data = await response.json();
+        const data = res.data;
         setChatMessages((data.data || []).reverse());
       } catch (err) {
         console.error(err);
@@ -213,18 +211,21 @@ export default function ChatListPage() {
           localStorage.getItem("authToken") || localStorage.getItem("idToken");
         if (!token) return;
 
-        await fetch("https://api.wangtech.top/locket/markAsRead", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // thêm nếu API yêu cầu token
-          },
-          body: JSON.stringify({
+        const res = await axios.post(
+          String(API_URL.MARK_AS_READ),
+          {
             data: {
               conversation_uid: selectedChat.uid,
             },
-          }),
-        });
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // gửi header thật
+            },
+          }
+        );
+
       } catch (err) {
         console.error("Lỗi markAsRead:", err);
       }
@@ -293,17 +294,17 @@ export default function ChatListPage() {
         },
       };
 
-      const res = await fetch("https://api.wangtech.top/locket/sendChatMessageV2", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Gửi tin nhắn thất bại");
-      const result = await res.json();
+      const res = await axios.post(
+        String(API_URL.SEND_CHAT_MESSAGE),
+        payload, // dữ liệu thật bạn muốn gửi
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = res.data;
 
       // ✅ Cập nhật hiển thị ngay trên UI
       const newMsgObj = {
@@ -360,17 +361,19 @@ export default function ChatListPage() {
         },
       };
 
-      const res = await fetch("http://localhost:5001/locket/sendChatMessageReaction", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await axios.post(
+        String(API_URL.SEND_CHAT_MESSAGE_REACTION),
+        payload, // đây là data body thật
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      if (!res.ok) throw new Error("Gửi reaction thất bại");
-      const result = await res.json();
+
+      const result = res.data;
 
       // ✅ cập nhật local ngay nếu API trả về reactions mới
       setChatMessages((prev) =>
