@@ -11,6 +11,7 @@ import ThemeSelector from "../../../components/Theme/ThemeSelector";
 import ActivityModal from "./components/ActivityModal";
 import Activityavt from "./components/Activityavt";
 import HeaderBeforeCaptureavt from "./Header/HeaderBeforeCaptureavt";
+import axios from "axios";
 
 const BottomHomeScreen = () => {
   const { user, friendDetails } = useContext(AuthContext);
@@ -78,12 +79,22 @@ const BottomHomeScreen = () => {
   const fetchServerMoments = async (append = false) => {
     try {
       setLoadingServer(true);
-
-      const res = await api.post(String(API_URL.GET_MOMENTV2_URL), {
-        limit: 50,
-        pageToken: append ? pageToken : null,
-        userId: user?.uid,
-      });
+      const token =
+        localStorage.getItem("authToken") || localStorage.getItem("idToken");
+      const res = await axios.post(
+        API_URL.GET_MOMENTV2_URL,
+        {
+          limit: 50,
+          pageToken: append ? pageToken : null,
+          userId: user?.uid,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = res?.data?.moments || [];
       const nextToken = res?.data?.nextPageToken || null;
@@ -110,15 +121,29 @@ const BottomHomeScreen = () => {
   // Gửi reaction
   async function sendReaction(momentId, emoji) {
     try {
-      const res = await api.post(String(API_URL.SEND_REACTION_URL), {
-        emoji: emoji,
-        moment_id: momentId,
-        intensity: 0,
-      });
+      const token =
+      localStorage.getItem("authToken") || localStorage.getItem("idToken");
+
+      const res = await axios.post(
+        API_URL.SEND_REACTION_URL,
+        {
+          emoji: emoji,
+          moment_id: momentId,
+          intensity: 0,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       console.log("Reaction sent:", res.data);
       showSuccess(`Đã gửi reaction ${emoji}!`);
     } catch (err) {
-      console.error("Failed to send reaction:", err);
+      console.error("Failed to send reaction:", err?.response?.data || err);
+      showInfo("Phiên đăng nhập đã hết hạn hoặc thiếu token");
     }
   }
 
@@ -408,54 +433,33 @@ const BottomHomeScreen = () => {
 
             {/* Caption hiển thị */}
             {imageInfo?.captions?.[0] && (
-              <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2">
-                <div
-                  className={`inline-flex flex-row items-center gap-2 px-4 py-2 rounded-full font-semibold 
-                    overflow-hidden max-w-[90vw] mx-auto
-                    ${
-                      imageInfo?.captions?.[0]?.background?.colors?.length
-                        ? "border-transparent"
-                        : "border-secondary bg-base-300/70 text-base-content backdrop-blur-3xl"
-                    }`}
-                  style={{
-                    background: imageInfo?.captions?.[0]?.background?.colors?.length
-                      ? `linear-gradient(to bottom, ${imageInfo?.captions?.[0]?.background?.colors?.[0]}, ${imageInfo?.captions?.[0]?.background?.colors?.[1]})`
-                      : undefined,
-                    color: imageInfo?.captions?.[0]?.text_color || undefined,
-                    width: "fit-content",
-                  }}
-                >
-                  {/* icon + caption */}
-                  <div className="relative overflow-hidden h-6 flex items-center justify-center">
-                    {(() => {
-                      const caption = imageInfo?.captions?.[0]?.caption || "";
-                      const wordCount = caption.trim().split(/\s+/).length;
-                      const isMarquee = wordCount > 8;
-
-                      return (
-                        <span
-                          className={`whitespace-nowrap ${
-                            isMarquee ? "inline-block" : "w-full text-center"
-                          }`}
-                          style={{
-                            animation: isMarquee ? "marquee 1s linear infinite" : "none",
-                          }}
-                        >
-                          {caption}
-                        </span>
-                      );
-                    })()}
-                  </div>
-                </div>
-
-                <style>{`
-                  @keyframes marquee {
-                    0% { transform: translateX(5%); }
-                    100% { transform: translateX(-5%); }
-                  }
-                `}</style>
+            <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2 w-full flex justify-center">
+              <div
+                className={`flex items-center justify-center text-center px-5 py-3 rounded-3xl font-semibold
+                  border border-transparent
+                  ${
+                    imageInfo?.captions?.[0]?.background?.colors?.length
+                      ? ""
+                      : "bg-base-300/70 text-base-content backdrop-blur-3xl border-secondary"
+                  }`}
+                style={{
+                  background: imageInfo?.captions?.[0]?.background?.colors?.length
+                    ? `linear-gradient(to bottom, ${imageInfo?.captions?.[0]?.background?.colors?.[0]}, ${imageInfo?.captions?.[0]?.background?.colors?.[1]})`
+                    : undefined,
+                  color: imageInfo?.captions?.[0]?.text_color || undefined,
+                  maxWidth: "80vw",         // chỉ giãn tối đa 80% màn hình
+                  wordBreak: "break-word",  // xuống dòng nếu quá dài
+                  whiteSpace: "pre-wrap",   // giữ format và tự ngắt dòng
+                }}
+              >
+                <span className="text-base leading-snug break-words text-center">
+                  {imageInfo?.captions?.[0]?.caption || ""}
+                </span>
               </div>
-            )}
+            </div>
+          )}
+
+
 
 
 

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import api from "../../../../../src/lib/axios";
 import { API_URL } from "../../../../utils/API/apiRoutes";
+import axios from "axios";
 
 import formatTime from "./formatTime";
 
@@ -41,7 +42,22 @@ const ActivityModal = ({ isOpen, onClose, momentId, friendDetails, user }) => {
       if (!momentId) return;
       try {
         setLoading(true);
-        const res = await api.post(String(API_URL.INFO_REACTION_URL), { idMoment: momentId });
+
+        const token =
+          localStorage.getItem("idToken") 
+        if (!token) throw new Error("Không có token trong localStorage");
+
+        const res = await axios.post(
+          API_URL.INFO_REACTION_URL,
+          { idMoment: momentId },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         if (res.data?.success) {
           setActivityData({
             reactions: res.data.data.reactions || [],
@@ -49,7 +65,7 @@ const ActivityModal = ({ isOpen, onClose, momentId, friendDetails, user }) => {
           });
         }
       } catch (error) {
-        console.error("Error fetching activity data:", error);
+        console.error("Error fetching activity data:", error?.response?.data || error);
       } finally {
         setLoading(false);
       }

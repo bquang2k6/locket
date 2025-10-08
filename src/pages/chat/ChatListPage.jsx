@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
 import { AuthContext } from "../../context/AuthLocket";
 import { createResolveUserInfo } from "../UILocket/ExtendPage/components/resolveUserInfo";
@@ -6,6 +6,7 @@ import Listmsg from "./components/Listmsg";
 import { API_URL } from "../../utils/API/apiRoutes";
 import * as utils from "../../utils";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 import {
   onNewListMessages,
@@ -27,11 +28,17 @@ export default function ChatListPage() {
   const [newMessage, setNewMessage] = useState("");
   const [lastEnterTime, setLastEnterTime] = useState(0);
   const [activeReactionMsg, setActiveReactionMsg] = useState(null);
+  const messagesEndRef = useRef(null); // ref để cuộn
 
   const resolveUserInfo = useMemo(
     () => createResolveUserInfo(friendDetails, user),
     [friendDetails, user]
   );
+   useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
 
   // ======= GỌI DANH SÁCH CUỘC TRÒ CHUYỆN =======
   useEffect(() => {
@@ -409,8 +416,16 @@ export default function ChatListPage() {
         }`}
       >
         <div className="flex items-center gap-4 p-4 border-b border-base-300 bg-base-200/50 backdrop-blur">
-          <h1 className="text-xl font-semibold">Tin nhắn</h1>
-        </div>
+          
+              <Link 
+                to="/locket" 
+                className="hover:bg-base-300 rounded-lg p-2 transition-colors flex items-center"
+              >
+                <ArrowLeft size={24} />
+                <span className="ml-2">Tin nhắn</span>
+              </Link>
+
+        </div> 
 
         {error ? (
           <div className="flex-1 flex items-center justify-center text-red-500">{error}</div>
@@ -445,7 +460,7 @@ export default function ChatListPage() {
             </div>
 
             <div className="flex flex-col h-[calc(100vh-64px)]">
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              <div ref={messagesEndRef} className="flex-1 overflow-y-auto p-4 space-y-3">
                 {loadingChat ? (
                   <div className="text-center text-gray-500">Đang tải tin nhắn...</div>
                 ) : (

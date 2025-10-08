@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import api from "../../../../../src/lib/axios";
 import { API_URL } from "../../../../utils/API/apiRoutes";
 import clsx from "clsx";
+import axios from "axios";
 
 
 import formatTime from "./formatTime";
@@ -43,7 +44,22 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
       if (!momentId) return;
       try {
         setLoading(true);
-        const res = await api.post(String(API_URL.INFO_REACTION_URL), { idMoment: momentId });
+
+        const token =
+          localStorage.getItem("idToken") 
+        if (!token) throw new Error("Không có token trong localStorage");
+
+        const res = await axios.post(
+          API_URL.INFO_REACTION_URL,
+          { idMoment: momentId },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         if (res.data?.success) {
           setActivityData({
             reactions: res.data.data.reactions || [],
@@ -51,13 +67,13 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
           });
         }
       } catch (error) {
-        console.error("Error fetching activity data:", error);
+        console.error("Error fetching activity data:", error?.response?.data || error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchActivityData(); // 👉 Gọi luôn, không cần kiểm tra isOpen
+    fetchActivityData(); // 👉 gọi luôn khi momentId thay đổi
   }, [momentId]);
 
 
