@@ -29,6 +29,7 @@ export default function ChatListPage() {
   const [lastEnterTime, setLastEnterTime] = useState(0);
   const [activeReactionMsg, setActiveReactionMsg] = useState(null);
   const messagesEndRef = useRef(null); // ref để cuộn
+    const pressTimerRef = useRef(null);
 
   const resolveUserInfo = useMemo(
     () => createResolveUserInfo(friendDetails, user),
@@ -422,7 +423,7 @@ export default function ChatListPage() {
                 className="hover:bg-base-300 rounded-lg p-2 transition-colors flex items-center"
               >
                 <ArrowLeft size={24} />
-                <span className="ml-2">Tin nhắn</span>
+                <span className="ml-2">Tin nhắn (mẹo: lỗi thì load lại trang)</span>
               </Link>
 
         </div> 
@@ -480,19 +481,18 @@ export default function ChatListPage() {
                         key={msg.id}
                         className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
                         onMouseDown={() => {
-                          // bắt đầu đếm thời gian nhấn giữ
-                          this.pressTimer = setTimeout(() => {
-                            setActiveReactionMsg(msg.id); // hiển thị popup emoji
-                          }, 500);
-                        }}
-                        onMouseUp={() => clearTimeout(this.pressTimer)} // thả chuột -> hủy
-                        onMouseLeave={() => clearTimeout(this.pressTimer)} // rời khỏi vùng -> hủy
-                        onTouchStart={() => {
-                          this.pressTimer = setTimeout(() => {
+                          pressTimerRef.current = setTimeout(() => {
                             setActiveReactionMsg(msg.id);
-                          }, 500);
+                          }, 2000); // ⏱ Giữ chuột 1 giây mới hiện popup emoji
                         }}
-                        onTouchEnd={() => clearTimeout(this.pressTimer)}
+                        onMouseUp={() => clearTimeout(pressTimerRef.current)}
+                        onMouseLeave={() => clearTimeout(pressTimerRef.current)}
+                        onTouchStart={() => {
+                          pressTimerRef.current = setTimeout(() => {
+                            setActiveReactionMsg(msg.id);
+                          }, 2000); // ⏱ Giữ tay trên màn hình 1 giây
+                        }}
+                        onTouchEnd={() => clearTimeout(pressTimerRef.current)}
                       >
                         {/* Nội dung tin nhắn */}
                         <div
