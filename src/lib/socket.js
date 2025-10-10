@@ -3,10 +3,18 @@ import { io } from "socket.io-client";
 let socketInstance = null;
 
 function getBaseWsUrl() {
-  const wsUrl = import.meta?.env?.VITE_BASE_API_URL_WS;
-  return wsUrl || "https://ws-locket.wangtech.top";
-  // return wsUrl || "http://localhost:8000";
+  const envWs = import.meta?.env?.VITE_BASE_API_URL_WS;
+
+  if (envWs) return envWs;
+
+  // Auto chọn protocol tương ứng (dev/prod)
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const host = window.location.hostname;
+  const port = window.location.port || "8000";
+
+  return `${protocol}//${host}:${port}`;
 }
+
 
 export function getSocket() {
   if (socketInstance && socketInstance.connected) return socketInstance;
