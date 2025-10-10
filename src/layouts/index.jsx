@@ -3,7 +3,8 @@ import DefaultLayout from "./mainLayout";
 
 
 const getLayout = (pathname) => {
-  if (pathname.includes("/test") || pathname === "/locket" || "chat") {
+  // Sử dụng LocketLayout (không có header/footer) cho trang locket và chat
+  if (pathname === "/locket" || pathname === "/chat") {
     return LocketLayout;
   }
   return DefaultLayout;

@@ -51,13 +51,18 @@ const CacheManagement = () => {
       await clearAllGifs();
 
       toast.success("Đã xóa tất cả cache thành công!");
-      reloadPage();
+
+      // ⏩ Chuyển sang trang đăng nhập
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1000);
     } catch (err) {
       console.error("Clear cache failed:", err);
       toast.error("Xóa cache thất bại!");
       setIsClearing(false);
     }
   };
+
 
   const handleForceUpdate = async () => {
     try {
