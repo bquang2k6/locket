@@ -54,6 +54,24 @@ const FriendsContainer = () => {
       setCurrentY(Math.min(deltaY, maxDrag));
     }
   };
+  const handleRefreshCache = () => {
+    try {
+      // 1️⃣ Xóa cache bạn bè
+      localStorage.removeItem("friendDetails");
+      setFriendDetails([]); // reset UI
+
+      // 2️⃣ (Tuỳ chọn) Có thể log hoặc hiển thị thông báo
+      console.log("Đã xóa cache bạn bè 🎉");
+
+      // 3️⃣ Reload lại toàn bộ trang
+      setTimeout(() => {
+        window.location.reload();
+      }, 300); // delay nhẹ cho cảm giác tự nhiên
+    } catch (error) {
+      console.error("Lỗi khi làm mới cache:", error);
+    }
+  };
+
 
   // Load friendDetails từ localStorage khi component mount hoặc tab mở
   useEffect(() => {
@@ -229,12 +247,12 @@ const FriendsContainer = () => {
           </div>
           <div
             className="flex items-center justify-start w-full mt-2 text-sm text-base-content gap-2 cursor-pointer hover:opacity-80"
-            onClick={() => alert("Tính năng đang được phát triển 🚧")}
+            onClick={handleRefreshCache}
           >
-            <RefreshCcw className="w-4 h-4" />
+            <RefreshCcw className="w-4 h-4 animate-spin-once" />
             <span>Làm mới</span>
-            <span className="text-gray-500 text-xs">(đang phát triển)</span>
           </div>
+
         </div>
 
         {/* Nội dung bạn bè */}
