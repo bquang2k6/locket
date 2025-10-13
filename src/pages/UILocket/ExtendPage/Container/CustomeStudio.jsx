@@ -55,37 +55,30 @@ const ScreenCustomeStudio = () => {
 
   // Danh sách GIF từ Firebase, thêm GIF mới vào mảng này
   const gifList = [
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0803.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0804.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0805.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0806.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0807.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0808.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0809.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/0810.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/2c68009a28d042cd83ae9d9de5587e65.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/48eb4cfdf6bf47eea76d4309a8b301fd.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/8160a7d8756b4952ac99bf91afade11f.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/822ccb5a7c124e1c97941803ad38c91e.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9168d7c5c4b94e02a2cbc768bacdd199.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/93bd734619674dbbad4d64e9e22dcee6.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9a2a09c7076942a28f8a6aa9e3672d59.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/9d9477096c204373ad3573c816694b23.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/Dog-What.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/Happy-Blue-Sky.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/a5eea28dd6c14a1d966a27e5561e99c8.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/b37d4c66ece243d0aeba598c24231612.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/c10d5f2da9584bf09ada65dc3a31264b.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/c7b55f1ac283483092fcaab25dc98515.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/caa0183826944deda599270edcc527c1.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/dap.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/deadline.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/f9ac1fe6c380428b8a5659b8c5c659d6.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/f9cfedb38a12461b875fff41a60912c8.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/fcf3d9f2f85f4ed2bcf6f66def68071f.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/haha.gif",
     "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/nhang.gif",
-    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/output_no_bg_square.gif"
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/output_no_bg_square.gif",     
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/rounded_1013(1).gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/rounded_1013(2).gif",
+    "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/rounded_1013.gif"
     
     // Thêm các GIF mới tại  đây
   ];
