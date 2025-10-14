@@ -91,10 +91,10 @@ export const API_URL = {
   DELETE_FRIEND_REQUEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/delete-incoming_friends`)),
   MARK_AS_READ: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/markAsRead`)),
   SEND_CHAT_MESSAGE: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/sendChatMessageV2`)),
-
   SEND_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactMomentV3`)),
   INFO_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactinfoMomentV3`)),
   GET_MOMENTV2_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getPost`)),
+  GET_LATEST_MOMENT: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getLatestMomentV2`)),
 
   GET_All_MESSAGE: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getAllMessageV2`)),
   GET_All_MESSAGE_WITH_USER: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getMessageWithUserV2`)),

@@ -39,8 +39,8 @@ const HeaderBeforeCapture = () => {
           />
         </button>
 
-        {/* 🎯 Streak nằm ngay cạnh avatar */}
-        <div className="scale-60 origin-left">
+        {/* Streak nằm ngay cạnh avatar */}
+        <div className="scale-55 origin-left">
           <Streak />
         </div>
       </div>
