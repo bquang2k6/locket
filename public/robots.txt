@@ -1,27 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap
 Sitemap: https://locket.wangtech.top/sitemap.xml
-
-# Disallow admin or private areas (if any)
-# Disallow: /admin/
-# Disallow: /private/
-
-# Allow all other content
-Allow: /images/
-Allow: /assets/
-Allow: /public/
-
-# Crawl delay (optional - helps with server load)
-Crawl-delay: 1
-
-# Block specific file types if needed
-# Disallow: /*.pdf$
-# Disallow: /*.doc$
-# Disallow: /*.docx$
-
-# Allow important directories
-Allow: /src/
-Allow: /components/
-Allow: /pages/ 

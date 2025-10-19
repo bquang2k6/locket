@@ -107,7 +107,7 @@ export const API_URL = {
   DONATE_URL: createDbApiUrlString(`${LOCKET_PRO}/donations`),
   NOTIFI_URL: createDbApiUrlString(`${LOCKET_PRO}/notification`),
   USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
-  CAPTION_POSTS_URL: "https://api4.wangtech.top/locketpro/user-themes/caption-posts",
+  CAPTION_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts`),
   DELETE_CAPTION_POST_URL: (postId) => createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts/${postId}`),
   POST_USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),   
 
