@@ -7,7 +7,7 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://locket.wangtech.top/about</loc>
+    <loc>https://locket.wangtech.top/aboutme</loc>
     <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -23,12 +23,6 @@
     <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://locket.wangtech.top/privacy</loc>
-    <lastmod>2024-12-19</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://locket.wangtech.top/upgrade</loc>
@@ -49,19 +43,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://locket.wangtech.top/contact</loc>
-    <lastmod>2024-12-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://locket.wangtech.top/login</loc>
-    <lastmod>2024-12-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://locket.wangtech.top/register</loc>
     <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
