@@ -16,6 +16,28 @@ import {
   getSocket,
 } from "../../lib/socket";
 
+// Import cache và services
+import {
+  getAllConversations,
+  saveConversations,
+  upsertConversations,
+  getMessagesByConversationId,
+  saveMessageWithUsers,
+} from "../../cache/chatsDB";
+import {
+  GetAllMessage,
+  getMessagesWithUser,
+  sendMessage as sendMessageService,
+  markReadMessage,
+  sendReactionOnMessage,
+} from "../../services/LocketDioService/ChatServices";
+import {
+  handleListMessage,
+  handleListMessageWithUser,
+  handleNewMessageWithUser,
+} from "../../socket/socketHandlers";
+import SocketStatus from "./components/SocketStatus";
+
 
 export default function ChatListPage() {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -24,10 +46,12 @@ export default function ChatListPage() {
   const [loading, setLoading] = useState(true);
   const [loadingChat, setLoadingChat] = useState(false);
   const [error, setError] = useState(null);
+  const [isConnected, setIsConnected] = useState(false); // Trạng thái kết nối socket
   const { friendDetails, user } = useContext(AuthContext);
   const [newMessage, setNewMessage] = useState("");
   const [lastEnterTime, setLastEnterTime] = useState(0);
   const [activeReactionMsg, setActiveReactionMsg] = useState(null);
+  const [avatarError, setAvatarError] = useState(false); // Track lỗi ảnh avatar
   const messagesEndRef = useRef(null); // ref để cuộn
     const pressTimerRef = useRef(null);
 
@@ -35,6 +59,43 @@ export default function ChatListPage() {
     () => createResolveUserInfo(friendDetails, user),
     [friendDetails, user]
   );
+
+  // ======= THEO DÕI TRẠNG THÁI KẾT NỐI SOCKET =======
+  useEffect(() => {
+    const socket = getSocket();
+    
+    // Lắng nghe sự kiện kết nối
+    const handleConnect = () => {
+      console.log("✅ Socket connected");
+      setIsConnected(true);
+    };
+
+    const handleDisconnect = () => {
+      console.log("❌ Socket disconnected");
+      setIsConnected(false);
+    };
+
+    const handleConnectError = (error) => {
+      console.error("❌ Socket connection error:", error);
+      setIsConnected(false);
+    };
+
+    // Kiểm tra trạng thái ban đầu
+    setIsConnected(socket.connected);
+
+    // Đăng ký listeners
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("connect_error", handleConnectError);
+
+    // Cleanup
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error", handleConnectError);
+    };
+  }, []);
+
    useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
@@ -50,53 +111,83 @@ export default function ChatListPage() {
           localStorage.getItem("authToken") || localStorage.getItem("idToken");
         if (!token) throw new Error("Chưa đăng nhập. Vui lòng đăng nhập lại.");
 
-        const res = await axios.post(
-          API_URL.GET_All_MESSAGE,
-          { timestamp: null, userId: user?.uid },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        // 1. Lấy từ DB trước (cache)
+        const localConversations = await getAllConversations();
+        if (localConversations?.length > 0) {
+          console.log("✅ Loaded from DB:", localConversations.length);
+          // Transform để hiển thị
+          const transformed = localConversations.map((item) => {
+            const resolved = resolveUserInfo(item.with_user);
+            const userName = resolved?.name || item.with_user || "Người dùng";
+            const avatarUrl =
+              resolved?.avatar ||
+              resolved?.avatar_url ||
+              resolved?.photoURL ||
+              resolved?.profilePicture ||
+              resolved?.image ||
+              item.avatar ||
+              item.avatar_url ||
+              "/prvlocket.png";
 
-        const data = res.data;
+            return {
+              uid: item.uid,
+              name: userName,
+              avatarText: userName.substring(0, 2).toUpperCase(),
+              avatarImage: avatarUrl,
+              lastMessage: item.latestMessage?.body || "",
+              time: item.latestMessage?.createdAt || item.update_time || item.updateTime,
+              unreadCount: item.unreadCount || 0,
+              sender: item.sender,
+              withUser: item.with_user,
+            };
+          });
+          transformed.sort((a, b) => parseInt(b.time) - parseInt(a.time));
+          setMessages(transformed);
+        }
 
+        // 2. Gọi API để sync mới nhất
+        console.log("🌐 Fetching from API...");
+        const conversations = await GetAllMessage();
 
-        const transformedMessages = data.data.map((item) => {
-          const resolved = resolveUserInfo(item.with_user);
-          const userName = resolved?.name || item.with_user || "Người dùng";
+        if (conversations?.length > 0) {
+          await saveConversations(conversations);
+          
+          // Transform và cập nhật UI
+          const transformedMessages = conversations.map((item) => {
+            const resolved = resolveUserInfo(item.with_user);
+            const userName = resolved?.name || item.with_user || "Người dùng";
 
-          const avatarUrl =
-            resolved?.avatar ||
-            resolved?.avatar_url ||
-            resolved?.photoURL ||
-            resolved?.profilePicture ||
-            resolved?.image ||
-            item.avatar ||
-            item.avatar_url ||
-            "/prvlocket.png";
+            const avatarUrl =
+              resolved?.avatar ||
+              resolved?.avatar_url ||
+              resolved?.photoURL ||
+              resolved?.profilePicture ||
+              resolved?.image ||
+              item.avatar ||
+              item.avatar_url ||
+              "/prvlocket.png";
 
-          return {
-            uid: item.uid,
-            name: userName,
-            avatarText: userName.substring(0, 2).toUpperCase(),
-            avatarImage: avatarUrl,
-            lastMessage: item.latestMessage?.body || "",
-            time: item.latestMessage?.createdAt || item.updateTime,
-            unreadCount: item.unreadCount || 0,
-            sender: item.sender,
-            withUser: item.with_user,
-          };
-        });
+            return {
+              uid: item.uid,
+              name: userName,
+              avatarText: userName.substring(0, 2).toUpperCase(),
+              avatarImage: avatarUrl,
+              lastMessage: item.latestMessage?.body || "",
+              time: item.latestMessage?.createdAt || item.updateTime || item.update_time,
+              unreadCount: item.unreadCount || 0,
+              sender: item.sender,
+              withUser: item.with_user,
+            };
+          });
 
-        transformedMessages.sort(
-          (a, b) => parseInt(b.time) - parseInt(a.time)
-        );
+          transformedMessages.sort(
+            (a, b) => parseInt(b.time) - parseInt(a.time)
+          );
 
-        setMessages(transformedMessages);
+          setMessages(transformedMessages);
+        }
       } catch (err) {
+        console.error("❌ Fetch messages error:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -112,12 +203,9 @@ export default function ChatListPage() {
       localStorage.getItem("authToken") || localStorage.getItem("idToken");
     if (!token) return;
 
-    // Bắt đầu lắng nghe realtime danh sách hội thoại
-    const off = onNewListMessages((batch = []) => {
-      if (!Array.isArray(batch) || batch.length === 0) return;
-
-      // Map sang cấu trúc UI hiện tại
-      const mapped = batch.map((item) => {
+    // Handler để transform raw conversations thành UI format
+    const transformConversations = (rawConversations) => {
+      return rawConversations.map((item) => {
         const resolved = resolveUserInfo(item.with_user);
         const userName = resolved?.name || item.with_user || "Người dùng";
         const avatarUrl =
@@ -136,31 +224,28 @@ export default function ChatListPage() {
           avatarText: userName.substring(0, 2).toUpperCase(),
           avatarImage: avatarUrl,
           lastMessage: item.latestMessage?.body || item.body || "",
-          time: item.latestMessage?.createdAt || item.updateTime || item.createdAt,
+          time: item.latestMessage?.createdAt || item.updateTime || item.update_time || item.createdAt,
           unreadCount: item.unreadCount || 0,
           sender: item.sender,
           withUser: item.with_user,
         };
-      });
+      }).sort((a, b) => parseInt(b.time) - parseInt(a.time));
+    };
 
-      setMessages((prev) => {
-        const byId = new Map(prev.map((c) => [c.uid, c]));
-        for (const conv of mapped) {
-          const existing = byId.get(conv.uid);
-          if (!existing) {
-            byId.set(conv.uid, conv);
-          } else {
-            byId.set(conv.uid, {
-              ...existing,
-              ...conv,
-            });
-          }
-        }
-        const merged = Array.from(byId.values());
-        merged.sort((a, b) => parseInt(b.time) - parseInt(a.time));
-        return merged;
-      });
-    });
+    // Custom handler: merge raw conversations, save to cache, then transform và update UI
+    const customHandler = async (data) => {
+      if (!Array.isArray(data) || !data.length) return;
+
+      // Upsert vào cache (lưu raw conversations)
+      await upsertConversations(data);
+      
+      // Fetch tất cả từ cache và transform
+      const allConversations = await getAllConversations();
+      const transformed = transformConversations(allConversations);
+      setMessages(transformed);
+    };
+
+    const off = onNewListMessages(customHandler);
 
     // Gửi yêu cầu bắt đầu stream danh sách
     emitGetListMessages({ timestamp: null, token });
@@ -182,27 +267,31 @@ export default function ChatListPage() {
       if (!selectedChat) return;
       try {
         setLoadingChat(true);
-        const token =
-          localStorage.getItem("authToken") || localStorage.getItem("idToken");
-        const res = await axios.post(
-          String(API_URL.GET_All_MESSAGE_WITH_USER),
-          {
-            messageId: selectedChat.uid,
-            timestamp: null,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        setAvatarError(false); // Reset lỗi ảnh khi chọn chat mới
+        
+        // 1. Lấy từ cache trước
+        const cached = await getMessagesByConversationId(selectedChat.uid);
+        if (cached?.messages?.length > 0) {
+          console.log("✅ Loaded messages from cache:", cached.messages.length);
+          setChatMessages(cached.messages);
+        }
 
-
-        const data = res.data;
-        setChatMessages((data.data || []).reverse());
+        // 2. Gọi API để sync mới nhất
+        const messages = await getMessagesWithUser(selectedChat.uid, null);
+        
+        if (messages?.length > 0) {
+          // Lưu vào cache
+          await saveMessageWithUsers(
+            selectedChat.uid,
+            selectedChat.withUser,
+            messages
+          );
+          setChatMessages(messages.reverse());
+        } else if (!cached?.messages?.length) {
+          setChatMessages([]);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("❌ Fetch chat detail error:", err);
       } finally {
         setLoadingChat(false);
       }
@@ -215,25 +304,7 @@ export default function ChatListPage() {
     if (!selectedChat) return;
     const markAsRead = async () => {
       try {
-        const token =
-          localStorage.getItem("authToken") || localStorage.getItem("idToken");
-        if (!token) return;
-
-        const res = await axios.post(
-          String(API_URL.MARK_AS_READ),
-          {
-            data: {
-              conversation_uid: selectedChat.uid,
-            },
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, // gửi header thật
-            },
-          }
-        );
-
+        await markReadMessage(selectedChat.uid);
       } catch (err) {
         console.error("Lỗi markAsRead:", err);
       }
@@ -250,20 +321,19 @@ export default function ChatListPage() {
       localStorage.getItem("authToken") || localStorage.getItem("idToken");
     if (!token) return;
 
-    // Lắng nghe tin nhắn mới trong cuộc trò chuyện hiện tại
-    const off = onNewMessagesWithUser((batch = []) => {
-      if (!Array.isArray(batch) || batch.length === 0) return;
-
-      setChatMessages((prev) => {
-        const map = new Map((prev || []).map((m) => [m.id, m]));
-        for (const m of batch) {
-          map.set(m.id, m);
-        }
-        const merged = Array.from(map.values());
-        merged.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-        return merged;
-      });
+    // Handler để cập nhật messages và cache
+    const handler = handleNewMessageWithUser((updatedMessages) => {
+      setChatMessages(updatedMessages);
+      // Lưu vào cache - hàm saveMessageWithUsers sẽ tự động sanitize dữ liệu
+      if (Array.isArray(updatedMessages)) {
+        saveMessageWithUsers(
+          selectedChat.uid,
+          selectedChat.withUser,
+          updatedMessages
+        );
+      }
     });
+    const off = onNewMessagesWithUser(handler);
 
     // Bắt đầu stream cho cuộc hội thoại được chọn
     emitGetMessagesWithUser({
@@ -287,45 +357,39 @@ export default function ChatListPage() {
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedChat) return;
     try {
-      const token =
-        localStorage.getItem("authToken") || localStorage.getItem("idToken");
-      if (!token) {
-        alert("Vui lòng đăng nhập lại");
-        return;
+      const messageData = {
+        receiver_uid: selectedChat.withUser,
+        message: newMessage.trim(),
+        moment_id: null,
+      };
+
+      const result = await sendMessageService(messageData);
+
+      if (result?.result?.status === 200 || result?.data) {
+        // ✅ Cập nhật hiển thị ngay trên UI
+        const newMsgObj = {
+          id: result.data?.id || Date.now(),
+          text: newMessage.trim(),
+          sender: user?.uid,
+          createdAt: Date.now() / 1000, // Unix timestamp
+          create_time: Date.now() / 1000,
+        };
+
+        setChatMessages((prev) => [...prev, newMsgObj]);
+        
+        // Lưu vào cache
+        await saveMessageWithUsers(
+          selectedChat.uid,
+          selectedChat.withUser,
+          [...chatMessages, newMsgObj]
+        );
+        
+        setNewMessage("");
+      } else {
+        throw new Error("Send message failed");
       }
-
-      const payload = {
-        data: {
-          msg: newMessage.trim(),
-          moment_uid: null,
-          receiver_uid: selectedChat.withUser, // uid người nhận
-        },
-      };
-
-      const res = await axios.post(
-        String(API_URL.SEND_CHAT_MESSAGE),
-        payload, // dữ liệu thật bạn muốn gửi
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const result = res.data;
-
-      // ✅ Cập nhật hiển thị ngay trên UI
-      const newMsgObj = {
-        id: result.data?.id || Date.now(),
-        text: newMessage.trim(),
-        sender: user?.uid,
-        createdAt: Date.now(),
-      };
-
-      setChatMessages((prev) => [...prev, newMsgObj]);
-      setNewMessage("");
     } catch (err) {
-      console.error(err);
+      console.error("Send message error:", err);
       alert("Không thể gửi tin nhắn");
     }
   };
@@ -349,39 +413,16 @@ export default function ChatListPage() {
 
   const handleReactMessage = async (messageId, emoji) => {
     try {
-      const token =
-        localStorage.getItem("authToken") || localStorage.getItem("idToken");
-      if (!token) {
-        alert("Vui lòng đăng nhập lại");
-        return;
-      }
-
       if (!selectedChat?.uid) {
         console.error("Không có conversation_id hợp lệ");
         return;
       }
 
-      const payload = {
-        data: {
-          message_id: messageId,
-          emoji: emoji,
-          conversation_id: selectedChat.uid,
-        },
-      };
-
-      const res = await axios.post(
-        String(API_URL.SEND_CHAT_MESSAGE_REACTION),
-        payload, // đây là data body thật
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-
-      const result = res.data;
+      const result = await sendReactionOnMessage({
+        messageId,
+        emoji,
+        conversationId: selectedChat.uid,
+      });
 
       // ✅ cập nhật local ngay nếu API trả về reactions mới
       setChatMessages((prev) =>
@@ -393,6 +434,21 @@ export default function ChatListPage() {
               }
             : m
         )
+      );
+      
+      // Cập nhật cache
+      const updatedMessages = chatMessages.map((m) =>
+        m.id === messageId
+          ? {
+              ...m,
+              reactions: result?.data?.reactions || m.reactions || [],
+            }
+          : m
+      );
+      await saveMessageWithUsers(
+        selectedChat.uid,
+        selectedChat.withUser,
+        updatedMessages
       );
     } catch (err) {
       console.error("Lỗi khi gửi reaction:", err);
@@ -416,16 +472,15 @@ export default function ChatListPage() {
           selectedChat ? "-translate-x-full" : "translate-x-0"
         }`}
       >
-        <div className="flex items-center gap-4 p-4 border-b border-base-300 bg-base-200/50 backdrop-blur">
-          
-              <Link 
-                to="/locket" 
-                className="hover:bg-base-300 rounded-lg p-2 transition-colors flex items-center"
-              >
-                <ArrowLeft size={24} />
-                <span className="ml-2">Tin nhắn (mẹo: lỗi thì load lại trang)</span>
-              </Link>
-
+        <div className="flex items-center justify-between gap-4 p-4 border-b border-base-300 bg-base-200/50 backdrop-blur">
+          <Link 
+            to="/locket" 
+            className="hover:bg-base-300 rounded-lg p-2 transition-colors flex items-center"
+          >
+            <ArrowLeft size={24} />
+            <span className="ml-2">Tin nhắn</span>
+          </Link>
+          <SocketStatus isConnected={isConnected} />
         </div> 
 
         {error ? (
@@ -451,12 +506,30 @@ export default function ChatListPage() {
                 <ArrowLeft size={24} />
               </button>
               <div className="flex items-center gap-3">
-                <img
-                  src={selectedChat.avatarImage}
-                  alt={selectedChat.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <h1 className="text-xl font-semibold">{selectedChat.name}</h1>
+                {/* Chỉ hiển thị avatar và tên khi có dữ liệu hợp lệ (có conversation) */}
+                {selectedChat?.withUser && (selectedChat?.name || selectedChat?.avatarImage || selectedChat?.avatarText) ? (
+                  <>
+                    {selectedChat.avatarImage && !avatarError ? (
+                      <img
+                        src={selectedChat.avatarImage}
+                        alt={selectedChat.name || "User"}
+                        className="w-10 h-10 rounded-full object-cover"
+                        onError={() => setAvatarError(true)}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-base-300 flex items-center justify-center text-base-content text-sm font-semibold">
+                        {selectedChat.avatarText || selectedChat.name?.substring(0, 2).toUpperCase() || "U"}
+                      </div>
+                    )}
+                    <h1 className="text-xl font-semibold">
+                      {selectedChat.name || "Người dùng"}
+                    </h1>
+                  </>
+                ) : (
+                  <h1 className="text-xl font-semibold text-base-content/60">
+                    Chưa có cuộc trò chuyện
+                  </h1>
+                )}
               </div>
             </div>
 
@@ -467,6 +540,7 @@ export default function ChatListPage() {
                 ) : (
                   chatMessages.map((msg) => {
                     const isOwn = msg.sender === user?.uid;
+
                     const textWithBreaks = msg.text
                       ?.split("\n")
                       .map((line, i) => (
@@ -475,6 +549,28 @@ export default function ChatListPage() {
                           <br />
                         </span>
                       ));
+
+                    const rawTimestamp =
+                      msg.create_time ??
+                      msg.createdAt ??
+                      msg.created_at ??
+                      msg.timestamp ??
+                      msg.time;
+
+                    let formattedTime = "";
+                    if (rawTimestamp) {
+                      const numericTimestamp = Number(rawTimestamp);
+                      const toMillis =
+                        Number.isFinite(numericTimestamp) && numericTimestamp < 1e12
+                          ? numericTimestamp * 1000
+                          : numericTimestamp;
+                      if (!Number.isNaN(toMillis)) {
+                        formattedTime = new Date(toMillis).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        });
+                      }
+                    }
 
                     return (
                       <div
@@ -502,15 +598,37 @@ export default function ChatListPage() {
                               : "bg-base-300 rounded-bl-none"
                           }`}
                         >
-                          {textWithBreaks}
+                          {/* Reply moment */}
+                          {msg.reply_moment && (
+                            <div className="mb-1 text-xs italic opacity-70">
+                              ↪ {msg.reply_moment}
+                            </div>
+                          )}
+
+                          {/* Thumbnail / media */}
+                          {msg.thumbnail_url && (
+                            <img
+                              src={msg.thumbnail_url}
+                              alt="thumbnail"
+                              className="w-40 h-40 object-cover rounded-lg my-1 border border-base-200"
+                            />
+                          )}
+
+                          {/* Text */}
+                          {textWithBreaks && textWithBreaks.length > 0 ? (
+                            <div>{textWithBreaks}</div>
+                          ) : msg.text ? (
+                            <div>{msg.text}</div>
+                          ) : null}
 
                           {/* Hiển thị reactions đã có */}
                           {msg.reactions?.length > 0 && (
-                            <div className="flex gap-1 mt-1 flex-wrap">
+                            <div className="flex gap-1 mt-2 flex-wrap">
                               {msg.reactions.map((r, i) => (
                                 <span
                                   key={i}
-                                  className="text-sm bg-base-100/60 px-1.5 py-0.5 rounded-full shadow-sm border border-base-300 cursor-default"
+                                  className="text-sm bg-base-100/70 px-1.5 py-0.5 rounded-full shadow-sm border border-base-300 cursor-default"
+                                  title={r.sender}
                                 >
                                   {r.emoji}
                                 </span>
@@ -536,12 +654,16 @@ export default function ChatListPage() {
                             </div>
                           )}
                         </div>
-                      </div>
 
+                        {/* Thời gian gửi */}
+                        {formattedTime && (
+                          <span className="mt-1 text-xs text-base-content/60">
+                            {formattedTime}
+                          </span>
+                        )}
+                      </div>
                     );
                   })
-
-
                 )}
               </div>
 
