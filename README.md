@@ -121,17 +121,6 @@ src/
 
 ---
 
-## 🤝 Đóng góp
-
-Rất hoan nghênh PRs!
-
-1. `https://github.com/doi2523/Client-Locket-Dio` đóng góp FE
-2. Tạo branch: git checkout -b feature/ten-tinh-nang
-3. Cài đặt & chạy, viết test nếu có
-4. Tạo PR mô tả thay đổi
-
-
----
 
 ## ⚠️ Ghi chú quan trọng
 
