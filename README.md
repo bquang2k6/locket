@@ -143,4 +143,6 @@ Rất hoan nghênh PRs!
 ### Chân thành cảm ơn @doi2523
 
 - Dự án được clone lại từ tháng 6 và tui tự phát triển thêm 
-- Thư mục app gốc `https://github.com/doi2523/Client-Locket-Dio`
+- Thư mục app gốc `https://github.com/doi2523`
+- Đóng góp BE và FE `https://github.com/ShindouAris`
+- @ShindouAris và @doi2523 giúp tôi học được nhiều thứ từ lúc chưa biết đến BE 
