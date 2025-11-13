@@ -15,7 +15,7 @@
 - Styling: Tailwind CSS
 - Tính năng nổi bật: chụp/quay trực tiếp, upload media, hỗ trợ offline (IndexedDB), push notification và PWA.
 
-Demo trực tiếp: https://locket-dio.com
+Demo trực tiếp: https://locket.wangtech.top
 
 ---
 
@@ -33,7 +33,7 @@ Demo trực tiếp: https://locket-dio.com
 
 ## 🚀 Demo
 
-Truy cập demo online: https://locket-dio.com
+Truy cập demo online: https://locket.wangtech.top
 
 Ảnh chụp giao diện (mở trong repo):
 
@@ -41,9 +41,9 @@ Truy cập demo online: https://locket-dio.com
 <summary>🖼️ Xem ảnh giao diện</summary>
 
 <div align="center">
-  <img src="public/images/preview_1.jpg" width="280" alt="preview 1" style="margin:8px; border-radius:8px;"/>
-  <img src="public/images/preview_2.jpg" width="280" alt="preview 2" style="margin:8px; border-radius:8px;"/>
-  <img src="public/images/preview_pc.png" width="280" alt="preview pc" style="margin:8px; border-radius:8px;"/>
+  <img src="public/locketcamera.jpg" width="280" alt="preview 1" style="margin:8px; border-radius:8px;"/>
+  <img src="public/images/locket_wan_preview.jpg" width="280" alt="preview 2" style="margin:8px; border-radius:8px;"/>
+  <img src="public/images/locket_wan_preview2.jpg" width="280" alt="preview pc" style="margin:8px; border-radius:8px;"/>
 </div>
 
 </details>
@@ -57,8 +57,8 @@ Yêu cầu: Node.js >= 18, npm hoặc yarn
 Clone repository và cài đặt:
 
 ```bash
-git clone https://github.com/doi2523/Client-Locket-Dio.git
-cd Client-Locket-Dio
+git clone https://github.com/bquang2k6/locket.git
+cd thư mục vừa tạo
 npm install
 ```
 
@@ -83,15 +83,15 @@ Mặc định dev server chạy trên: http://localhost:5173
 
 Tạo file `.env` ở root với các biến sau (ví dụ):
 
-```env
-# API chính
-VITE_BASE_API_URL=https://apilocket-diov2.onrender.com
+```env example
+# API WS
+VITE_BASE_API_URL_WS=
 
 # Storage / Upload
-VITE_STORAGE_API_URL=https://storage.locket-dio.com
+VITE_BASE_API_URL=
 
-# VAPID key cho Web Push
-VITE_VAPID_PUBLIC_KEY=your_vapid_public_key_here
+# DB
+VITE_BASE_API_URL_DB=
 ```
 
 Lưu ý: không commit file `.env` có chứa secret.
@@ -125,19 +125,11 @@ src/
 
 Rất hoan nghênh PRs!
 
-1. Fork repo
+1. `https://github.com/doi2523/Client-Locket-Dio` đóng góp FE
 2. Tạo branch: git checkout -b feature/ten-tinh-nang
 3. Cài đặt & chạy, viết test nếu có
 4. Tạo PR mô tả thay đổi
 
-Xem `CONTRIBUTING.md` (nếu có) cho quy tắc chi tiết.
-
----
-
-## 🧪 Kiểm thử (gợi ý)
-
-- Chạy linter / formatter nếu có: `npm run lint` / `npm run format`
-- Chạy unit / integration test (nếu repo có test): `npm test`
 
 ---
 
@@ -148,10 +140,7 @@ Xem `CONTRIBUTING.md` (nếu có) cho quy tắc chi tiết.
 
 ---
 
-Nếu bạn muốn, tôi có thể sửa tone (trang trọng/hài hước), thêm bản tiếng Anh, hoặc chèn badges (CI, license, coverage).
+### Chân thành cảm ơn @doi2523
 
----
-
-### Tiếp theo tôi đã làm
-
-- Drafted and replaced `README.md` with a clearer, more attractive Vietnamese README.
+- Dự án được clone lại từ tháng 6 và tui tự phát triển thêm 
+- Thư mục app gốc `https://github.com/doi2523/Client-Locket-Dio`
