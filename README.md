@@ -1,7 +1,7 @@
-# 📸 Locket Dio — Frontend
+# 📸 Locket Wan — Frontend
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/locketwan.png" alt="Locket Dio" width="160" />
+  <img src="https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/locketwan.png" alt="Locket Wan" width="200" />
   <p>
     Ứng dụng web chia sẻ ảnh & video lấy cảm hứng từ Locket — PWA, realtime, và tối ưu cho mobile.
   </p>
