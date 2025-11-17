@@ -17,6 +17,7 @@ import InstallPWA from "./components/InstallPWA";
 import CacheManager from "./components/CacheManager";
 import getLayout from "./layouts";
 import useGlobalChatListener from "./hook/useGlobalChatListener";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <AppContent />
             <InstallPWA />
             <CacheManager />
+            <Analytics />
           </Router>
           <ToastProvider />
         </AppProvider>

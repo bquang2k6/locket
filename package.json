@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.9",
+    "@vercel/analytics": "^1.5.0",
     "axios": "^1.8.1",
     "crypto-js": "^4.2.0",
     "dexie": "^4.2.1",
