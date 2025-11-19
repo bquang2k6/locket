@@ -10,7 +10,7 @@ const DevCustomes = ({ onSelect }) => {
   { id: "flight_times", top: "#2196f3", bottom: "#6dd5ed", caption: "🛫 Flight Time!", text: "#FFFFFFE6" },
   { id: "photo_times", top: "#F7BB97", bottom: "#DD5E89", caption: "📷 Photo Time!", text: "#FFFFFFE6" },
   { id: "day_dream", top: "#FAD0C4", bottom: "#FFD1FF", caption: "🌤 Daydream", text: "#101010E6" },
-  { id: "dating_times", top: "#FF9A9E", bottom: "#F6416C", caption: "💕 Dating Time!", text: "#FFFFFFE6" },
+  // { id: "dating_times", top: "#FF9A9E", bottom: "#F6416C", caption: "💕 Dating Time!", text: "#FFFFFFE6" },
   { id: "mixue_times", top: "#E0F7FA", bottom: "#FFCDD2", caption: "🍦 Mixue Time!", text: "#4E0000E6" }
   ];
 

@@ -2,6 +2,16 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useApp } from "../../../../context/AppContext";
 import { AuthContext } from "../../../../context/AuthLocket";
 import { Plus, RefreshCcw, Trash2, UserPlus, Users, X } from "lucide-react";
+import { SonnerError, SonnerSuccess } from "../components/ui/SonnerToast";
+import {
+  setFriendDetail,
+  deleteFriendDetail,
+  deleteFriendId,
+  setFriendIds,
+} from "../../../../cache/friendsDB";
+import { useFriendStore } from "../../../../storages/useFriendStore";
+import { refreshFriends } from "../../../../services";
+import LoadingRing from "../../../../components/UI/Loading/ring";
 
 const FriendsContainer = () => {
   const { user, friendDetails, setFriendDetails } = useContext(AuthContext);
@@ -14,6 +24,8 @@ const FriendsContainer = () => {
   const [startY, setStartY] = useState(null);
   const [currentY, setCurrentY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   // State tìm kiếm
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,34 +66,44 @@ const FriendsContainer = () => {
       setCurrentY(Math.min(deltaY, maxDrag));
     }
   };
-  const handleRefreshCache = () => {
+  //làm mới danh sách bạn bè
+  const handleRefreshFriends = async () => {
     try {
-      // 1️⃣ Xóa cache bạn bè
-      localStorage.removeItem("friendDetails");
-      setFriendDetails([]); // reset UI
+      setIsRefreshing(true);
+      const result = await refreshFriends();
 
-      // 2️⃣ (Tuỳ chọn) Có thể log hoặc hiển thị thông báo
-      console.log("Đã xóa cache bạn bè 🎉");
+      if (result) {
+        SonnerSuccess("Cập nhật thành công", "Đã làm mới danh sách bạn bè!");
 
-      // 3️⃣ Reload lại toàn bộ trang
-      setTimeout(() => {
-        window.location.reload();
-      }, 300); // delay nhẹ cho cảm giác tự nhiên
+        // Update DB
+        await setFriendIds(result.friends);
+        await setFriendDetail(result.friendDetails);
+
+        // Update Zustand
+        setFriendDetails(result.friendDetails);
+
+        // thời gian cập nhật
+        setLastUpdated(result.updatedAt);
+      } else {
+        SonnerError("⚠️ Không thể làm mới danh sách bạn bè.");
+      }
     } catch (error) {
-      console.error("Lỗi khi làm mới cache:", error);
+      SonnerError("Có lỗi xảy ra khi làm mới danh sách.");
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
 
   // Load friendDetails từ localStorage khi component mount hoặc tab mở
-  useEffect(() => {
-    if (isFriendsTabOpen) {
-      const savedDetails = localStorage.getItem("friendDetails");
-      if (savedDetails) {
-        setFriendDetails(JSON.parse(savedDetails));
-      }
-    }
-  }, [isFriendsTabOpen]);
+  // useEffect(() => {
+  //   if (isFriendsTabOpen) {
+  //     const savedDetails = localStorage.getItem("friendDetails");
+  //     if (savedDetails) {
+  //       setFriendDetails(JSON.parse(savedDetails));
+  //     }
+  //   }
+  // }, [isFriendsTabOpen]);
 
   const handleTouchEnd = () => {
     const popupHeight = window.innerHeight * 0.86;
@@ -245,14 +267,33 @@ const FriendsContainer = () => {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </div>
-          <div
-            className="flex items-center justify-start w-full mt-2 text-sm text-base-content gap-2 cursor-pointer hover:opacity-80"
-            onClick={handleRefreshCache}
+          <button
+            className={`flex items-center justify-start w-full mt-2 text-sm text-base-content gap-2 cursor-pointer hover:opacity-80 ${
+              isRefreshing ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={handleRefreshFriends}
+            disabled={isRefreshing}
           >
-            <RefreshCcw className="w-4 h-4 animate-spin-once" />
-            <span>Làm mới</span>
-          </div>
+            {isRefreshing ? (
+              <>
+                <LoadingRing size={20} stroke={2} />
+                <span>Đang làm mới...</span>
+              </>
+            ) : (
+              <>
+                <RefreshCcw className="w-4 h-4" />
+                <span>Làm mới</span>
+              </>
+            )}
+          </button>
 
+          {/* Last updated */}
+          {lastUpdated && (
+            <p className="text-xs text-gray-500 mt-1">
+              Cập nhật lần cuối:{" "}
+              {new Date(lastUpdated).toLocaleString("vi-VN")}
+            </p>
+          )}
         </div>
 
         {/* Nội dung bạn bè */}
@@ -265,9 +306,8 @@ const FriendsContainer = () => {
 
           {filteredFriends.map((friend, index) => (
             <div
-              key={`friend-${friend.uid}-${index}-${Date.now()}`}
+              key={`friend-${friend.uid}-${index}`}
               className="flex items-center justify-between p-3 border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
-              onClick={() => handleFriendClick(friend)}
             >
               <div className="flex items-center gap-3">
                 <img

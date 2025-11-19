@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as utils from "../../utils";
+import { showError } from "../../components/Toast";
 
 export const getListIdFriends = async () => {
   // Đợi lấy token & uid
@@ -114,6 +115,71 @@ export const rejectMultipleFriendRequests = async (
   }
 
   return results;
+};
+export const loadFriendDetailsV3 = async (friends) => {
+  if (!friends || friends.length === 0) return [];
+
+  const batchSize = 20;
+  const allResults = [];
+
+  // 🔥 LẤY TOKEN Ở ĐÂY
+  const { idToken } = await utils.getCurrentUserTokenAndUid();
+  if (!idToken) {
+    console.error("Không có idToken khi loadFriendDetails");
+    return [];
+  }
+
+  for (let i = 0; i < friends.length; i += batchSize) {
+    const batch = friends.slice(i, i + batchSize);
+
+    const results = await Promise.allSettled(
+      batch.map((friend) =>
+        fetchUser(friend.uid, idToken).then((res) =>
+          utils.normalizeFriendData(res.data)
+        )
+      )
+    );
+
+    const success = results
+      .filter((r) => r.status === "fulfilled")
+      .map((r) => r.value);
+
+    allResults.push(...success);
+
+    if (i + batchSize < friends.length) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+
+  return allResults;
+};
+
+//Tích hợp 2 hàm getListfirend và fetchuser cho thuận tiện việc lấy dữ liệu
+export const refreshFriends = async () => {
+  try {
+    // Lấy danh sách bạn bè (uid, createdAt)
+    const friends = await getListIdFriends();
+    if (!friends.length) return;
+
+    const { idToken, localId } = utils.getToken() || {};
+    if (!idToken || !localId) {
+      showError("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+      return null;
+    }
+    const friendDetails = await loadFriendDetailsV3(friends);
+
+    // Lưu thời gian cập nhật
+    const updatedAt = new Date().toISOString();
+    localStorage.setItem("friendsUpdatedAt", updatedAt);
+    return {
+      friends,
+      friendDetails,
+      updatedAt,
+    };
+  } catch (error) {
+    console.error("❌ Lỗi khi làm mới danh sách bạn bè:", error);
+    return null;
+  }
 };
 export const fetchUser = async (user_uid, idToken) => {
   return await axios.post(
