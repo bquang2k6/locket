@@ -95,6 +95,7 @@ export const API_URL = {
   INFO_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactinfoMomentV3`)),
   GET_MOMENTV2_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getPost`)),
   GET_LATEST_MOMENT: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getLatestMomentV2`)),
+  FETCH_USER_FOR_INVITE: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/fetchUserForInvite`)),
 
   GET_All_MESSAGE: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getAllMessageV2`)),
   GET_All_MESSAGE_WITH_USER: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getMessageWithUserV2`)),
