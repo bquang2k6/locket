@@ -96,6 +96,8 @@ export const API_URL = {
   GET_MOMENTV2_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getPost`)),
   GET_LATEST_MOMENT: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getLatestMomentV2`)),
   FETCH_USER_FOR_INVITE: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/fetchUserForInvite`)),
+  INCOMING_FRIEND_REQUESTS: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/incoming_friend_requests`)),
+  OUTGOING_FRIEND_REQUESTS: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/outgoing_friend_requests`)),
 
   GET_All_MESSAGE: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getAllMessageV2`)),
   GET_All_MESSAGE_WITH_USER: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getMessageWithUserV2`)),

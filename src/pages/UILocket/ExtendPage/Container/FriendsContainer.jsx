@@ -4,6 +4,7 @@ import { AuthContext } from "../../../../context/AuthLocket";
 import { Plus, RefreshCcw, Trash2, UserPlus, Users, X } from "lucide-react";
 import { FaSearchPlus } from "react-icons/fa";
 import SearchBox from "./SearchBox";
+import FriendRequests from "./FriendRequests";
 import { SonnerError, SonnerSuccess } from "../components/ui/SonnerToast";
 import {
   setFriendDetail,
@@ -253,6 +254,7 @@ const FriendsContainer = () => {
             onChange={setSearchTerm}
             hasResult={filteredFriends.length > 0}
           />
+          <FriendRequests />
           <div className="relative w-full mt-2">
             <input
               type="text"
