@@ -12,6 +12,7 @@ import ActivityModal from "./components/ActivityModal";
 import Activityavt from "./components/Activityavt";
 import HeaderBeforeCaptureavt from "./Header/HeaderBeforeCaptureavt";
 import axios from "axios";
+import * as LucideIcons from "lucide-react";
 
 const BottomHomeScreen = () => {
   const { user, friendDetails } = useContext(AuthContext);
@@ -46,6 +47,42 @@ const BottomHomeScreen = () => {
       fetchServerMoments();
     }
   }, [isBottomOpen, setRecentPosts, selectedFriendUid]);
+
+  //Hàm render icon
+    const renderOverlayIcon = (icon) => {
+    if (!icon) return null;
+
+    // Emoji
+    if (icon.type === "emoji") {
+      return <span style={{ fontSize: 22 }}>{icon.data}</span>;
+    }
+
+    // SF Symbol → dùng icon trong lucide-react
+    if (icon.type === "sf_symbol") {
+      const name = icon.data.replace(".fill", ""); // Xử lý tên icon
+      const IconComponent = LucideIcons[name];
+
+      return IconComponent ? (
+        <IconComponent size={20} color={icon.color || "#fff"} />
+      ) : (
+        <span>🕛</span>
+      );
+    }
+
+    // Image icon
+    if (icon.type === "image") {
+      return (
+        <img
+          src={icon.data}
+          alt="icon"
+          style={{ width: 22, height: 22, objectFit: "contain" }}
+        />
+      );
+    }
+
+    return null;
+  };
+
 
   // Chuẩn hoá dữ liệu từ server
   const transformServerMoment = (m) => {
@@ -452,9 +489,15 @@ const BottomHomeScreen = () => {
                   whiteSpace: "pre-wrap",   // giữ format và tự ngắt dòng
                 }}
               >
-                <span className="text-base leading-snug break-words text-center">
-                  {imageInfo?.captions?.[0]?.caption || ""}
-                </span>
+                <div className="flex items-center gap-1">
+                  {imageInfo?.captions?.[0]?.icon &&
+                    renderOverlayIcon(imageInfo.captions[0].icon)
+                  }
+
+                  <span className="text-base leading-snug break-words text-center">
+                    {imageInfo?.captions?.[0]?.caption || ""}
+                  </span>
+                </div>
               </div>
             </div>
           )}
