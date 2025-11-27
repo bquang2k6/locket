@@ -9,7 +9,7 @@ const STATIC_FILES = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/images/book.jpg',
+  '/images/snowlocket.png',
   '/images/cammera.jpg'
 ];
 

@@ -15,25 +15,25 @@
   "related_applications": [],
   "icons": [
     {
-      "src": "/images/book.jpg",
+      "src": "/images/snowlocket.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/book.jpg",
+      "src": "/images/snowlocket.png",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/book.jpg",
+      "src": "/images/snowlocket.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/book.jpg",
+      "src": "/images/snowlocket.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -44,7 +44,7 @@
       "name": "Chụp ảnh",
       "short_name": "Chụp ảnh",
       "description": "Chụp ảnh mới",
-      "url": "/?action=camera",
+      "url": "/locket",
       "icons": [
         {
           "src": "/images/cammera.jpg",
@@ -53,13 +53,13 @@
       ]
     },
     {
-      "name": "Tải lên",
-      "short_name": "Tải lên",
-      "description": "Tải ảnh/video lên",
-      "url": "/?action=upload",
+      "name": "Locket chat",
+      "short_name": "Locket chat",
+      "description": "Locket chat",
+      "url": "/chat",
       "icons": [
         {
-          "src": "/images/cammera.jpg",
+          "src": "/images/chat.png",
           "sizes": "96x96"
         }
       ]
