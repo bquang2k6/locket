@@ -386,7 +386,7 @@ export const PostMoments = async (payload) => {
 
 export const deleteCaptionPost = async (postId, adminKey) => {
   try {
-    const url = `https://api4.wangtech.top/locketpro/user-themes/caption-posts/${postId}`;
+    const url = `https://api4locketwan.antiviet.click/locketpro/user-themes/caption-posts/${postId}`;
     
     const response = await axios.delete(url, {
       data: {
