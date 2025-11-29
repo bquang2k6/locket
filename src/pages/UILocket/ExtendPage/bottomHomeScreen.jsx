@@ -698,13 +698,13 @@ const BottomHomeScreen = () => {
           
 
           {/* More button */}
-          {/* <button
+          <button
             className="p-2 text-base-content rounded-full border-3 border-base-content bg-transparent tooltip tooltip-left cursor-pointer shadow"
             onClick={handleCloseMedia}
-            data-tip="Chức năng đang phát triển"
+            data-tip="Bấm để xoá ảnh"
           >
-            <MoreHorizontal size={10} />
-          </button> */}
+            <Trash2 size={25} />
+          </button>
 
           {/* Delete button (chỉ cho ảnh local) */}
           {imageInfo && (
