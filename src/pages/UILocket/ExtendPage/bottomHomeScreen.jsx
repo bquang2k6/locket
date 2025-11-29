@@ -698,6 +698,7 @@ const BottomHomeScreen = () => {
           
 
           {/* More button */}
+        {(!selectedImage && !selectedVideo) && (
           <button
             className="p-1 text-base-content rounded-full border-3 border-base-content bg-transparent tooltip tooltip-left cursor-pointer shadow"
             onClick={handleCloseMedia}
@@ -705,6 +706,7 @@ const BottomHomeScreen = () => {
           >
             <Trash2 size={20} />
           </button>
+        )}
 
           {/* Delete button (chỉ cho ảnh local) */}
           {imageInfo && (
