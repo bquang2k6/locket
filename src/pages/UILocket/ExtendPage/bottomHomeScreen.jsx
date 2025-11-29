@@ -54,7 +54,7 @@ const BottomHomeScreen = () => {
 
     // Emoji
     if (icon.type === "emoji") {
-      return <span style={{ fontSize: 16 }}>{icon.data}</span>;
+      return <span style={{ fontSize: 15 }}>{icon.data}</span>;
     }
 
     // SF Symbol → dùng icon trong lucide-react
