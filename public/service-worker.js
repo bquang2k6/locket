@@ -1,5 +1,5 @@
 // Service Worker for PWA
-const CACHE_VERSION = 'v6.1'; // Tăng version để force update
+const CACHE_VERSION = 'v6.2'; // Tăng version để force update
 const CACHE_NAME = `locket-wan-${CACHE_VERSION}`;
 const STATIC_CACHE = `locket-wan-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `locket-wan-dynamic-${CACHE_VERSION}`;

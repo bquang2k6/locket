@@ -352,7 +352,7 @@ const BottomHomeScreen = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5001/locket/deleteMomentV2",
+        API_URL.DELETE_MOMENT_V2,
         {
           data: {
             moment_uid: momentId,
@@ -723,7 +723,7 @@ const BottomHomeScreen = () => {
                 }
               }}
             >
-              <Trash2 size={30} />
+              <Trash2 size={25} />
             </button>
           )}
         </div>
