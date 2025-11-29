@@ -344,6 +344,44 @@ const BottomHomeScreen = () => {
     }
     return false;
   }, [imageInfo, user]);
+  // XÓA ẢNH TRÊN SERVER
+  const handleDeleteServerMoment = async (momentId) => {
+    if (!momentId) return alert("Không tìm thấy moment để xoá!");
+
+    const token = localStorage.getItem("authToken") || localStorage.getItem("idToken");
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5001/locket/deleteMomentV2",
+        {
+          data: {
+            moment_uid: momentId,
+            delete_globally: true,
+            owner_uid: user?.uid,     // user hiện tại
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Delete moment:", res.data);
+      showSuccess("Đã xoá ảnh trên server!");
+
+      // Xoá khỏi danh sách serverMoments
+      setServerMoments((prev) => prev.filter((m) => m.id !== momentId));
+
+      // Đóng modal
+      handleCloseMedia();
+
+    } catch (err) {
+      console.error("Delete failed:", err?.response?.data || err);
+      alert("Xoá thất bại! Vui lòng thử lại.");
+    }
+  };
 
   return (
     <div
@@ -660,26 +698,30 @@ const BottomHomeScreen = () => {
           
 
           {/* More button */}
-          <button
+          {/* <button
             className="p-2 text-base-content rounded-full border-3 border-base-content bg-transparent tooltip tooltip-left cursor-pointer shadow"
             onClick={handleCloseMedia}
             data-tip="Chức năng đang phát triển"
           >
             <MoreHorizontal size={10} />
-          </button>
+          </button> */}
 
           {/* Delete button (chỉ cho ảnh local) */}
-          {imageInfo && imageInfo._origin !== "server" && (
+          {imageInfo && (
             <button
               className="p-1 text-base-content tooltip-left tooltip cursor-pointer"
+              data-tip="Bấm để xoá ảnh"
               onClick={() => {
-                if (imageInfo && imageInfo.id) {
-                  handleDeleteImage(imageInfo.id);
+                if (!imageInfo.id) return alert("Không tìm thấy ảnh!");
+
+                if (imageInfo._origin === "server") {
+                  // XÓA ẢNH TRÊN SERVER
+                  handleDeleteServerMoment(imageInfo.id);
                 } else {
-                  alert("Vui lòng chọn ảnh trước khi xóa!");
+                  // XÓA ẢNH LOCAL
+                  handleDeleteImage(imageInfo.id);
                 }
               }}
-              data-tip="Bấm để xoá ảnh"
             >
               <Trash2 size={30} />
             </button>
