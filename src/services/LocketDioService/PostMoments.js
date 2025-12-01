@@ -199,7 +199,7 @@ export const uploadMedia = async (payload) => {
       payload.options = payload.options || {};
       payload.options.update_streak_for_yyyymmdd = todayInt;
       // Update the last updated date in localStorage
-      localStorage.setItem("last_updated_yyyymmdd", todayString);
+      // localStorage.setItem("last_updated_yyyymmdd", todayString);
       console.log("📅 Streak update added for date:", todayString);
     } else {
       console.log("📅 Same day upload, no streak update needed");
@@ -266,7 +266,7 @@ export const uploadMediaV2 = async (payload) => {
       payload.options = payload.options || {};
       payload.options.update_streak_for_yyyymmdd = todayInt;
       // Update the last updated date in localStorage
-      localStorage.setItem("last_updated_yyyymmdd", todayString);
+      // localStorage.setItem("last_updated_yyyymmdd", todayString);
       console.log("📅 Streak update added for date:", todayString);
     } else {
       console.log("📅 Same day upload, no streak update needed");
@@ -344,7 +344,7 @@ export const PostMoments = async (payload) => {
     if (lastUpdated !== todayInt) {
       payload.options.update_streak_for_yyyymmdd = todayInt;
       // Update the last updated date in localStorage
-      localStorage.setItem("last_updated_yyyymmdd", todayString);
+      // localStorage.setItem("last_updated_yyyymmdd", todayString);
       console.log("📅 Streak update added for date:", todayString);
     } else {
       console.log("📅 Same day upload, no streak update needed");
