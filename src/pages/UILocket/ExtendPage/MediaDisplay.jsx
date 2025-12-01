@@ -267,7 +267,7 @@ const MediaPreview = ({ capturedMedia }) => {
   return (
     <>
       <h1 className="text-3xl mb-1.5 font-semibold font-lovehouse">
-        Locket Camera
+        Lốc kẹt
       </h1>
 
       <div
