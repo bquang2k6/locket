@@ -15,6 +15,7 @@ import ToastProvider from "./components/Toast";
 import NotFoundPage from "./components/404";
 import InstallPWA from "./components/InstallPWA";
 import CacheManager from "./components/CacheManager";
+import CropImageStudio from "./components/common/CropImageStudio";
 import getLayout from "./layouts";
 import useGlobalChatListener from "./hook/useGlobalChatListener";
 import { Analytics } from "@vercel/analytics/react";
@@ -26,6 +27,7 @@ function App() {
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
             <AppContent />
+            <CropImageStudio />
             <InstallPWA />
             <CacheManager />
             <Analytics />

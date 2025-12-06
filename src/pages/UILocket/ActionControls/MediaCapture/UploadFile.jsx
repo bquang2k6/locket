@@ -8,7 +8,7 @@ import { ImageUp } from "lucide-react";
 const UploadFile = () => {
   const { post, useloading, camera } = useApp();
   const { user, userPlan } = useContext(AuthContext);
-  const { selectedFile, setSelectedFile, preview, setPreview, setSizeMedia } =
+  const { selectedFile, setSelectedFile, preview, setPreview, setSizeMedia, imageToCrop, setImageToCrop } =
     post;
   const { uploadLoading, setUploadLoading, setIsCaptionLoading } = useloading;
   const { cameraActive, setCameraActive } = camera;
@@ -37,6 +37,12 @@ const UploadFile = () => {
       showToast("error", sizeValidation.message);
       URL.revokeObjectURL(localPreviewUrl);
       return;
+    }
+
+    // If image, open cropper first
+    if (fileType === "image") {
+      setImageToCrop(localPreviewUrl);
+      return; // Cropper component will set selectedFile and preview after cropping
     }
 
     setPreview({ type: fileType, data: localPreviewUrl });

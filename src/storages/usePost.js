@@ -24,6 +24,8 @@ export const usePost = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isTextColor, setTextColor] = useState(null);
   const [isSizeMedia, setSizeMedia] = useState(null);
+  // Image cropping state (holds image URL to be cropped)
+  const [imageToCrop, setImageToCrop] = useState(null);
 
   const [recentPosts, setRecentPosts] = useState(() => {
     const saved = localStorage.getItem("uploadedMoments");
@@ -49,6 +51,8 @@ export const usePost = () => {
     setSelectedFile,
     preview,
     setPreview,
+  imageToCrop,
+  setImageToCrop,
     isTextColor,
     setTextColor,
     isSizeMedia,
