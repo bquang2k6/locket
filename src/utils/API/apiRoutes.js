@@ -15,7 +15,7 @@ const getBaseWsUrl = () => {
 // Initialize with default backend URL
 let BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
 const BASE_DB_API_URL = getBaseDbUrl();
-let BASE_WS_API_URL = getBaseWsUrl(); // 👈 Thêm dòng này
+let BASE_WS_API_URL = getBaseWsUrl(); // Thêm dòng này
 
 const initializeApiUrl = async () => {
   try {

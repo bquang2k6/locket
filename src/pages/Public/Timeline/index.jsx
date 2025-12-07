@@ -4,7 +4,7 @@ import { API_URL } from "../../../utils";
 
 export default function Timeline() {
   const [timelineData, setTimelineData] = useState([]);
-  const [loading, setLoading] = useState(true); // 👈 loading state
+  const [loading, setLoading] = useState(true); // loading state
   const [error, setError] = useState(null);
 
   useEffect(() => {

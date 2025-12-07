@@ -6,7 +6,7 @@ import { API_URL } from "../../utils/API/apiRoutes";
 export default function Streak() {
   const [streakCount, setStreakCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [isOutdated, setIsOutdated] = useState(false); // 👈 thêm state này
+  const [isOutdated, setIsOutdated] = useState(false); // thêm state này
 
   useEffect(() => {
     const fetchStreak = async () => {
@@ -37,7 +37,6 @@ export default function Streak() {
         );
 
         const streak = res?.data?.result?.streak;
-        console.log("📦 Dữ liệu streak từ API:", streak);
 
         if (streak && typeof streak.count === "number") {
             setStreakCount(streak.count);
@@ -45,11 +44,8 @@ export default function Streak() {
             const today = new Date()
             .toISOString()
             .slice(0, 10)
-            .replace(/-/g, ""); // 20251014
-            const lastUpdated = String(streak.last_updated_yyyymmdd); // 👈 ép sang chuỗi
-
-            console.log("🕒 today:", today);
-            console.log("📅 lastUpdated:", lastUpdated);
+            .replace(/-/g, "");
+            const lastUpdated = String(streak.last_updated_yyyymmdd); // ép sang chuỗi
 
             setIsOutdated(lastUpdated !== today);
         } else {

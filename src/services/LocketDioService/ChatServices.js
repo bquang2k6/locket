@@ -25,7 +25,7 @@ export const GetAllMessage = async (timestamp = null) => {
 };
 
 export const getMessagesWithUser = async (
-  messageId, // 👈 uid của người cần lấy message
+  messageId, // uid của người cần lấy message
   timestamp = null
 ) => {
   try {
