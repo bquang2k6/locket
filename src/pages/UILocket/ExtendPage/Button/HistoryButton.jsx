@@ -27,7 +27,7 @@ const HistoryArrow = () => {
         {/* <div className="bg-accent text-base-content font-semibold px-[9px] py-0.5 rounded-lg shadow-md">
           {recentPosts.length}
         </div> */}
-        <span className="text-md font-semibold text-base-content">Lịch sử</span>
+        <span className="text-md font-semibold text-base-content"></span>
       </div>
       <svg
         width="40"

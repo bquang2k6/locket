@@ -76,9 +76,9 @@ const HeaderBeforeCapture = () => {
         </button>
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="w-11 h-11 flex items-center justify-center bg-base-200 rounded-full hover:bg-base-300 transition"
+          // className="w-11 h-11 flex items-center justify-center bg-base-200 rounded-full hover:bg-base-300 transition"
         >
-          <Menu size={28} strokeWidth={2} />
+          {/* <Menu size={28} strokeWidth={2} /> */}
         </button>
       </div>
     </div>

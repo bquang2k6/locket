@@ -13,12 +13,13 @@ import { AppProvider } from "./context/AppContext";
 import Loading from "./components/Loading";
 import ToastProvider from "./components/Toast";
 import NotFoundPage from "./components/404";
-import InstallPWA from "./components/InstallPWA";
+// import InstallPWA from "./components/InstallPWA";
 import CacheManager from "./components/CacheManager";
 import CropImageStudio from "./components/common/CropImageStudio";
 import getLayout from "./layouts";
 import useGlobalChatListener from "./hook/useGlobalChatListener";
 import { Analytics } from "@vercel/analytics/react";
+import LiquidGlassTaskbar from "./components/Sidebarv2";
 
 function App() {
   return (
@@ -27,8 +28,9 @@ function App() {
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
             <AppContent />
+            <LiquidGlassTaskbar />
             <CropImageStudio />
-            <InstallPWA />
+            {/* <InstallPWA /> */}
             <CacheManager />
             <Analytics />
           </Router>

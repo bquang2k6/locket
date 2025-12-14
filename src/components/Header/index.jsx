@@ -27,12 +27,12 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           {/* <ThemeDropdown /> */}
-          <button
+          {/* <button
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 rounded-md transition cursor-pointer btn"
           >
             <Menu size={28} strokeWidth={2} />
-          </button>
+          </button> */}
         </div>
       </header>
 

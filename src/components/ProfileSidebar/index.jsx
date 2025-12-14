@@ -32,6 +32,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import * as ultils from '../../utils';
 import { showToast } from '../Toast';
 
+
 const ProfileSidebar = () => {
   const { user, setUser, resetAuthContext } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
