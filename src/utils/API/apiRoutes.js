@@ -100,6 +100,12 @@ export const API_URL = {
   OUTGOING_FRIEND_REQUESTS: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/outgoing_friend_requests`)),
   DELETE_MOMENT_V2: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/deleteMomentV2`)),
 
+  ROLLCALL_POSTS: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getRollcallPosts`)),
+  ROLLCALL_REACTION: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/postRollcallReaction`)),
+  ROLLCALL_COMMENT: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/postRollcallComment`)),
+  ROLLCALL_LIKE_COMMENT: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/likeRollcallComment`)),
+  DELETE_ROLLCALL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/deleteRollcallPost`)),
+
   GET_All_MESSAGE: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getAllMessageV2`)),
   GET_All_MESSAGE_WITH_USER: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getMessageWithUserV2`)),
   SEND_CHAT_MESSAGE_REACTION: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/sendChatMessageReaction`)),

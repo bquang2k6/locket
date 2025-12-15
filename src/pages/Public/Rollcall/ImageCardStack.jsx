@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../../../utils/API/apiRoutes";
 import PostCard from "./PostCard";
 
 const RollCall = () => {
@@ -14,7 +15,7 @@ const RollCall = () => {
       try {
         setLoadingPosts(true);
         const res = await axios.post(
-          "https://apilocketwan.traidep.site/locket/getRollcallPosts",
+          API_URL.ROLLCALL_POSTS,
           { data: { week_of_year: 50, year: 2025 } },
           { headers: { Authorization: `Bearer ${token}` } }
         );
