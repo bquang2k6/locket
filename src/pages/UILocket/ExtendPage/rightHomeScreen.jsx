@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthLocket";
 import { ChevronLeft, Menu } from "lucide-react";
-import ThemeSelector from "../../../components/Theme/ThemeSelector";
 import { useApp } from "../../../context/AppContext";
-import FeatureList from "../../../components/UI/FeatureList";
 import BadgePlan from "./Badge";
+import Rollcall from "../../Public/Rollcall/ImageCardStack"
 
 const RightHomeScreen = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -34,10 +33,9 @@ const RightHomeScreen = () => {
       </div>
 
       {/* Nội dung */}
-      <div className="flex flex-col flex-1 px-4 py-6 overflow-y-scroll space-y-5 justify-start items-center">
-        <FeatureList />
-        <ThemeSelector />
-      </div>
+      
+        <Rollcall />
+        
     </div>
   );
 };
