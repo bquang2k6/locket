@@ -72,8 +72,9 @@ const PostCard = ({ post, token }) => {
     setShowComments(!showComments);
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (!newComment.trim()) return;
+
     const tempComment = {
       uid: Date.now().toString(),
       body: newComment,
@@ -86,6 +87,30 @@ const PostCard = ({ post, token }) => {
     setNewComment("");
     if (!commentUsers[userInfo.uid]) {
       setCommentUsers({ ...commentUsers, [userInfo.uid]: userInfo });
+    }
+    try {
+      const token = localStorage.getItem("idToken");
+      await axios.post(
+        "https://apilocketwan.traidep.site/locket/getRollcallcommnet",
+        {
+          data: {
+            body: tempComment.body,
+            post_item_uid: firstItem.uid,
+            post_uid: post.uid,
+            post_user_uid: userInfo.uid, // chính là người đăng comment
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Comment sent successfully");
+    } catch (err) {
+      console.error("Failed to send comment", err);
+      // Nếu muốn rollback UI khi lỗi có thể xóa tempComment khỏi state
     }
   };
 
@@ -119,7 +144,7 @@ const PostCard = ({ post, token }) => {
                   className="w-full h-full object-cover rounded-xl"
                 />
                 {item.reactions && item.reactions.length > 0 && (
-                  <div className="absolute bottom-3 left-3 flex gap-2 px-3 py-1 rounded-full text-white text-sm">
+                  <div className="absolute bottom-3 left-2 flex px-1 py-1 rounded-full text-white text-xl">
                     {item.reactions.map((r) => r.reaction).join(" ")}
                   </div>
                 )}

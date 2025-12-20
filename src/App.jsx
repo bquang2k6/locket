@@ -127,7 +127,7 @@ function AppContent() {
 
       {user &&
         publicRoutes.map(({ path }, index) => (
-          <Route key={index} path={path} element={<Navigate to="/home" />} />
+          <Route key={index} path={path} element={<Navigate to="/locket" />} />
         ))}
 
       <Route path="*" element={<NotFoundPage />} />

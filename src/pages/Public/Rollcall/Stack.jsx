@@ -3,22 +3,29 @@ import { useState, useEffect } from 'react';
 
 function CardRotate({ children, onSendToBack, sensitivity, disableDrag = false }) {
   const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [60, -60]);
-  const rotateY = useTransform(x, [-100, 100], [-60, 60]);
+
+  // iOS-friendly rotation
+  const rotateZ = useTransform(x, [-150, 150], [-8, 8]);
+  const isIOS =
+  typeof window !== "undefined" &&
+  (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+
 
   function handleDragEnd(_, info) {
     if (Math.abs(info.offset.x) > sensitivity) {
-        onSendToBack();
+      onSendToBack();
     } else {
-        x.set(0);
+      x.set(0);
     }
-    }
-
+  }
 
   if (disableDrag) {
     return (
-      <motion.div className="absolute inset-0 cursor-pointer" style={{ x: 0, y: 0 }}>
+      <motion.div
+        className="absolute inset-0"
+        style={{ transform: "translateZ(0)" }}
+      >
         {children}
       </motion.div>
     );
@@ -27,19 +34,25 @@ function CardRotate({ children, onSendToBack, sensitivity, disableDrag = false }
   return (
     <motion.div
       className="absolute inset-0 cursor-grab"
-      style={{ x, rotateY, touchAction: 'none' }}
-      drag="x" // chỉ cho phép kéo theo chiều ngang
-      dragListener={true}
-    dragMomentum={false}
-    dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
-    dragElastic={0.6}
-    whileTap={{ cursor: 'grabbing' }}
-    onDragEnd={handleDragEnd}
+      drag="x"
+      dragMomentum={false}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.5}
+      onDragEnd={handleDragEnd}
+      whileTap={{ cursor: "grabbing" }}
+      style={{
+        x,
+        rotateZ,
+        touchAction: "pan-y", // 👈 RẤT QUAN TRỌNG CHO iOS
+        transform: "translateZ(0)",
+        willChange: "transform",
+      }}
     >
       {children}
     </motion.div>
   );
 }
+
 
 export default function Stack({
   randomRotation = false,
@@ -149,11 +162,9 @@ export default function Stack({
     <div
       className="relative w-full h-full"
       style={{
-        perspective: 600
+        perspective: "1000px",
+        WebkitPerspective: "1000px",
       }}
-      onWheel={(e) => e.stopPropagation()}
-      onMouseEnter={() => pauseOnHover && setIsPaused(true)}
-      onMouseLeave={() => pauseOnHover && setIsPaused(false)}
     >
       {stack.map((card, index) => {
         const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0;
