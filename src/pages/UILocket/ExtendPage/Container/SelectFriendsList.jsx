@@ -6,11 +6,18 @@ import clsx from "clsx";
 
 const SelectFriendsList = () => {
   const { userPlan, friendDetails } = useContext(AuthContext);
-  const { post } = useApp();
+  const { post, setIsLiquidGlassTaskbarVisible } = useApp();
   const { audience, setAudience, selectedRecipients, setSelectedRecipients } =
     post;
 
   const [selectedFriends, setSelectedFriends] = useState([]);
+
+  useEffect(() => {
+    setIsLiquidGlassTaskbarVisible(false);
+    return () => {
+      setIsLiquidGlassTaskbarVisible(true);
+    };
+  }, [setIsLiquidGlassTaskbarVisible]);
 
   // Nếu audience là "all", chọn tất cả bạn bè
   useEffect(() => {

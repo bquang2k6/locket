@@ -9,7 +9,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { publicRoutes, authRoutes, locketRoutes } from "./routes";
 import { AuthProvider, AuthContext } from "./context/AuthLocket";
 import { ThemeProvider } from "./context/ThemeContext"; // 🟢 Import ThemeProvider
-import { AppProvider } from "./context/AppContext";
+import { AppProvider, useApp } from "./context/AppContext";
 import Loading from "./components/Loading";
 import ToastProvider from "./components/Toast";
 import NotFoundPage from "./components/404";
@@ -28,7 +28,6 @@ function App() {
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
             <AppContent />
-            <LiquidGlassTaskbar />
             <CropImageStudio />
             {/* <InstallPWA /> */}
             <CacheManager />
@@ -41,10 +40,11 @@ function App() {
   );
 }
 
-
 function AppContent() {
   const { user, loading } = useContext(AuthContext);
   const location = useLocation();
+  const { isLiquidGlassTaskbarVisible } = useApp();
+
   useGlobalChatListener();
   useEffect(() => {
     const allRoutes = [...publicRoutes, ...authRoutes, ...locketRoutes];
@@ -87,51 +87,53 @@ function AppContent() {
 
   if (loading) return <Loading isLoading={true} />;
 
-  
   return (
-    <Routes>
-      {user
-        ? authRoutes.map(({ path, component: Component }, index) => {
-            const Layout = getLayout(path);
-            return (
-              <Route
-                key={index}
-                path={path}
-                element={
-                  <Layout>
-                    <Component />
-                  </Layout>
-                }
-              />
-            );
-          })
-        : publicRoutes.map(({ path, component: Component }, index) => {
-            const Layout = getLayout(path);
-            return (
-              <Route
-                key={index}
-                path={path}
-                element={
-                  <Layout>
-                    <Component />
-                  </Layout>
-                }
-              />
-            );
-          })}
+    <>
+      {isLiquidGlassTaskbarVisible && <LiquidGlassTaskbar />}
+      <Routes>
+        {user
+          ? authRoutes.map(({ path, component: Component }, index) => {
+              const Layout = getLayout(path);
+              return (
+                <Route
+                  key={index}
+                  path={path}
+                  element={
+                    <Layout>
+                      <Component />
+                    </Layout>
+                  }
+                />
+              );
+            })
+          : publicRoutes.map(({ path, component: Component }, index) => {
+              const Layout = getLayout(path);
+              return (
+                <Route
+                  key={index}
+                  path={path}
+                  element={
+                    <Layout>
+                      <Component />
+                    </Layout>
+                  }
+                />
+              );
+            })}
 
-      {!user &&
-        authRoutes.map(({ path }, index) => (
-          <Route key={index} path={path} element={<Navigate to="/login" />} />
-        ))}
+        {!user &&
+          authRoutes.map(({ path }, index) => (
+            <Route key={index} path={path} element={<Navigate to="/login" />} />
+          ))}
 
-      {user &&
-        publicRoutes.map(({ path }, index) => (
-          <Route key={index} path={path} element={<Navigate to="/locket" />} />
-        ))}
+        {user &&
+          publicRoutes.map(({ path }, index) => (
+            <Route key={index} path={path} element={<Navigate to="/locket" />} />
+          ))}
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
 }
 export default App;

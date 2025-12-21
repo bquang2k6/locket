@@ -16,6 +16,7 @@ export const AppProvider = ({ children }) => {
   const post = usePost();
   const captiontheme = useThemes();
   const modal = ModalState();
+  const [isLiquidGlassTaskbarVisible, setIsLiquidGlassTaskbarVisible] = useState(true);
 
   // console.log("AppProvider post keys:", Object.keys(post));
 
@@ -28,6 +29,8 @@ export const AppProvider = ({ children }) => {
         post,
         captiontheme,
         modal,
+        isLiquidGlassTaskbarVisible,
+        setIsLiquidGlassTaskbarVisible,
       }}
     >
       {children}
