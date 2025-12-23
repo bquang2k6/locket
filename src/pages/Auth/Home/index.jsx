@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; // For animations
 import ThemeSelector from "../../../components/Theme/ThemeSelector";
-import MockupiPhone from "../../../components/UI/MockupiPhone";
 
 const AuthHome = () => {
   // Animation variants for fade-in and slide-up effects
@@ -60,14 +59,7 @@ const AuthHome = () => {
         </div>
 
         {/* Mockup iPhone */}
-        <motion.div
-          className="flex justify-center disable-select -mb-15"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <MockupiPhone />
-        </motion.div>
+        
       </motion.div>
 
       {/* Features Section */}
@@ -81,13 +73,38 @@ const AuthHome = () => {
         {[
           {
             icon: "📷",
-            title: "Chia sẻ dễ dàng",
-            description: "Tải ảnh và video lên chỉ trong vài giây, giúp bạn lưu giữ khoảnh khắc nhanh chóng.",
+            title: "Up ảnh & video",
+            description: "Tải ảnh và video lên từ thư viện hoặc quay trực tiếp ngay trong app.",
           },
           {
-            icon: "💬",
-            title: "Kết nối bạn bè",
-            description: "Theo dõi và tương tác với hoạt động của bạn bè theo thời gian thực.",
+            icon: "🎥",
+            title: "Quay video",
+            description: "Ghi lại khoảnh khắc với camera tích hợp sẵn, không cần app khác.",
+          },
+          {
+            icon: "📱",
+            title: "Cài đặt màn hình chính",
+            description: "Thêm app vào màn hình chính để truy cập nhanh chóng như ứng dụng native.",
+          },
+          {
+            icon: "👥",
+            title: "Xem ảnh bạn bè",
+            description: "Theo dõi và xem những khoảnh khắc mà bạn bè của bạn đã đăng.",
+          },
+          {
+            icon: "📊",
+            title: "Xem Rollcall",
+            description: "Kiểm tra ai đang online và hoạt động trong nhóm của bạn.",
+          },
+          {
+            icon: "✍️",
+            title: "Caption đa dạng",
+            description: "Tùy chỉnh caption với nhiều style và emoji để thể hiện cảm xúc.",
+          },
+          {
+            icon: "🔄",
+            title: "Update thường xuyên",
+            description: "Nhận các tính năng mới và cải tiến liên tục từ đội ngũ phát triển.",
           },
           {
             icon: "🔒",

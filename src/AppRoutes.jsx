@@ -53,7 +53,7 @@ function AppRoutes() {
       {/* Điều hướng: Nếu đã đăng nhập mà vào publicRoutes -> chuyển hướng home */}
       {user &&
         publicRoutes.map(({ path }, index) => (
-          <Route key={index} path={path} element={<Navigate to="/home" />} />
+          <Route key={index} path={path} element={<Navigate to="/locket" />} />
         ))}
     </Routes>
   );

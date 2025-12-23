@@ -146,7 +146,7 @@ const BottomHomeScreen = () => {
 
       setPageToken(nextToken);
       setHasMore(!!nextToken); // nếu có nextToken → còn dữ liệu
-      if (!append) showSuccess("Đã cập nhật bài viết từ server!");
+      if (!append) showSuccess("Đã cập nhật bài viết !");
     } catch (e) {
       console.error("Fetch server moments failed", e?.response?.data || e);
       if (!append) setServerMoments([]);
