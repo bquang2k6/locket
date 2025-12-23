@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import "./header.css";
 import { Menu } from "lucide-react";
-import Sidebar from "../Sidebar";
 import { Link } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 
@@ -36,7 +35,6 @@ const Header = () => {
         </div>
       </header>
 
-      <Sidebar />
     </>
   );
 };

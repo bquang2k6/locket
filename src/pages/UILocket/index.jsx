@@ -7,7 +7,6 @@ import RightHomeScreen from "./ExtendPage/rightHomeScreen.jsx";
 import MainHomeScreen from "./ExtendPage/mainHomeScreen.jsx";
 
 import BottomHomeScreen from "./ExtendPage/bottomHomeScreen.jsx";
-import Sidebar from "../../components/Sidebar/index.jsx";
 import FriendsContainer from "./ExtendPage/Container/FriendsContainer.jsx";
 import ScreenCustomeStudio from "./ExtendPage/Container/CustomeStudio.jsx";
 
@@ -46,9 +45,6 @@ const CameraCapture = () => {
         <FriendsContainer />
       </div>
 
-      <div key="sidebar">
-        <Sidebar />
-      </div>
     </React.Fragment>
   );
 };
