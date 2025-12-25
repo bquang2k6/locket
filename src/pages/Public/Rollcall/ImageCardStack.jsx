@@ -16,7 +16,7 @@ const RollCall = () => {
         setLoadingPosts(true);
         const res = await axios.post(
           API_URL.ROLLCALL_POSTS,
-          { data: { week_of_year: 50, year: 2025 } },
+          { data: { week_of_year: 51, year: 2025 } },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (res.data?.result?.data?.posts) {
