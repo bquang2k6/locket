@@ -20,6 +20,7 @@ import getLayout from "./layouts";
 import useGlobalChatListener from "./hook/useGlobalChatListener";
 import { Analytics } from "@vercel/analytics/react";
 import LiquidGlassTaskbar from "./components/Sidebarv2";
+import Donate from "./components/donate"
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Router>
             <AppContent />
             <CropImageStudio />
+            <Donate />
             {/* <InstallPWA /> */}
             <CacheManager />
             <Analytics />
