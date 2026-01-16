@@ -48,12 +48,20 @@ const AuthHome = () => {
           </motion.p>
           <div className="flex justify-center items-center -mb-15">
             <motion.div variants={containerVariants}>
+              <div className="flex flex-row gap-6 mb-5">
               <Link
                 to="/locket"
-                className="justify-center items-center flex w-[200px] h-[50px] rounded-full shadow-lg btn btn-primary text-lg font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary-focus hover:to-secondary-focus transition-all transform hover:scale-105 mb-10"
+                className="justify-center items-center flex w-[200px] h-[50px] rounded-full shadow-lg btn btn-primary text-lg font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary-focus hover:to-secondary-focus transition-all transform hover:scale-105"
               >
                 Đăng nhập ngay
               </Link>
+              <Link
+                to="https://expo.dev/artifacts/eas/fBLqGr9XAabKFSTVa4wrbx.apk"
+                className="justify-center items-center flex w-[200px] h-[50px] rounded-full shadow-lg btn btn-primary text-lg font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary-focus hover:to-secondary-focus transition-all transform hover:scale-105"
+              >
+                Cài đặt app dành cho Android
+              </Link>
+            </div>
             </motion.div>
           </div>
         </div>

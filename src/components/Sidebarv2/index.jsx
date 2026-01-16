@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Gift,
   Camera,
+  Download,
   
   
 } from "lucide-react";
@@ -70,6 +71,7 @@ export default function LiquidGlassTaskbar() {
   const sidebarItems = [
     { id: "Palette", label: "Cài đặt giao diện", icon: Palette, href: "/theme" },
     { id: "Setting", label: "Cài đặt", icon: Settings, href: "/settings" },
+    { id: "Update", label: "Cài đặt app dành riêng cho android", icon: Download, href: "/download-apk", isHot: true },
     { id: "Package", label: "Quản lý gói đăng ký", icon: Package, href: "/upgrade" },
     { id: "User", label: "Hồ sơ", icon: User, href: "/profile" },
     { id: "MdOutlineUpdate", label: "Cập nhật lên bản mới", icon: MdOutlineUpdate, href: "/cache"},
@@ -122,7 +124,14 @@ export default function LiquidGlassTaskbar() {
                       ${item.action === "logout" ? "text-error" : ""}`}
                   >
                     <item.icon size={18} />
-                    <span className="font-medium">{item.label}</span>
+                    <span className="font-medium">
+                      {item.label}
+                      {item.isHot && (
+                        <span className="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full uppercase font-bold animate-bounce inline-block border border-white">
+                          Hot
+                        </span>
+                      )}
+                      </span>
                   </button>
                 </React.Fragment>
               ))}
