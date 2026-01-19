@@ -71,7 +71,7 @@ export default function LiquidGlassTaskbar() {
   const sidebarItems = [
     { id: "Palette", label: "Cài đặt giao diện", icon: Palette, href: "/theme" },
     { id: "Setting", label: "Cài đặt", icon: Settings, href: "/settings" },
-    { id: "Update", label: "Cài đặt app dành riêng cho android", icon: Download, href: "/download-apk", isHot: true },
+    // { id: "Update", label: "Cài đặt app dành riêng cho android", icon: Download, href: "/download-apk", isHot: true },
     { id: "Package", label: "Quản lý gói đăng ký", icon: Package, href: "/upgrade" },
     { id: "User", label: "Hồ sơ", icon: User, href: "/profile" },
     { id: "MdOutlineUpdate", label: "Cập nhật lên bản mới", icon: MdOutlineUpdate, href: "/cache"},

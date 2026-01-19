@@ -17,7 +17,7 @@ export function useHeicImages(images) {
 
     const mapped = images.map((url) =>
       isHeic(url)
-        ? `https://convert-url-rollcall.vercel.app//api/convert?url=${encodeURIComponent(url)}`
+        ? `https://code-push.wangtech.top/api/convert?url=${encodeURIComponent(url)}`
         : url
     );
 
