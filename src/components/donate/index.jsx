@@ -161,8 +161,8 @@ const DonationWidget = () => {
             className="qr-image"
           />
           <p className="donate-text">
-            Donate để nuôi web<br />
-            đi các bợn<br />
+            Chỉ có các bạn<br />
+            web mới tồn tại được<br />
             Thank kiu
           </p>
         </div>
