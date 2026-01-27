@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://locket.wangtech.top/sitemap.xml
+Sitemap: https://locket-wan.top/sitemap.xml

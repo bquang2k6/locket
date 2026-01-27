@@ -112,11 +112,11 @@ const PrivacyPolicy = () => {
           <p>
             <strong>Website</strong> refers to Locket Wan, accessible from{" "}
             <a
-              href="https://locket.wangtech.top"
+              href="https://locket-wan.top"
               rel="external nofollow noopener"
               target="_blank"
             >
-              https://locket.wangtech.top
+              https://locket-wan.top
             </a>
           </p>
         </li>

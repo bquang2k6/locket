@@ -15,7 +15,7 @@
 - Styling: Tailwind CSS
 - Tính năng nổi bật: chụp/quay trực tiếp, upload media, hỗ trợ offline (IndexedDB), push notification và PWA.
 
-Demo trực tiếp: https://locket.wangtech.top
+Demo trực tiếp: https://locket-wan.top
 
 ---
 
@@ -33,7 +33,7 @@ Demo trực tiếp: https://locket.wangtech.top
 
 ## 🚀 Demo
 
-Truy cập demo online: https://locket.wangtech.top
+Truy cập demo online: https://locket-wan.top
 
 Ảnh chụp giao diện (mở trong repo):
 
