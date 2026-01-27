@@ -32,10 +32,10 @@ const RollCall = () => {
   return (
     <div className="h-screen bg-base-200">
       {/* Nút gọi API */}
-      <div className="p-4">
+      <div className="">
         <button
           onClick={fetchPosts}
-          className="btn btn-primary"
+          className="btn btn-primary btn-sm"
           disabled={loadingPosts}
         >
           {loadingPosts ? "Đang tải..." : "Lấy danh sách rollcall"}

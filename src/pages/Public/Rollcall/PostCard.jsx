@@ -155,7 +155,7 @@ const PostCard = ({ post, token }) => {
       </div>
 
       {/* Thông tin người đăng */}
-      <div className="w-[80vw] flex items-center justify-between relative">
+      <div className="w-[75vw] flex items-center justify-between relative mb-30">
         <div className="flex items-center gap-3">
           <img
             src={userInfo.profilePic}
