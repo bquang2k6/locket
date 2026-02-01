@@ -18,24 +18,13 @@ const RightHomeScreen = () => {
 
   return (
     <div
-      className={`fixed inset-0 flex flex-col transition-transform duration-500 z-50 bg-base-100 ${
-        isHomeOpen ? "translate-x-0" : "translate-x-full"
-      } overflow-hidden`} // ❌ Không cuộn div to
+      className={`fixed inset-0 flex flex-col transition-transform duration-500 z-50 bg-base-100 ${isHomeOpen ? "translate-x-0" : "translate-x-full"
+        } overflow-hidden`} // ❌ Không cuộn div to
     >
-      <div className="relative flex items-center shadow-lg justify-between px-4 py-2 text-base-content">
-        <button
-          onClick={() => setIsHomeOpen(false)}
-          className="btn p-1 border-0 rounded-full hover:bg-base-200 transition cursor-pointer z-10"
-        >
-          <ChevronLeft size={30} />
-        </button>
-        <BadgePlan />
-      </div>
-
       {/* Nội dung */}
-      
-        <Rollcall />
-        
+
+      <Rollcall />
+
     </div>
   );
 };
