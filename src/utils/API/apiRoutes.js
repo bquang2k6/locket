@@ -93,6 +93,7 @@ export const API_URL = {
   SEND_CHAT_MESSAGE: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/sendChatMessageV2`)),
   SEND_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactMomentV3`)),
   INFO_REACTION_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/reactinfoMomentV3`)),
+  INFO_USER_REACTION_URL: "https://api.locketcamera.com/getMomentViews",
   GET_MOMENTV2_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getPost`)),
   GET_LATEST_MOMENT: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/getLatestMomentV2`)),
   FETCH_USER_FOR_INVITE: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/fetchUserForInvite`)),
@@ -119,7 +120,7 @@ export const API_URL = {
   USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
   CAPTION_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts`),
   DELETE_CAPTION_POST_URL: (postId) => createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts/${postId}`),
-  POST_USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),   
+  POST_USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
 
   // Có vẻ không liên quan đến Subscription
   SUBCRIBE: createDbApiUrlString(`${LOCKET_PRO}/subscribe`),
@@ -132,7 +133,7 @@ export const API_URL = {
   CANCEL_PAYMENT: (order_id) => createDbApiUrlString(`${SUBSCRIPTION}/payment/cancel/${order_id}`),
   CHECK_TRIAL_ABILITY: (uid) => createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/${uid}`),
   REG_TRIAL: createDbApiUrlString(`${SUBSCRIPTION}/trialoffer/register`),
-  
+
   // Usage Limits API
   CHECK_USAGE_LIMITS: (userId, limitType) => createDbApiUrlString(`/api/usage/check/${userId}/${limitType}`),
   RECORD_USAGE: createDbApiUrlString(`/api/usage/record`),

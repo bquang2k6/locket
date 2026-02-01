@@ -38,7 +38,7 @@ const BottomHomeScreen = () => {
 
   const [pageToken, setPageToken] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  
+
   // REMOVED: const [setSelectedFriendUid] = useState(null); // This was causing the conflict!
 
   // Load local + cache khi mở bottom sheet
@@ -49,7 +49,7 @@ const BottomHomeScreen = () => {
   }, [isBottomOpen, setRecentPosts, selectedFriendUid]);
 
   //Hàm render icon
-    const renderOverlayIcon = (icon) => {
+  const renderOverlayIcon = (icon) => {
     if (!icon) return null;
 
     // Emoji
@@ -90,13 +90,13 @@ const BottomHomeScreen = () => {
     const captionText = overlay?.text || m.caption || "";
     const captionItem = captionText
       ? {
-          caption: captionText,
-          text: captionText,
-          text_color: overlay?.textColor || "#FFFFFFE6",
-          background: { colors: overlay?.background?.colors || [] },
-          icon: overlay?.icon || null,
-          type: overlay?.type || "caption",
-        }
+        caption: captionText,
+        text: captionText,
+        text_color: overlay?.textColor || "#FFFFFFE6",
+        background: { colors: overlay?.background?.colors || [] },
+        icon: overlay?.icon || null,
+        type: overlay?.type || "caption",
+      }
       : null;
 
     return {
@@ -121,7 +121,7 @@ const BottomHomeScreen = () => {
       const res = await axios.post(
         API_URL.GET_MOMENTV2_URL,
         {
-          limit: 50,
+          limit: 400,
           pageToken: append ? pageToken : null,
           userId: user?.uid,
         },
@@ -159,7 +159,7 @@ const BottomHomeScreen = () => {
   async function sendReaction(momentId, emoji) {
     try {
       const token =
-      localStorage.getItem("authToken") || localStorage.getItem("idToken");
+        localStorage.getItem("authToken") || localStorage.getItem("idToken");
 
       const res = await axios.post(
         API_URL.SEND_REACTION_URL,
@@ -272,7 +272,7 @@ const BottomHomeScreen = () => {
   // Filter posts dựa trên selectedFriendUid
   const displayPosts = useMemo(() => {
     const allPosts = [...serverMoments, ...recentPosts];
-    
+
     if (!selectedFriendUid) {
       // "Mọi người" - hiển thị tất cả
       return allPosts;
@@ -291,7 +291,7 @@ const BottomHomeScreen = () => {
         if (f.uid) map.set(String(f.uid), { name, avatar });
         if (f.username) map.set(String(f.username), { name, avatar });
       });
-    } catch {}
+    } catch { }
     // also index current user as fallback
     if (user) {
       const selfName = user.display_name || user.username || user.email || "Bạn";
@@ -385,14 +385,13 @@ const BottomHomeScreen = () => {
 
   return (
     <div
-      className={`fixed inset-0 flex flex-col transition-all duration-500 z-50 bg-base-100 ${
-        isBottomOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-      }`}
+      className={`fixed inset-0 flex flex-col transition-all duration-500 z-50 bg-base-100 ${isBottomOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+        }`}
     >
       {/* Header */}
       <div className="flex flex-col shadow px-4 py-2 text-base-content relative">
         <div className="absolute w-full top-0 z-60">
-          <HeaderBeforeCaptureavt/>
+          <HeaderBeforeCaptureavt />
         </div>
       </div>
 
@@ -440,9 +439,8 @@ const BottomHomeScreen = () => {
             }
           }
         }}
-        className={`grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 p-2 overflow-y-auto transition-all ${
-          selectedAnimate ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
+        className={`grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 p-2 overflow-y-auto transition-all ${selectedAnimate ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
       >
         {loadingServer && <div className="col-span-full text-center py-4">Đang tải lịch sử...</div>}
         {!loadingServer && displayPosts.length === 0 ? (
@@ -500,174 +498,172 @@ const BottomHomeScreen = () => {
                 {new Date(imageInfo.date).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
               </div>
               <button
-              onClick={handleCloseMedia}
-              className="absolute top-2 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-base-300/80 text-base-content hover:bg-base-300 transition"
-            >
-              ✕
-            </button>
-
-            {/* Caption hiển thị */}
-            {imageInfo?.captions?.[0] && (
-            <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2 w-full flex justify-center">
-              <div
-                className={`flex items-center justify-center text-center px-5 py-3 rounded-3xl font-semibold
-                  border border-transparent
-                  ${
-                    imageInfo?.captions?.[0]?.background?.colors?.length
-                      ? ""
-                      : "bg-base-300/70 text-base-content backdrop-blur-3xl border-secondary"
-                  }`}
-                style={{
-                  background: imageInfo?.captions?.[0]?.background?.colors?.length
-                    ? `linear-gradient(to bottom, ${imageInfo?.captions?.[0]?.background?.colors?.[0]}, ${imageInfo?.captions?.[0]?.background?.colors?.[1]})`
-                    : undefined,
-                  color: imageInfo?.captions?.[0]?.text_color || undefined,
-                  maxWidth: "80vw",         // chỉ giãn tối đa 80% màn hình
-                  wordBreak: "break-word",  // xuống dòng nếu quá dài
-                  whiteSpace: "pre-wrap",   // giữ format và tự ngắt dòng
-                }}
+                onClick={handleCloseMedia}
+                className="absolute top-2 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-base-300/80 text-base-content hover:bg-base-300 transition"
               >
-                <div className="flex items-center gap-1">
-                  {imageInfo?.captions?.[0]?.icon &&
-                    renderOverlayIcon(imageInfo.captions[0].icon)
-                  }
+                ✕
+              </button>
 
-                  <span className="text-base leading-snug break-words text-center">
-                    {imageInfo?.captions?.[0]?.caption || ""}
-                  </span>
+              {/* Caption hiển thị */}
+              {imageInfo?.captions?.[0] && (
+                <div className="absolute left-1/2 bottom-[10px] transform -translate-x-1/2 w-full flex justify-center">
+                  <div
+                    className={`flex items-center justify-center text-center px-5 py-3 rounded-3xl font-semibold
+                  border border-transparent
+                  ${imageInfo?.captions?.[0]?.background?.colors?.length
+                        ? ""
+                        : "bg-base-300/70 text-base-content backdrop-blur-3xl border-secondary"
+                      }`}
+                    style={{
+                      background: imageInfo?.captions?.[0]?.background?.colors?.length
+                        ? `linear-gradient(to bottom, ${imageInfo?.captions?.[0]?.background?.colors?.[0]}, ${imageInfo?.captions?.[0]?.background?.colors?.[1]})`
+                        : undefined,
+                      color: imageInfo?.captions?.[0]?.text_color || undefined,
+                      maxWidth: "80vw",         // chỉ giãn tối đa 80% màn hình
+                      wordBreak: "break-word",  // xuống dòng nếu quá dài
+                      whiteSpace: "pre-wrap",   // giữ format và tự ngắt dòng
+                    }}
+                  >
+                    <div className="flex items-center gap-1">
+                      {imageInfo?.captions?.[0]?.icon &&
+                        renderOverlayIcon(imageInfo.captions[0].icon)
+                      }
+
+                      <span className="text-base leading-snug break-words text-center">
+                        {imageInfo?.captions?.[0]?.caption || ""}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+              )}
+
+
+
+
+
+
+            </div>
+
+
+
+            {imageInfo.user && (() => {
+              const info = resolveUserInfo(imageInfo.user);
+              return (
+                <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
+                  {info.avatar ? (
+                    <img src={info.avatar} alt={info.name} className="w-6 h-6 rounded-full border border-base-300 object-cover" />
+                  ) : (
+                    <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
+                  )}
+                  <span>{info.name}</span>
+                </div>
+              );
+            })()}
+
+
+
+
+            {/* Reaction or Activity depending on owner */}
+            <div className="translate-y-full -mt-50 mb-25 w-full max-w-md">
+              {isOwner ? (
+                // 👉 Bài viết của mình: hiện "Hoạt động"
+                <div
+                  onClick={handleOpenActivityModal}
+                  className="flex items-center gap-2 bg-base-300/90 backdrop-blur-sm rounded-full px-3 py-2 border border-base-300 cursor-pointer"
+                >
+                  {/* Activity button - NEW */}
+                  {imageInfo && imageInfo._origin === "server" && (
+                    <button
+                      className="p-1 text-base-content tooltip tooltip-left cursor-pointer "
+                      onClick={handleOpenActivityModal}
+                      data-tip="Xem hoạt động bài viết"
+                    >
+                      <img
+                        src="/start.png"
+                        alt="activity"
+                        className="w-[30px] h-[30px] object-contain text-primary"
+                      />
+                    </button>
+                  )}
+
+
+                  <span className="text-sm font-medium text-base-content">Hoạt động</span>
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-[55%]">
+                    <Activityavt
+                      momentId={imageInfo?.id}
+                      friendDetails={friendDetails}
+                    // user={user}
+                    />
+                  </div>
+
+
+                </div>
+              ) : (
+                // 👉 Bài viết của người khác: ô nhập emoji như cũ
+                <div className="bg-base-300/90 backdrop-blur-sm rounded-full px-4 py-2 border border-base-300 flex items-center gap-1 -mt-15 mb-30">
+                  <input
+                    type="text"
+                    placeholder="Nhập icon"
+                    value={reactionInput}
+                    onChange={(e) => setReactionInput(e.target.value)}
+                    className="flex-1 bg-transparent text-base-content placeholder:text-base-content/60 outline-none text-sm min-w-0"
+                  />
+                  <div className="flex items-center gap-1">
+                    {quickEmojis.slice(0, 4).map((emoji) => (
+                      <button
+                        key={emoji}
+                        onClick={async () => {
+                          if (!imageInfo) return;
+                          setSelectedEmoji(emoji);
+                          setReactionInput(emoji);
+                          await sendReaction(imageInfo.id, emoji);
+                          setTimeout(() => {
+                            setSelectedEmoji("");
+                            setReactionInput("");
+                          }, 1000);
+                        }}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-lg hover:bg-base-200 transition-all duration-200 ${selectedEmoji === emoji ? "bg-primary/30 scale-110" : "hover:scale-105"
+                          }`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleSendReaction}
+                    disabled={!selectedEmoji && !reactionInput.trim()}
+                    className="w-8 h-8 rounded-full bg-primary text-primary-content hover:bg-primary/90 disabled:bg-base-300 disabled:text-base-content disabled:cursor-not-allowed flex items-center justify-center transition-all duration-200 hover:scale-105"
+                  >
+                    <Send size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+
+
+          {/* Expanded emoji picker */}
+          {showEmojiPicker && (
+            <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-base-300/95 backdrop-blur-sm rounded-2xl p-3 border border-base-300 shadow-lg">
+              <div className="grid grid-cols-5 gap-2">
+                {quickEmojis.map((emoji) => (
+                  <button
+                    key={emoji}
+                    onClick={() => {
+                      setSelectedEmoji(emoji);
+                      setReactionInput(emoji);
+                      setShowEmojiPicker(false);
+                    }}
+                    className="w-10 h-10 rounded-lg hover:bg-base-200 text-xl transition-all duration-200 hover:scale-110 flex items-center justify-center"
+                  >
+                    {emoji}
+                  </button>
+                ))}
               </div>
             </div>
           )}
-
-
-
-
-
-          
-          </div>
-
-          
-
-          {imageInfo.user && (() => {
-            const info = resolveUserInfo(imageInfo.user);
-            return (
-              <div className="mt-4 border border-secondary bg-base-300/70 text-base-content px-3 py-1 rounded-full flex items-center gap-2 text-sm mb-40">
-                {info.avatar ? (
-                  <img src={info.avatar} alt={info.name} className="w-6 h-6 rounded-full border border-base-300 object-cover" />
-                ) : (
-                  <div className="w-6 h-6 bg-base-200 rounded-full flex items-center justify-center" />
-                )}
-                <span>{info.name}</span>
-              </div>
-            );
-          })()}
-
-          
-          
-        
-          {/* Reaction or Activity depending on owner */}
-        <div className="translate-y-full -mt-50 mb-25 w-full max-w-md">
-          {isOwner ? (
-            // 👉 Bài viết của mình: hiện "Hoạt động"
-            <div
-              onClick={handleOpenActivityModal}
-              className="flex items-center gap-2 bg-base-300/90 backdrop-blur-sm rounded-full px-3 py-2 border border-base-300 cursor-pointer"
-            >
-            {/* Activity button - NEW */}
-            {imageInfo && imageInfo._origin === "server" && (
-              <button
-                className="p-1 text-base-content tooltip tooltip-left cursor-pointer "
-                onClick={handleOpenActivityModal}
-                data-tip="Xem hoạt động bài viết"
-              >
-                <img 
-                  src="/start.png" 
-                  alt="activity" 
-                  className="w-[30px] h-[30px] object-contain text-primary"
-                />
-              </button>
-            )}
-      
-
-          <span className="text-sm font-medium text-base-content">Hoạt động</span>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[90%] ml-[55%]">
-            <Activityavt
-                momentId={imageInfo?.id}
-                friendDetails={friendDetails}
-                // user={user}
-              />
-          </div>
-            
-        
         </div>
-        ) : (
-          // 👉 Bài viết của người khác: ô nhập emoji như cũ
-          <div className="bg-base-300/90 backdrop-blur-sm rounded-full px-4 py-2 border border-base-300 flex items-center gap-1 -mt-15 mb-30">
-            <input
-              type="text"
-              placeholder="Nhập icon"
-              value={reactionInput}
-              onChange={(e) => setReactionInput(e.target.value)}
-              className="flex-1 bg-transparent text-base-content placeholder:text-base-content/60 outline-none text-sm min-w-0"
-            />
-            <div className="flex items-center gap-1">
-              {quickEmojis.slice(0, 4).map((emoji) => (
-                <button
-                  key={emoji}
-                  onClick={async () => {
-                    if (!imageInfo) return;
-                    setSelectedEmoji(emoji);
-                    setReactionInput(emoji);
-                    await sendReaction(imageInfo.id, emoji);
-                    setTimeout(() => {
-                      setSelectedEmoji("");
-                      setReactionInput("");
-                    }, 1000);
-                  }}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-lg hover:bg-base-200 transition-all duration-200 ${
-                    selectedEmoji === emoji ? "bg-primary/30 scale-110" : "hover:scale-105"
-                  }`}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={handleSendReaction}
-              disabled={!selectedEmoji && !reactionInput.trim()}
-              className="w-8 h-8 rounded-full bg-primary text-primary-content hover:bg-primary/90 disabled:bg-base-300 disabled:text-base-content disabled:cursor-not-allowed flex items-center justify-center transition-all duration-200 hover:scale-105"
-            >
-              <Send size={14} />
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-
-
-
-            {/* Expanded emoji picker */}
-            {showEmojiPicker && (
-              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-base-300/95 backdrop-blur-sm rounded-2xl p-3 border border-base-300 shadow-lg">
-                <div className="grid grid-cols-5 gap-2">
-                  {quickEmojis.map((emoji) => (
-                    <button
-                      key={emoji}
-                      onClick={() => {
-                        setSelectedEmoji(emoji);
-                        setReactionInput(emoji);
-                        setShowEmojiPicker(false);
-                      }}
-                      className="w-10 h-10 rounded-lg hover:bg-base-200 text-xl transition-all duration-200 hover:scale-110 flex items-center justify-center"
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
       )}
 
       {/* Bottom Button luôn nổi trên modal */}
@@ -695,18 +691,18 @@ const BottomHomeScreen = () => {
             </div>
           </div>
 
-          
+
 
           {/* More button */}
-        {(!selectedImage && !selectedVideo) && (
-          <button
-            className="p-1 text-base-content rounded-full border-3 border-base-content bg-transparent tooltip tooltip-left cursor-pointer shadow"
-            onClick={handleCloseMedia}
-            data-tip="Bấm để xoá ảnh"
-          >
-            <Trash2 size={20} />
-          </button>
-        )}
+          {(!selectedImage && !selectedVideo) && (
+            <button
+              className="p-1 text-base-content rounded-full border-3 border-base-content bg-transparent tooltip tooltip-left cursor-pointer shadow"
+              onClick={handleCloseMedia}
+              data-tip="Bấm để xoá ảnh"
+            >
+              <Trash2 size={20} />
+            </button>
+          )}
 
           {/* Delete button (chỉ cho ảnh local) */}
           {imageInfo && (

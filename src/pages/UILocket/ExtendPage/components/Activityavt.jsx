@@ -26,7 +26,7 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
         if (f.uid) map.set(String(f.uid), { name, avatar });
         if (f.username) map.set(String(f.username), { name, avatar });
       });
-    } catch {}
+    } catch { }
 
     if (user) {
       const selfName = user.display_name || user.username || user.email || "Bạn";
@@ -46,26 +46,56 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
         setLoading(true);
 
         const token =
-          localStorage.getItem("idToken") 
+          localStorage.getItem("idToken")
         if (!token) throw new Error("Không có token trong localStorage");
 
-        const res = await axios.post(
-          API_URL.INFO_REACTION_URL,
-          { idMoment: momentId },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const [resReactions, resViews] = await Promise.allSettled([
+          axios.post(
+            API_URL.INFO_REACTION_URL,
+            { idMoment: momentId },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          ),
+          axios.post(
+            API_URL.INFO_USER_REACTION_URL,
+            { data: { moment_uid: momentId } },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          ),
+        ]);
 
-        if (res.data?.success) {
-          setActivityData({
-            reactions: res.data.data.reactions || [],
-            views: res.data.data.views || [],
+        let reactions = [];
+        let views = [];
+
+        if (resReactions.status === "fulfilled" && resReactions.value.data?.success) {
+          reactions = resReactions.value.data.data.reactions || [];
+          views = resReactions.value.data.data.views || [];
+        }
+
+        if (resViews.status === "fulfilled" && resViews.value.data?.result?.data?.moment_views) {
+          const locketViews = resViews.value.data.result.data.moment_views.map((v) => ({
+            user: v.user,
+            viewedAt: v.viewed_at?._seconds ? v.viewed_at._seconds * 1000 : v.viewed_at,
+          }));
+
+          // Merge views, avoiding duplicates by user ID
+          const viewUserIds = new Set(views.map((v) => v.user));
+          locketViews.forEach((lv) => {
+            if (!viewUserIds.has(lv.user)) {
+              views.push(lv);
+            }
           });
         }
+
+        setActivityData({ reactions, views });
       } catch (error) {
         console.error("Error fetching activity data:", error?.response?.data || error);
       } finally {
@@ -117,40 +147,40 @@ const Activityavt = ({ isOpen, onClose, momentId, friendDetails, user }) => {
 
 
 
-      
-      return (
-        <div className="">
-          {loading ? (
-            <div className="">
-              
-            </div>
-          ) : combinedUsers.length > 0 ? (
-            <div className="flex -space-x-2">
-              {combinedUsers.map((u, i) => {
-                const info = resolveUserInfo(u.userId);
-                return (
-                  <img
-                    key={i}
-                    src={info.avatar}
-                    className={clsx(
-                      "w-10 h-10 rounded-full border border-base-100 object-cover",
-                      i > 0 && "-ml-[10px]",
-                      i >= 5 && "hidden" // ẩn avatar từ số 6 trở đi
-                    )}
-                    onError={(e) => {
-                      e.target.src = "/prvlocket.png";
-                    }}
-                  />
-                );
-              })}
-            </div>
 
-          ) : (
-            <p>
-            </p>
-          )}
+  return (
+    <div className="">
+      {loading ? (
+        <div className="">
+
         </div>
-      );
+      ) : combinedUsers.length > 0 ? (
+        <div className="flex -space-x-2">
+          {combinedUsers.map((u, i) => {
+            const info = resolveUserInfo(u.userId);
+            return (
+              <img
+                key={i}
+                src={info.avatar}
+                className={clsx(
+                  "w-10 h-10 rounded-full border border-base-100 object-cover",
+                  i > 0 && "-ml-[10px]",
+                  i >= 5 && "hidden" // ẩn avatar từ số 6 trở đi
+                )}
+                onError={(e) => {
+                  e.target.src = "/prvlocket.png";
+                }}
+              />
+            );
+          })}
+        </div>
+
+      ) : (
+        <p>
+        </p>
+      )}
+    </div>
+  );
 };
 
 export default Activityavt;
