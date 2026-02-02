@@ -121,7 +121,7 @@ const BottomHomeScreen = () => {
       const res = await axios.post(
         API_URL.GET_MOMENTV2_URL,
         {
-          limit: 400,
+          limit: 100,
           pageToken: append ? pageToken : null,
           userId: user?.uid,
         },

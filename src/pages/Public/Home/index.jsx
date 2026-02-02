@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; // For animations
 import ThemeSelector from "../../../components/Theme/ThemeSelector";
+import StatsOverview from "../../../components/UI/StatsOverview"
 
 const AuthHome = () => {
   // Animation variants for fade-in and slide-up effects
@@ -67,6 +68,7 @@ const AuthHome = () => {
         </div>
 
         {/* Mockup iPhone */}
+        <StatsOverview/>
         
       </motion.div>
 
