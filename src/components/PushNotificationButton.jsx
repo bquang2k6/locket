@@ -1,53 +1,34 @@
 // src/components/PushNotificationButton.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { API_URL } from '../utils';
+import React, { useEffect } from 'react';
+import { subscribeToPushNotifications } from '../services/serviceWorker/pushSubscription';
 
 const PushNotificationButton = () => {
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [permissionGranted, setPermissionGranted] = useState(false);
 
   useEffect(() => {
-    if ('Notification' in window && 'serviceWorker' in navigator) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          setPermissionGranted(true);
+    const handleSubscription = async () => {
+      try {
+        if ('Notification' in window && 'serviceWorker' in navigator) {
+          // Xin quyền ngay lập tức khi component được mount (theo logic cũ của user mong muốn)
+          const permission = await Notification.requestPermission();
+
+          if (permission === 'granted') {
+            // Nếu đã cấp quyền, thực hiện subscribe để gửi token lên server
+            // Hàm subscribeToPushNotifications đã có logic check duplicate, user ko cần lo
+            console.log('Permission granted, attempting to subscribe...');
+            await subscribeToPushNotifications();
+          }
         }
-      });
-    }
+      } catch (error) {
+        console.error('Error in PushNotificationButton auto-subscribe:', error);
+      }
+    };
+
+    handleSubscription();
   }, []);
 
-  const subscribeToPush = async () => {
-    try {
-      const swRegistration = await navigator.serviceWorker.register('/service-worker.js');
-      const subscription = await swRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY, // VAPID public key
-      });
-
-      // Gửi Subscription đến backend để lưu vào Supabase
-      const { data } = await axios.post(API_URL.SUBCRIBE, {
-        endpoint: subscription.endpoint,
-        keys: subscription.toJSON().keys,
-      });
-
-      if (data.success) {
-        setIsSubscribed(true);
-        console.log('Subscription saved to database');
-      } else {
-        console.error('Error saving subscription');
-      }
-    } catch (error) {
-      console.error('Error subscribing to push notifications:', error);
-    }
-  };
-
+  // Component này không cần render gì cả, chỉ chạy logic ngầm
   return (
-    <div className=''>
-      {/* {permissionGranted && !isSubscribed && (
-        <button onClick={subscribeToPush}>Đăng ký nhận thông báo</button>
-      )}
-      {isSubscribed && <p>Đã đăng ký nhận thông báo!</p>} */}
+    <div className='hidden'>
     </div>
   );
 };
