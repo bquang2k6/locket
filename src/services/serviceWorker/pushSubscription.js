@@ -44,7 +44,11 @@ let subscriptionPromise = null;
  * Đăng ký push notification
  * @param {string} userId - ID người dùng (không bắt buộc)
  */
-export async function subscribeToPushNotifications(userId = null) {
+/**
+ * Đăng ký push notification
+ * @param {Object} userInfo - Thông tin người dùng (email, uid, username, displayName)
+ */
+export async function subscribeToPushNotifications(userInfo = {}) {
     // Nếu đang có một yêu cầu đang xử lý, trả về promise đó luôn
     if (subscriptionPromise) {
         console.log('Push subscription is already in progress, reusing existing promise...');
@@ -89,10 +93,17 @@ export async function subscribeToPushNotifications(userId = null) {
                 }
             };
 
+            // Trích xuất thông tin user
+            const { email, uid, username, displayName } = userInfo;
+
             // 5. Gửi subscription object lên Backend để lưu vào MongoDB
             const saveResponse = await axios.post(API_URL.SUBSCRIBE, {
                 subscription,
-                userId: userId ?? null,
+                // userId: uid ?? null, // Backward compatibility if needed, but we use explicit fields now
+                uid: uid ?? null,
+                email: email ?? null,
+                username: username ?? null,
+                displayName: displayName ?? null,
                 deviceInfo: {
                     userAgent: navigator.userAgent,
                     platform: navigator.platform,

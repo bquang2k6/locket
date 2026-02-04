@@ -38,8 +38,12 @@ const PushNotificationManager = () => {
     const handleSubscribe = async () => {
         setLoading(true);
         try {
-            const userId = user?._id || user?.id || null;
-            await subscribeToPushNotifications(userId);
+            await subscribeToPushNotifications({
+                uid: user?.localId,
+                email: user?.email,
+                username: user?.username,
+                displayName: user?.displayName || user?.display_name
+            });
             setStatus('subscribed');
             alert('Đã bật thông báo thành công!');
         } catch (error) {
