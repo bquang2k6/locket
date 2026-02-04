@@ -7,6 +7,7 @@ import SelectFiendsList from "./Container/SelectFriendsList";
 import HeaderAfterCapture from "./Header/HeaderAfterCapture";
 import HeaderBeforeCapture from "./Header/HeaderBeforeCapture";
 import PopupNotification from "../../../components/UI/PopupNotification";
+import PushNotificationButton from "../../../components/PushNotificationButton";
 // import Ads from "../../../components/UI/ads/ads";
 
 const MainHomeScreen = () => {
@@ -19,24 +20,22 @@ const MainHomeScreen = () => {
 
   return (
     <div
-      className={`relative transition-all duration-500 overflow-hidden ${
-        isProfileOpen
-          ? "translate-x-full"
-          : isHomeOpen
+      className={`relative transition-all duration-500 overflow-hidden ${isProfileOpen
+        ? "translate-x-full"
+        : isHomeOpen
           ? "-translate-x-full"
           : isBottomOpen
-          ? "-translate-y-full"
-          : "translate-x-0"
-      }`}
+            ? "-translate-y-full"
+            : "translate-x-0"
+        }`}
     >
       <div
-        className={`flex h-full select-none flex-col items-center justify-start overflow-hidden ${
-          sendLoading === true
-            ? "animate-slide-up"
-            : sendLoading === false
+        className={`flex h-full select-none flex-col items-center justify-start overflow-hidden ${sendLoading === true
+          ? "animate-slide-up"
+          : sendLoading === false
             ? "animate-reset"
             : ""
-        }`}
+          }`}
       >
         {selectedFile ? (
           <HeaderAfterCapture selectedFile={selectedFile} />
@@ -48,7 +47,9 @@ const MainHomeScreen = () => {
         {selectedFile ? <SelectFiendsList /> : <HistoryArrow />}{" "}
         <canvas ref={canvasRef} className="hidden" />
         <PopupNotification />
-        {/* <Ads /> */}
+        <div className="absolute top-20 right-4 z-[60]">
+          <PushNotificationButton />
+        </div>
       </div>
     </div>
   );

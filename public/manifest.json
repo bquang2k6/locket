@@ -10,7 +10,12 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "vi",
-  "categories": ["social", "photo", "lifestyle"],
+  "gcm_sender_id": "103953800507",
+  "categories": [
+    "social",
+    "photo",
+    "lifestyle"
+  ],
   "prefer_related_applications": false,
   "related_applications": [],
   "icons": [
@@ -65,4 +70,4 @@
       ]
     }
   ]
-} 
+}

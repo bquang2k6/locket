@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
+    allowedHosts: ['test.locket-wan.top'],
     host: true, // Hoặc '0.0.0.0'
     headers: {
       'Cache-Control': 'no-cache, no-store, must-revalidate',

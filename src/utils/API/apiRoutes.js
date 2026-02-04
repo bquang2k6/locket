@@ -122,8 +122,11 @@ export const API_URL = {
   DELETE_CAPTION_POST_URL: (postId) => createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts/${postId}`),
   POST_USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
 
-  // Có vẻ không liên quan đến Subscription
-  SUBCRIBE: createDbApiUrlString(`${LOCKET_PRO}/subscribe`),
+  // Subscription API
+  SUBSCRIBE: createDbApiUrlString(`${LOCKET_PRO}/subscribe`),
+  VAPID_PUBLIC_KEY: createDbApiUrlString(`${LOCKET_PRO}/vapid-public-key`),
+  UNSUBSCRIBE: createDbApiUrlString(`${LOCKET_PRO}/unsubscribe`),
+  // SUBSCRIBE: "http://localhost:5005/locketpro/subscribe",
 
   // API Subscription
   REGISTER_USER_PLANS: createDbApiUrlString(`${SUBSCRIPTION}/user-plans/register`),

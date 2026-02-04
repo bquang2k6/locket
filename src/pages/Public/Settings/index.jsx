@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Server, Eye, EyeOff, RefreshCw, Download, Smartphone } from "lucide-react";
+import { Server, Eye, EyeOff, RefreshCw, Download, Smartphone, Bell } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthLocket";
 import { showSuccess, showInfo } from "../../../components/Toast";
 import { getCustomBackendUrl } from "../../../utils/backendConfig";
 import { TbServerOff, TbServerBolt } from "react-icons/tb";
+import PushNotificationManager from "../../../components/PushNotificationManager";
 
 function SettingsPage() {
   const { user } = useContext(AuthContext);
@@ -29,7 +30,7 @@ function SettingsPage() {
       });
       const endTime = performance.now();
       const latency = Math.round(endTime - startTime);
-      
+
       return {
         isUp: response.status === 200,
         latency: `${latency}ms`,
@@ -51,7 +52,7 @@ function SettingsPage() {
     const savedUrl = getCustomBackendUrl();
     const savedIsCustom = localStorage.getItem("use_custom_backend") === "true";
     const savedEncryptKey = localStorage.getItem("custom_backend_encrypt_key");
-    
+
     if (savedUrl) {
       setBackendUrl(savedUrl);
       checkNodeStatus(savedUrl);
@@ -68,29 +69,29 @@ function SettingsPage() {
     const checkPWASupport = () => {
       const isSupported = 'serviceWorker' in navigator && 'PushManager' in window;
       setSupportsPWA(isSupported);
-      
+
       // Check if app is already installed
       if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
         setIsInstalled(true);
       }
-      
+
       // Listen for beforeinstallprompt event
       const handler = (e) => {
         e.preventDefault();
         setPromptInstall(e);
         console.log('PWA install prompt available');
       };
-      
+
       window.addEventListener('beforeinstallprompt', handler);
-      
+
       // Check if we already have a stored prompt
       if (window.deferredPrompt) {
         setPromptInstall(window.deferredPrompt);
       }
-      
+
       return () => window.removeEventListener('beforeinstallprompt', handler);
     };
-    
+
     checkPWASupport();
   }, []);
 
@@ -173,7 +174,7 @@ function SettingsPage() {
       showInfo("Cài đặt không khả dụng. Vui lòng sử dụng menu trình duyệt.");
       return;
     }
-    
+
     try {
       promptInstall.prompt();
       const { outcome } = await promptInstall.userChoice;
@@ -212,16 +213,15 @@ function SettingsPage() {
           onClick={handleRefresh}
           disabled={refreshCountdown > 0 || isCheckingNode}
         >
-          <RefreshCw 
-            size={16} 
+          <RefreshCw
+            size={16}
             className={`${isCheckingNode ? 'animate-spin' : ''}`}
           />
           {refreshCountdown > 0 ? `${refreshCountdown}s` : 'Refresh'}
         </button>
       </div>
-      <div className={`relative flex items-center gap-4 p-4 rounded-lg w-full overflow-hidden ${
-        data.isUp ? 'bg-success/15' : 'bg-error/15'
-      }`}>
+      <div className={`relative flex items-center gap-4 p-4 rounded-lg w-full overflow-hidden ${data.isUp ? 'bg-success/15' : 'bg-error/15'
+        }`}>
         <div className="flex items-start gap-4 z-10">
           {data.isUp ? <TbServerBolt size={20} className="text-success" /> : <TbServerOff size={20} className="text-error" />}
           <div className="flex flex-col">
@@ -240,6 +240,13 @@ function SettingsPage() {
 
   const settingsSections = [
     {
+      id: "notifications",
+      title: "Thông báo đẩy",
+      icon: <Bell size={20} />,
+      description: "Nhận thông báo khi có tin nhắn hoặc hoạt động mới trên Locket Wan",
+      customContent: <PushNotificationManager />
+    },
+    {
       id: "pwa",
       title: "Cài đặt ứng dụng",
       icon: <Smartphone size={20} />,
@@ -253,7 +260,7 @@ function SettingsPage() {
             <p>Is Installed: {isInstalled ? 'Yes' : 'No'}</p>
             <p>Display Mode: {window.matchMedia && window.matchMedia('(display-mode: standalone)').matches ? 'Standalone' : 'Browser'}</p>
           </div>
-          
+
           {!supportsPWA ? (
             <div className="alert alert-warning">
               <Download size={20} />
@@ -271,7 +278,7 @@ function SettingsPage() {
                 <span>Bạn có thể cài đặt Locket Wan vào màn hình chính để sử dụng như ứng dụng riêng biệt.</span>
               </div>
               <div className="flex gap-2">
-                <button 
+                <button
                   className="btn btn-primary flex-1 gap-2"
                   onClick={handleInstallPWA}
                   disabled={!promptInstall}
@@ -279,7 +286,7 @@ function SettingsPage() {
                   <Download size={18} />
                   Cài đặt tự động
                 </button>
-                <button 
+                <button
                   className="btn btn-outline flex-1 gap-2"
                   onClick={handleManualInstall}
                 >
@@ -318,7 +325,7 @@ function SettingsPage() {
               />
             </label>
           </div>
-          
+
           {isCustomBackend && (
             <>
               <div className="form-control">
@@ -372,8 +379,8 @@ function SettingsPage() {
               </label>
             </>
           )}
-          
-          <button 
+
+          <button
             className="btn btn-primary w-full"
             onClick={handleSaveBackendSettings}
             disabled={isCustomBackend && (isCheckingNode || !nodeStatus?.isUp)}
@@ -389,7 +396,7 @@ function SettingsPage() {
     <div className="max-w-4xl mx-auto p-4 md:p-6 min-h-screen bg-base-100">
       <div className="mt-5">
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">.</h2>
-        
+
       </div>
 
       <div className="space-y-6">

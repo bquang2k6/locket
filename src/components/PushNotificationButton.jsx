@@ -44,10 +44,10 @@ const PushNotificationButton = () => {
 
   return (
     <div className=''>
-      {permissionGranted && !isSubscribed && (
+      {/* {permissionGranted && !isSubscribed && (
         <button onClick={subscribeToPush}>Đăng ký nhận thông báo</button>
       )}
-      {isSubscribed && <p>Đã đăng ký nhận thông báo!</p>}
+      {isSubscribed && <p>Đã đăng ký nhận thông báo!</p>} */}
     </div>
   );
 };

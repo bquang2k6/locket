@@ -9,8 +9,8 @@ const STATIC_FILES = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/images/snowlocket.png',
-  '/images/cammera.jpg'
+  '/snowlocket.png',
+  '/cammera.jpg'
 ];
 
 // Install event
@@ -64,12 +64,12 @@ self.addEventListener('fetch', event => {
   if (!event.request.url.startsWith('http')) {
     return;
   }
-  
+
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
-  
+
   // Handle API requests - không cache API calls
   if (event.request.url.includes('/api/')) {
     event.respondWith(
@@ -106,7 +106,7 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
-  
+
   // Cache first strategy cho static assets
   event.respondWith(
     caches.match(event.request)
@@ -114,17 +114,17 @@ self.addEventListener('fetch', event => {
         if (response) {
           return response;
         }
-        
+
         return fetch(event.request)
           .then(response => {
             // Don't cache if not a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-            
+
             // Clone the response
             const responseToCache = response.clone();
-            
+
             // Cache the response
             caches.open(DYNAMIC_CACHE)
               .then(cache => {
@@ -133,7 +133,7 @@ self.addEventListener('fetch', event => {
               .catch(error => {
                 console.error('Cache put failed:', error);
               });
-            
+
             return response;
           })
           .catch(() => {
@@ -141,7 +141,7 @@ self.addEventListener('fetch', event => {
             if (event.request.mode === 'navigate') {
               return caches.match('/');
             }
-            return new Response('Network error', { 
+            return new Response('Network error', {
               status: 503,
               statusText: 'Service Unavailable'
             });
@@ -149,7 +149,7 @@ self.addEventListener('fetch', event => {
       })
       .catch(error => {
         console.error('Fetch event failed:', error);
-        return new Response('Service Worker error', { 
+        return new Response('Service Worker error', {
           status: 500,
           statusText: 'Internal Server Error'
         });
@@ -158,50 +158,57 @@ self.addEventListener('fetch', event => {
 });
 
 // Push notification event
-self.addEventListener('push', function(event) {
+self.addEventListener('push', function (event) {
+  let data = { title: 'Locket Wan', body: 'Bạn có thông báo mới!' };
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+
   const options = {
-    body: event.data ? event.data.text() : 'Có nội dung mới từ Locket Wan!',
-    icon: '/images/locket-pro.png',
-    badge: '/images/locket-pro.png',
+    body: data.body,
+    icon: data.icon || '/locket-icon.png',
+    badge: data.badge || '/locket-icon.png',
+    image: data.image || null, // Ảnh lớn (nếu có)
     vibrate: [200, 100, 200],
+    tag: data.tag || 'general-link', // Tránh hiện trùng lặp
+    renotify: true,
     data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
+      url: data.url || data?.data?.url || '/',
+      dateOfArrival: Date.now()
     },
-    actions: [
-      {
-        action: 'open',
-        title: 'Mở ứng dụng'
-      }
+    actions: data.actions || [
+      { action: 'open', title: 'Xem ngay' }
     ]
   };
-  
+
   event.waitUntil(
-    self.registration.showNotification('Locket Wan', options)
+    self.registration.showNotification(data.title, options)
   );
 });
 
 // Notification click event
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
   event.notification.close();
-  
-  if (event.action === 'open') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  } else {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  }
+
+  const url = event.notification?.data?.url || '/';
+
+  event.waitUntil(
+    clients.openWindow(url)
+  );
 });
 
+
 // Message event for debugging và force update
-self.addEventListener('message', function(event) {
+self.addEventListener('message', function (event) {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  
+
   // Thêm message để clear cache
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     event.waitUntil(
