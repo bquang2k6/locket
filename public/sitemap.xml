@@ -17,7 +17,7 @@
     <loc>https://locket-wan.top/aboutme</loc>
     <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>1.1</priority>
   </url>
   <url>
     <loc>https://locket-wan.top/timeline</loc>
@@ -53,6 +53,6 @@
     <loc>https://locket-wan.top/download-apk</loc>
     <lastmod>2024-12-19</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>1.2</priority>
   </url>
 </urlset> 

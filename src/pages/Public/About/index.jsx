@@ -2,7 +2,7 @@ import React from "react";
 import MockupiPhone from "../../../components/UI/MockupiPhone";
 import FeatureList from "../../../components/UI/FeatureList";
 
-export default function AboutLocketDio() {
+export default function AboutLocketWan() {
   return (
     <section className="min-h-screen bg-gradient-to-b from-white via-purple-50 to-white text-gray-800 px-6 py-16 md:px-12 lg:px-32">
       <div className="max-w-5xl mx-auto">
@@ -11,15 +11,15 @@ export default function AboutLocketDio() {
         </h1>
 
         <p className="text-lg leading-8 text-gray-700 mb-10 text-center max-w-3xl mx-auto">
-        Locket Wan - nền tảng mở rộng tiện lợi cho Locket Widget giúp bạn chia sẻ ảnh, video trực tiếp lên Locket với giao diện hiện đại và tiện lợi, được crack bởi ニーゴ.
+          Locket Wan - nền tảng mở rộng tiện lợi cho Locket Widget giúp bạn chia sẻ ảnh, video trực tiếp lên Locket với giao diện hiện đại và tiện lợi, được crack bởi ニーゴ.
         </p>
 
         <div className="grid md:grid-cols-2 gap-12 items-center mt-12">
-        <div className="w-full flex justify-center md:scale-90">
+          <div className="w-full flex justify-center md:scale-90">
             <MockupiPhone />
           </div>
           <div className="-mt-7">
-            <FeatureList/>
+            <FeatureList />
           </div>
         </div>
 

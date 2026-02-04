@@ -3,7 +3,7 @@ import AuthHome from "../pages/Auth/Home";
 import PostMoments from "../pages/Auth/PostMoments";
 import Profile from "../pages/Auth/Profile";
 import SettingsPage from "../pages/Public/Settings";
-import AboutLocketDio from "../pages/Public/About";
+import AboutLocketWan from "../pages/Public/About";
 import Docs from "../pages/Public/Docs";
 import DonateHistory from "../pages/Public/HistoryDonate";
 import Home from "../pages/Public/Home";
@@ -26,10 +26,10 @@ const publicRoutes = [
   { path: "/", component: Home, title: `${APP_NAME} | Trang Chủ` },
   { path: "/test", component: AuthHome, title: `${APP_NAME} | Test` },
   { path: "/login", component: Login, title: `${APP_NAME} | Đăng Nhập` },
-  { path: "/about", component: AboutLocketDio, title: `${APP_NAME} | Về Website Locket Wan` },
+  { path: "/about", component: AboutLocketWan, title: `${APP_NAME} | Về Website Locket Wan` },
   { path: "/about-me", component: AboutMe, title: `${APP_NAME} | Về tôi` },
   { path: "/timeline", component: Timeline, title: `${APP_NAME} | Dòng Thời Gian` },
-  { path: "/docs", component: Docs, title: `${APP_NAME} | Docs` },
+  { path: "/docs", component: Docs, title: `${APP_NAME} | Tài liệu` },
   // { path: "/conta", component: Contact, title: `${APP_NAME} | Liên hệ` },
   { path: "/privacy", component: PrivacyPolicy, title: `${APP_NAME} | Privacy Policy for LocketWan - PrivacyPolicies.com` },
   { path: "/testv1", component: CameraCapture, title: `${APP_NAME} | Test` },
@@ -51,7 +51,7 @@ const authRoutes = [
   { path: "/test", component: CameraCapture, title: `${APP_NAME} | Đăng Video Mới` },
   { path: "/timeline", component: Timeline, title: `${APP_NAME} | Dòng Thời Gian` },
   { path: "/aboutme", component: AboutMe, title: `${APP_NAME} | Về tôi` },
-  { path: "/docs", component: Docs, title: `${APP_NAME} | Docs` },
+  { path: "/docs", component: Docs, title: `${APP_NAME} | Tài liệu` },
   { path: "/donatehistory", component: DonateHistory, title: `${APP_NAME} | DonateHistory` },
   { path: "/upgrade", component: RegisterMemberPage, title: `${APP_NAME} | Đăng ký gói thành viên` },
   { path: "/locket", component: CameraCapture, title: `${APP_NAME} | Locket` },
