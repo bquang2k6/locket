@@ -21,10 +21,12 @@ import useGlobalChatListener from "./hook/useGlobalChatListener";
 import { Analytics } from "@vercel/analytics/react";
 import LiquidGlassTaskbar from "./components/Sidebarv2";
 import Donate from "./components/donate"
+import Preloader from "./components/Preloader/Preloader";
 
 function App() {
   return (
     <ThemeProvider>
+      <Preloader />
       <AuthProvider>
         <AppProvider> {/* 🟢 Thêm AppProvider ở đây */}
           <Router>
@@ -62,7 +64,7 @@ function AppContent() {
         try {
           // Check if service worker is already registered
           const existingRegistration = await navigator.serviceWorker.getRegistration('/service-worker.js');
-          
+
           if (existingRegistration) {
             // Check for updates
             existingRegistration.update();
@@ -73,10 +75,10 @@ function AppContent() {
           const registration = await navigator.serviceWorker.register('/service-worker.js', {
             updateViaCache: 'none'
           });
-          
+
           // Wait for the service worker to be ready
           await navigator.serviceWorker.ready;
-          
+
           return registration;
         } catch (error) {
           console.error('Service Worker registration failed:', error);
@@ -95,33 +97,33 @@ function AppContent() {
       <Routes>
         {user
           ? authRoutes.map(({ path, component: Component }, index) => {
-              const Layout = getLayout(path);
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={
-                    <Layout>
-                      <Component />
-                    </Layout>
-                  }
-                />
-              );
-            })
+            const Layout = getLayout(path);
+            return (
+              <Route
+                key={index}
+                path={path}
+                element={
+                  <Layout>
+                    <Component />
+                  </Layout>
+                }
+              />
+            );
+          })
           : publicRoutes.map(({ path, component: Component }, index) => {
-              const Layout = getLayout(path);
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={
-                    <Layout>
-                      <Component />
-                    </Layout>
-                  }
-                />
-              );
-            })}
+            const Layout = getLayout(path);
+            return (
+              <Route
+                key={index}
+                path={path}
+                element={
+                  <Layout>
+                    <Component />
+                  </Layout>
+                }
+              />
+            );
+          })}
 
         {!user &&
           authRoutes.map(({ path }, index) => (

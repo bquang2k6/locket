@@ -1,0 +1,40 @@
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999999999;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color0, #000000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.4s ease;
+    opacity: 1;
+}
+
+/* From Uiverse.io by Shoh2008 */
+.preloader .loader {
+    width: 45px;
+    height: 40px;
+    background: linear-gradient(#000000 calc(1* 100% / 6), #fff 0 calc(3* 100% / 6), #000000 0),
+        linear-gradient(#000000 calc(2* 100% / 6), #fff 0 calc(4* 100% / 6), #000000 0),
+        linear-gradient(#000000f2 calc(3* 100% / 6), #fff 0 calc(5* 100% / 6), #000000 0);
+    background-size: 10px 400%;
+    background-repeat: no-repeat;
+    animation: matrix 1s infinite linear;
+}
+
+@keyframes matrix {
+    0% {
+        background-position: 0% 100%, 50% 100%, 100% 100%;
+    }
+
+    100% {
+        background-position: 0% 0%, 50% 0%, 100% 0%;
+    }
+}
+
+.preloader.fade-out {
+    opacity: 0;
+}
