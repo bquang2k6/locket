@@ -8,7 +8,7 @@ import { transformServerMoment } from "../utils/standardize/transformMoment";
  * @param {string} params.selectedFriendUid UID của friend đang xem (hoặc null nếu xem all)
  * @param {Function} params.setServerMoments Setter update state moments
  */
-export const useRealtimeMoments = ({ selectedFriendUid, setServerMoments, token }) => {
+export const useRealtimeMoments = ({ selectedFriendUid, setServerMoments, setRecentPosts, token }) => {
     useEffect(() => {
         if (!token) return;
 
@@ -39,11 +39,20 @@ export const useRealtimeMoments = ({ selectedFriendUid, setServerMoments, token 
 
         const handleMomentDeleted = (data) => {
             console.log("DEBUG [Client]: Received moment_deleted", data);
-            if (!data?.id) return;
+            const targetId = data?.id || data?.moment_id || data?.moment_uid || (typeof data === 'string' ? data : null);
+            if (!targetId) return;
 
-            setServerMoments((prev) => {
-                return prev.filter((m) => m.id !== data.id);
-            });
+            setServerMoments((prev) => prev.filter((m) => m.id !== targetId));
+
+            if (setRecentPosts) {
+                setRecentPosts((prev) => {
+                    const next = prev.filter((m) => m.id !== targetId);
+                    if (next.length !== prev.length) {
+                        localStorage.setItem("uploadedMoments", JSON.stringify(next));
+                    }
+                    return next;
+                });
+            }
         };
 
         const emitData = () => {

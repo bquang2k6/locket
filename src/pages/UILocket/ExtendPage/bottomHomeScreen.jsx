@@ -168,7 +168,12 @@ const BottomHomeScreen = () => {
   };
 
   // ================= Socket Realtime Moments =================
-  useRealtimeMoments({ selectedFriendUid, setServerMoments, token: authTokens?.idToken });
+  useRealtimeMoments({
+    selectedFriendUid,
+    setServerMoments,
+    setRecentPosts, // Thêm để xóa cả local cache khi có socket delete
+    token: authTokens?.idToken
+  });
 
   // Gửi reaction
   async function sendReaction(momentId, emoji) {
@@ -386,8 +391,13 @@ const BottomHomeScreen = () => {
       console.log("Delete moment:", res.data);
       showSuccess("Đã xoá ảnh trên server!");
 
-      // Xoá khỏi danh sách serverMoments
+      // Xoá khỏi danh sách serverMoments và recentPosts để chắc chắn biến mất hoàn toàn
       setServerMoments((prev) => prev.filter((m) => m.id !== momentId));
+      setRecentPosts((prev) => {
+        const next = prev.filter((m) => m.id !== momentId);
+        localStorage.setItem("uploadedMoments", JSON.stringify(next));
+        return next;
+      });
 
       // Đóng modal
       handleCloseMedia();
