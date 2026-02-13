@@ -13,9 +13,12 @@ import Activityavt from "./components/Activityavt";
 import HeaderBeforeCaptureavt from "./Header/HeaderBeforeCaptureavt";
 import axios from "axios";
 import * as LucideIcons from "lucide-react";
+// import { onNewMoments, onMomentDeleted, emitGetMoments } from "../../../lib/socket"; // Removed unused imports
+import { transformServerMoment } from "../../../utils/standardize/transformMoment";
+import { useRealtimeMoments } from "../../../hook/useRealtimeMoments";
 
 const BottomHomeScreen = () => {
-  const { user, friendDetails } = useContext(AuthContext);
+  const { user, friendDetails, authTokens } = useContext(AuthContext);
   const { navigation, post } = useApp();
   const { isBottomOpen, setIsBottomOpen } = navigation;
   const { recentPosts, setRecentPosts, selectedFriendUid } = post;
@@ -84,33 +87,7 @@ const BottomHomeScreen = () => {
   };
 
 
-  // Chuẩn hoá dữ liệu từ server
-  const transformServerMoment = (m) => {
-    const overlay = m.overlays || null;
-    const captionText = overlay?.text || m.caption || "";
-    const captionItem = captionText
-      ? {
-        caption: captionText,
-        text: captionText,
-        text_color: overlay?.textColor || "#FFFFFFE6",
-        background: { colors: overlay?.background?.colors || [] },
-        icon: overlay?.icon || null,
-        type: overlay?.type || "caption",
-      }
-      : null;
 
-    return {
-      _origin: "server",
-      id: m.id,
-      user: m.user,
-      image_url: m.thumbnailUrl || null,
-      thumbnail_url: m.thumbnailUrl || null,
-      video_url: m.videoUrl || null,
-      date: m.date || m.createTime || new Date().toISOString(),
-      md5: m.md5 || null,
-      captions: captionItem ? [captionItem] : [],
-    };
-  };
 
   // Lấy moments từ server
   const fetchServerMoments = async (append = false) => {
@@ -154,6 +131,9 @@ const BottomHomeScreen = () => {
       setLoadingServer(false);
     }
   };
+
+  // ================= Socket Realtime Moments =================
+  useRealtimeMoments({ selectedFriendUid, setServerMoments, token: authTokens?.idToken });
 
   // Gửi reaction
   async function sendReaction(momentId, emoji) {
