@@ -17,6 +17,40 @@ import * as LucideIcons from "lucide-react";
 import { transformServerMoment } from "../../../utils/standardize/transformMoment";
 import { useRealtimeMoments } from "../../../hook/useRealtimeMoments";
 
+const MomentGridItem = React.memo(({ item, onClick }) => {
+  return (
+    <div
+      className="aspect-square cursor-pointer"
+      onClick={() => onClick(item)}
+    >
+      <div className="relative w-full h-full border-2 border-base-300 rounded-2xl overflow-hidden">
+        {item.video_url ? (
+          <video
+            src={item.video_url}
+            className="object-cover w-full h-full"
+            muted
+            loop
+            playsInline
+          />
+        ) : (
+          <img
+            src={item.thumbnail_url || item.image_url}
+            alt={item.captions?.[0]?.text || "Image"}
+            className="object-cover w-full h-full"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute top-1 right-1 bg-base-300/70 text-base-content px-2 py-0.5 rounded-full text-[10px]">
+          {new Date(item.date).toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </div>
+      </div>
+    </div>
+  );
+});
+
 const BottomHomeScreen = () => {
   const { user, friendDetails, authTokens } = useContext(AuthContext);
   const { navigation, post } = useApp();
@@ -89,10 +123,11 @@ const BottomHomeScreen = () => {
 
 
 
-  // Lấy moments từ server
   const fetchServerMoments = async (append = false) => {
     try {
-      setLoadingServer(true);
+      if (!append && serverMoments.length === 0) {
+        setLoadingServer(true);
+      }
       const token =
         localStorage.getItem("authToken") || localStorage.getItem("idToken");
       const res = await axios.post(
@@ -430,36 +465,12 @@ const BottomHomeScreen = () => {
             </span>
           </div>
         ) : (
-          displayPosts.map((item, index) => (
-            <div
-              key={`bottom-post-${item._origin || "mix"}-${item.id}-${index}`}
-              className="aspect-square cursor-pointer"
-              onClick={() => handleOpenMedia(item)}
-            >
-              <div className="relative w-full h-full border-2 border-base-300 rounded-2xl overflow-hidden">
-                {item.video_url ? (
-                  <video
-                    src={item.video_url}
-                    className="object-cover w-full h-full"
-                    muted
-                    loop
-                    playsInline
-                  />
-                ) : (
-                  <img
-                    src={item.thumbnail_url || item.image_url}
-                    alt={item.captions?.[0]?.text || "Image"}
-                    className="object-cover w-full h-full"
-                  />
-                )}
-                <div className="absolute top-1 right-1 bg-base-300/70 text-base-content px-2 py-0.5 rounded-full text-[10px]">
-                  {new Date(item.date).toLocaleTimeString("vi-VN", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </div>
-              </div>
-            </div>
+          displayPosts.map((item) => (
+            <MomentGridItem
+              key={item.id}
+              item={item}
+              onClick={handleOpenMedia}
+            />
           ))
         )}
       </div>
