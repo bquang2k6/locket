@@ -1,7 +1,14 @@
 const DEFAULT_BACKEND_NODES = [import.meta.env.VITE_BASE_API_URL]; // Default backend URL
-const ADMIN_BACKEND_NODES = import.meta.env.VITE_ADMIN_API_URLS ? 
-  JSON.parse(import.meta.env.VITE_ADMIN_API_URLS) : 
-  [import.meta.env.VITE_BASE_API_URL];
+const ADMIN_BACKEND_NODES = (() => {
+  try {
+    return import.meta.env.VITE_ADMIN_API_URLS ?
+      JSON.parse(import.meta.env.VITE_ADMIN_API_URLS) :
+      [import.meta.env.VITE_BASE_API_URL];
+  } catch (error) {
+    console.error("Error parsing VITE_ADMIN_API_URLS:", error);
+    return [import.meta.env.VITE_BASE_API_URL];
+  }
+})();
 
 export const getBackendNodes = () => {
   // Only admin/owner nodes are used for load balancing
@@ -16,7 +23,7 @@ export const getBackendUrl = async () => {
       return customUrl.trim();
     }
   }
-  
+
   // Import dynamically to avoid circular dependency
   const loadBalancer = (await import('./loadBalancer')).default;
   return await loadBalancer.getHealthyNode();
