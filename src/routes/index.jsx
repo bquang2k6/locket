@@ -18,6 +18,7 @@ import CacheManagement from "../pages/Public/CacheManagement";
 import SnowEffect from "../animation/OnOff";
 import ChatListPage from "../pages/chat/ChatListPage"
 import Download from "../pages/Public/Download"
+import CommunityPage from "../components/JoinCommunityPopup/CommunityPage"
 
 const APP_NAME = "Locket Wan - Đăng ảnh & Video lên Locket";
 
@@ -39,6 +40,7 @@ const publicRoutes = [
   { path: "/cache", component: CacheManagement, title: `${APP_NAME} | Quản lý Cache` },
   { path: "/onoff", component: SnowEffect, title: `${APP_NAME} | Bật/Tắt Hiệu Ứng tuyết` },
   { path: "/download-apk", component: Download, title: `${APP_NAME} | Cài đặt app cho android` },
+  { path: "/community", component: CommunityPage, title: `${APP_NAME} | Tham gia cộng đồng locket wan` },
 ];
 
 // 📌 Các route yêu cầu đăng nhập
@@ -60,6 +62,7 @@ const authRoutes = [
   { path: "/theme", component: ThemePage, title: `${APP_NAME} | Tùy Chỉnh Giao Diện` },
   { path: "/cache", component: CacheManagement, title: `${APP_NAME} | Quản lý Cache` },
   { path: "/onoff", component: SnowEffect, title: `${APP_NAME} | Bật/Tắt Hiệu Ứng tuyết` },
+  { path: "/community", component: CommunityPage, title: `${APP_NAME} | Tham gia cộng đồng locket wan` },
 ];
 
 // 📌 Các route dành cho locket

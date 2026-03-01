@@ -13,7 +13,7 @@ export const useRealtimeMoments = ({ selectedFriendUid, setServerMoments, setRec
         if (!token) return;
 
         const handleNewMoments = (data) => {
-            console.log("DEBUG [Client]: Received new_on_moments", data);
+            // console.log("DEBUG [Client]: Received new_on_moments", data);
             if (!data) return;
 
             const items = Array.isArray(data) ? data : [data];
@@ -38,7 +38,7 @@ export const useRealtimeMoments = ({ selectedFriendUid, setServerMoments, setRec
         };
 
         const handleMomentDeleted = (data) => {
-            console.log("DEBUG [Client]: Received moment_deleted", data);
+            // console.log("DEBUG [Client]: Received moment_deleted", data);
             const targetId = data?.id || data?.moment_id || data?.moment_uid || (typeof data === 'string' ? data : null);
             if (!targetId) return;
 

@@ -75,7 +75,7 @@ export default function LiquidGlassTaskbar() {
     { id: "Package", label: "Quản lý gói đăng ký", icon: Package, href: "/upgrade" },
     { id: "User", label: "Hồ sơ", icon: User, href: "/profile" },
     { id: "MdOutlineUpdate", label: "Cập nhật lên bản mới", icon: MdOutlineUpdate, href: "/cache"},
-    { id: "AlertCircle", label: "Gửi đề xuất, Báo cáo sự cố", icon: AlertCircle, href: "https://wangtech.top" },
+    { id: "AlertCircle", label: "Gửi đề xuất, Báo cáo sự cố", icon: AlertCircle, href: "/community" },
     { id: "History", label: "Lịch sử hình thành", icon: History, href: "/timeline" },
     { id: "Gift", label: "Ủng hộ dự án", icon: Gift, href: "/aboutme" },
     { id: "Camera", label: "Quyền riêng tư", icon: Camera, href: "/docs" },
