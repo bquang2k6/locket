@@ -23,9 +23,9 @@ const StatsOverview = () => {
 
   // ✅ CHỈ destructure SAU KHI data ĐÃ TỒN TẠI
   const { stats, top_users, top_day } = data;
-    const topDayText = top_day
-        ? `${top_day.day} • ${top_day.count} bài`
-        : "--";
+  const topDayText = top_day
+    ? `${top_day.day} • ${top_day.count} bài`
+    : "--";
 
   return (
     <motion.div
@@ -36,7 +36,7 @@ const StatsOverview = () => {
       className="max-w-7xl w-full mx-auto mt-10"
     >
       <h2 className="text-2xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-        Thống kê hoạt động (23/12 → 02/02)
+        Thống kê hoạt động (02/02 → 07/03)
       </h2>
 
       {/* Tổng quan */}
@@ -75,34 +75,34 @@ const StatsOverview = () => {
           </h3>
           <ul className="space-y-3">
             {top_users.map((u, i) => (
-                <li
+              <li
                 key={u.userId}
                 className="flex items-center justify-between
                     bg-base-200/50 rounded-xl px-4 py-3"
-                >
+              >
                 {/* Left: avatar + info */}
                 <div className="flex items-center gap-3">
-                    <img
+                  <img
                     src={u.avatar}
                     alt={u.name}
                     className="w-10 h-10 rounded-full object-cover border border-base-300"
-                    />
+                  />
 
-                    <div className="leading-tight">
+                  <div className="leading-tight">
                     <div className="font-semibold text-base-content">
-                        #{i + 1} {u.name}
+                      #{i + 1} {u.name}
                     </div>
                     <div className="text-sm text-base-content/60">
-                        @{u.username}
+                      @{u.username}
                     </div>
-                    </div>
+                  </div>
                 </div>
 
                 {/* Right: count */}
                 <span className="badge badge-primary badge-lg">
-                    {u.count} bài
+                  {u.count} bài
                 </span>
-                </li>
+              </li>
             ))}
           </ul>
 
