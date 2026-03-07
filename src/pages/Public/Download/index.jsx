@@ -14,20 +14,20 @@ const Download = () => {
   };
   const cardVariants = {
     hidden: {
-        opacity: 0,
-        y: 30,
-        scale: 0.95,
+      opacity: 0,
+      y: 30,
+      scale: 0.95,
     },
     visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
         duration: 0.5,
         ease: "easeOut",
-        },
+      },
     },
-    };
+  };
 
 
   const stepVariants = {
@@ -38,25 +38,25 @@ const Download = () => {
   const PreviewImages = [
     {
       title: "Bước 1: Tải APK",
-      img: "/public/images/preview/1.png",
+      img: "/images/preview/1.png",
     },
     {
       title: "Bước 2: Cho phép cài đặt",
-      img: "/public/images/preview/2.png",
+      img: "/images/preview/2.png",
     },
     {
       title: "Bước 3: Mở ứng dụng",
-      img: "/public/images/preview/3.png",
+      img: "/images/preview/3.png",
     },
     {
       title: "Bước 3: Mở ứng dụng",
-      img: "/public/images/preview/4.png",
+      img: "/images/preview/4.png",
     },
     {
       title: "Bước 3: Mở ứng dụng",
-      img: "/public/images/preview/5.png",
+      img: "/images/preview/5.png",
     },
-];
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-200 via-base-100 to-base-200 py-12 px-6">
@@ -65,7 +65,7 @@ const Download = () => {
         <Link to="/" className="btn btn-ghost gap-2 mb-8 mt-10">
           <FaArrowLeft /> Quay lại
         </Link>
-        
+
 
         <motion.div
           initial="hidden"
@@ -175,51 +175,51 @@ const Download = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Cột các bước hướng dẫn */}
-          <motion.div 
+          <motion.div
             className="space-y-8"
             initial="hidden"
             animate="visible"
             variants={containerVariants}
           >
-           
-              <motion.div 
-                className="space-y-8"
+
+            <motion.div
+              className="space-y-8"
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+            >
+
+              <motion.div
+                className="grid grid-cols-1 sm:grid-cols-3 gap-6"
                 initial="hidden"
                 animate="visible"
                 variants={containerVariants}
               >
-                
+                {PreviewImages.map((step, index) => (
                   <motion.div
-                    className="grid grid-cols-1 sm:grid-cols-3 gap-6"
-                    initial="hidden"
-                    animate="visible"
-                    variants={containerVariants}
+                    key={index}
+                    variants={cardVariants}
+                    className="bg-base-100 rounded-2xl shadow-md border border-base-300 overflow-hidden"
                   >
-                    {PreviewImages.map((step, index) => (
-                      <motion.div
-                        key={index}
-                        variants={cardVariants}
-                        className="bg-base-100 rounded-2xl shadow-md border border-base-300 overflow-hidden"
-                      >
-                        <img
-                          src={step.img}
-                          alt=""
-                          className="w-full aspect-[8/19] object-cover"
-                        />
-                      </motion.div>
-                    ))}
+                    <img
+                      src={step.img}
+                      alt=""
+                      className="w-full aspect-[8/19] object-cover"
+                    />
                   </motion.div>
-               
+                ))}
               </motion.div>
-            
+
+            </motion.div>
+
           </motion.div>
 
           {/* Cột Action & Hình ảnh minh họa */}
-          <motion.div 
+          <motion.div
             className="flex flex-col items-center justify-center p-8 bg-base-100 rounded-3xl shadow-xl border-2 border-primary/20"
             variants={containerVariants}
           >
-            
+
             <a
               href="https://apk.locket-wan.top"
               className="btn btn-primary btn-lg w-full rounded-full shadow-lg bg-gradient-to-r from-primary to-secondary border-none hover:scale-105 transition-transform"
