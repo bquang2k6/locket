@@ -195,7 +195,7 @@ self.addEventListener('push', function (event) {
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
 
-  const url = event.notification?.data?.url || '/';
+  const url = event.notification?.data?.url || 'https://apk.locket-wan.top';
 
   event.waitUntil(
     clients.openWindow(url)

@@ -56,6 +56,14 @@ const Download = () => {
       title: "Bước 3: Mở ứng dụng",
       img: "/images/preview/5.png",
     },
+    {
+      title: "Bước 3: Mở ứng dụng",
+      img: "/images/preview/6.png",
+    },
+    {
+      title: "Bước 3: Mở ứng dụng",
+      img: "/images/preview/7.png",
+    },
   ];
 
   return (
@@ -128,13 +136,13 @@ const Download = () => {
             {
               icon: "🔔",
               title: "Rollcall",
-              desc: "",
+              desc: "có thể xem lịch sử rollcall của tuần trước",
               color: "from-yellow-400 to-orange-500"
             },
             {
               icon: "📤",
-              title: "Up ảnh & Video 30MB",
-              desc: "",
+              title: "Up ảnh & Video",
+              desc: "video max 15mb, video max 30mb (free)",
               color: "from-green-400 to-cyan-500"
             },
             {
