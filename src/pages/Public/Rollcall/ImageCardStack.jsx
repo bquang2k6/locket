@@ -50,7 +50,7 @@ const RollCall = () => {
   };
 
   return (
-    <div className="h-screen bg-base-200 flex flex-col items-center">
+    <div className="h-screen bg-base-200 flex flex-col items-center relative">
       {/* Week Selector & Fetch Header */}
       <div className="w-full px-4 py-4 z-10 flex items-center border-b border-base-content/5 bg-base-100/30 backdrop-blur-xl relative">
         <button
@@ -73,7 +73,6 @@ const RollCall = () => {
             onClick={() => fetchPosts()}
             disabled={loadingPosts}
             className="w-9 h-9 flex items-center justify-center shadow-sm bg-base-100/80 border border-base-content/10 rounded-full text-base-content/70 transition-all hover:bg-base-100 active:scale-90"
-            title="Lấy danh sách rollcall"
           >
             {loadingPosts ? (
               <span className="loading loading-spinner loading-xs"></span>
@@ -92,34 +91,38 @@ const RollCall = () => {
         onSelect={handleWeekSelect}
       />
 
-      {/* Loading State */}
-      {loadingPosts && posts.length === 0 && (
-        <div className="flex-1 flex justify-center items-center">
-          <span className="loading loading-spinner loading-lg text-primary opacity-50"></span>
-        </div>
-      )}
+      {/* Danh sách post */}
+      <div className="w-full max-w-md flex-1 overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
+        {posts.map((post) => (
+          <PostCard key={post.uid} post={post} />
+        ))}
+      </div>
 
-      {/* Danh sách bài post */}
-      {!loadingPosts && posts.length === 0 ? (
-        <div className="flex-1 flex flex-col justify-center items-center text-base-content/30 gap-4">
-          <div className="p-4 bg-base-content/5 rounded-full">
-            <Calendar size={48} />
-          </div>
-          <p className="text-sm font-medium">Chưa có dữ liệu cho tuần này</p>
-          <button
-            onClick={() => fetchPosts()}
-            className="btn btn-ghost btn-sm text-primary"
+      {/* Overlay blur + thông báo */}
+      <div className="absolute inset-0 backdrop-blur-xl bg-black/40 flex items-center justify-center z-50 px-6">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 max-w-md text-center">
+          <h2 className="text-xl font-semibold text-red-500 mb-3">
+            ⚠️ Tính năng đã dừng hoạt động trên phiên bản web
+          </h2>
+
+          <p className="text-gray-700 mb-4">
+            Tính năng Rollcall hiện không hoạt động.
+            <br />
+            Vui lòng sử dụng <b>Locket Wan Android</b> để tiếp tục sử dụng.
+          </p>
+
+          <p className="text-sm text-gray-500">
+            Phiên bản Android của Locket Wan vừa được phát hành.
+          </p>
+
+          <a
+            href="/download-apk"
+            className="inline-block mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
-            Tải lại ngay
-          </button>
+            Tải ứng dụng Android
+          </a>
         </div>
-      ) : (
-        <div className="w-full max-w-md flex-1 overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
-          {posts.map((post) => (
-            <PostCard key={post.uid} post={post} />
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
