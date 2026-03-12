@@ -100,7 +100,7 @@ const Download = () => {
             {
               icon: "🌈",
               title: "Caption đa sắc màu",
-              desc: "",
+              desc: "có thể thêm ảnh chính mình làm icon caption",
               color: "from-pink-500 to-yellow-500"
             },
             {
