@@ -1,2 +1,2 @@
 // export * from "./locketService";
-export * from "./LocketDioService";
+export * from "./LocketWanService";

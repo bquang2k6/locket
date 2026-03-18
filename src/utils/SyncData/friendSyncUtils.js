@@ -6,7 +6,7 @@ import {
   deleteFriendId,
   deleteFriendDetail,
 } from "../../cache/friendsDB";
-import { getListIdFriends, loadFriendDetailsV3 } from "../../services/LocketDioService/FriendsServices";
+import { getListIdFriends, loadFriendDetailsV3 } from "../../services/LocketWanService/FriendsServices";
 
 /**
  * Đồng bộ danh sách bạn bè ID giữa API và DB

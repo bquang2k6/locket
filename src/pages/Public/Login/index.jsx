@@ -9,7 +9,7 @@ import { useApp } from "../../../context/AppContext";
 import FloatingNotification from "../../../components/UI/FloatingNotification";
 import Turnstile from "react-turnstile";
 import { isUsingCustomBackend } from "../../../utils/backendConfig";
-import { fetchUserPlan } from "../../../services/LocketDioService/getInfoPlans";
+import { fetchUserPlan } from "../../../services/LocketWanService/getInfoPlans";
 import { 
   checkLoginLockout, 
   incrementLoginAttempts, 

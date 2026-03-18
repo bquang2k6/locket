@@ -4,7 +4,7 @@ import { showInfo } from "../../../components/Toast";
 import { useApp } from "../../../context/AppContext";
 import { ChevronDown, Info } from "lucide-react";
 import LoadingRing from "../../../components/UI/Loading/ring";
-import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment, check_trial_ability, register_trial_plan } from "../../../services/LocketDioService/getInfoPlans";
+import { fetchUserPlan, registerFreePlan, registerPaidPlan, checkPaymentStatus, cancelPayment, check_trial_ability, register_trial_plan } from "../../../services/LocketWanService/getInfoPlans";
 import { plans } from "../../../utils/plans";
 import { QRCodeSVG } from "qrcode.react";
 import { useLocation } from "react-router-dom";

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthLocket";
 import LoadingRing from "../../../components/UI/Loading/ring";
 import * as locketService from "../../../services/locketService";
-import { getListIdFriends } from "../../../services/LocketDioService/FriendsServices";
+import { getListIdFriends } from "../../../services/LocketWanService/FriendsServices";
 import * as utils from "../../../utils";
 import axios from "axios";
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Check, Download, Heart, MessageCircle, Send, Trash2 } from "lucide-react";
 import { AuthContext } from "../../../../context/AuthLocket";
-import { deleteCaptionPost } from "../../../../services/LocketDioService/PostMoments";
+import { deleteCaptionPost } from "../../../../services/LocketWanService/PostMoments";
 import { showSuccess, showError } from "../../../../components/Toast";
 import { useApp } from "../../../../context/AppContext";
 import WeatherIcon from "../../../../components/UI/WeatherIcon";

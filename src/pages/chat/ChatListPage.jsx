@@ -30,7 +30,7 @@ import {
   sendMessage as sendMessageService,
   markReadMessage,
   sendReactionOnMessage,
-} from "../../services/LocketDioService/ChatServices";
+} from "../../services/LocketWanService/ChatServices";
 import {
   handleListMessage,
   handleListMessageWithUser,
