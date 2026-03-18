@@ -53,7 +53,7 @@ export default function ChatListPage() {
   const [activeReactionMsg, setActiveReactionMsg] = useState(null);
   const [avatarError, setAvatarError] = useState(false); // Track lỗi ảnh avatar
   const messagesEndRef = useRef(null); // ref để cuộn
-    const pressTimerRef = useRef(null);
+  const pressTimerRef = useRef(null);
 
   const resolveUserInfo = useMemo(
     () => createResolveUserInfo(friendDetails, user),
@@ -63,7 +63,7 @@ export default function ChatListPage() {
   // ======= THEO DÕI TRẠNG THÁI KẾT NỐI SOCKET =======
   useEffect(() => {
     const socket = getSocket();
-    
+
     // Lắng nghe sự kiện kết nối
     const handleConnect = () => {
       console.log("✅ Socket connected");
@@ -96,7 +96,7 @@ export default function ChatListPage() {
     };
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
@@ -151,7 +151,7 @@ export default function ChatListPage() {
 
         if (conversations?.length > 0) {
           await saveConversations(conversations);
-          
+
           // Transform và cập nhật UI
           const transformedMessages = conversations.map((item) => {
             const resolved = resolveUserInfo(item.with_user);
@@ -238,7 +238,7 @@ export default function ChatListPage() {
 
       // Upsert vào cache (lưu raw conversations)
       await upsertConversations(data);
-      
+
       // Fetch tất cả từ cache và transform
       const allConversations = await getAllConversations();
       const transformed = transformConversations(allConversations);
@@ -268,7 +268,7 @@ export default function ChatListPage() {
       try {
         setLoadingChat(true);
         setAvatarError(false); // Reset lỗi ảnh khi chọn chat mới
-        
+
         // 1. Lấy từ cache trước
         const cached = await getMessagesByConversationId(selectedChat.uid);
         if (cached?.messages?.length > 0) {
@@ -278,7 +278,7 @@ export default function ChatListPage() {
 
         // 2. Gọi API để sync mới nhất
         const messages = await getMessagesWithUser(selectedChat.uid, null);
-        
+
         if (messages?.length > 0) {
           // Lưu vào cache
           await saveMessageWithUsers(
@@ -376,14 +376,14 @@ export default function ChatListPage() {
         };
 
         setChatMessages((prev) => [...prev, newMsgObj]);
-        
+
         // Lưu vào cache
         await saveMessageWithUsers(
           selectedChat.uid,
           selectedChat.withUser,
           [...chatMessages, newMsgObj]
         );
-        
+
         setNewMessage("");
       } else {
         throw new Error("Send message failed");
@@ -418,6 +418,8 @@ export default function ChatListPage() {
         return;
       }
 
+      console.log("📍 Reacting to messageId:", messageId);
+
       const result = await sendReactionOnMessage({
         messageId,
         emoji,
@@ -427,22 +429,22 @@ export default function ChatListPage() {
       // ✅ cập nhật local ngay nếu API trả về reactions mới
       setChatMessages((prev) =>
         prev.map((m) =>
-          m.id === messageId
+          (m.id === messageId || m.uid === messageId)
             ? {
-                ...m,
-                reactions: result?.data?.reactions || m.reactions || [],
-              }
-            : m
-        )
-      );
-      
-      // Cập nhật cache
-      const updatedMessages = chatMessages.map((m) =>
-        m.id === messageId
-          ? {
               ...m,
               reactions: result?.data?.reactions || m.reactions || [],
             }
+            : m
+        )
+      );
+
+      // Cập nhật cache
+      const updatedMessages = chatMessages.map((m) =>
+        (m.id === messageId || m.uid === messageId)
+          ? {
+            ...m,
+            reactions: result?.data?.reactions || m.reactions || [],
+          }
           : m
       );
       await saveMessageWithUsers(
@@ -468,20 +470,19 @@ export default function ChatListPage() {
     <div className="relative min-h-screen overflow-hidden bg-base-100 text-base-content transition-colors duration-300">
       {/* DANH SÁCH TIN NHẮN */}
       <div
-        className={`absolute inset-0 transition-transform duration-500 flex flex-col ${
-          selectedChat ? "-translate-x-full" : "translate-x-0"
-        }`}
+        className={`absolute inset-0 transition-transform duration-500 flex flex-col ${selectedChat ? "-translate-x-full" : "translate-x-0"
+          }`}
       >
         <div className="flex items-center justify-between gap-4 p-4 border-b border-base-300 bg-base-200/50 backdrop-blur">
-          <Link 
-            to="/locket" 
+          <Link
+            to="/locket"
             className="hover:bg-base-300 rounded-lg p-2 transition-colors flex items-center"
           >
             <ArrowLeft size={24} />
             <span className="ml-2">Tin nhắn</span>
           </Link>
           <SocketStatus isConnected={isConnected} />
-        </div> 
+        </div>
 
         {error ? (
           <div className="flex-1 flex items-center justify-center text-red-500">{error}</div>
@@ -492,9 +493,8 @@ export default function ChatListPage() {
 
       {/* CHI TIẾT CHAT */}
       <div
-        className={`absolute inset-0 transition-transform duration-500 ${
-          selectedChat ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`absolute inset-0 transition-transform duration-500 ${selectedChat ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {selectedChat && (
           <>
@@ -574,29 +574,30 @@ export default function ChatListPage() {
 
                     return (
                       <div
-                        key={msg.id}
+                        key={msg.uid || msg.id}
                         className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
-                        onMouseDown={() => {
+                        onMouseDown={(e) => {
                           pressTimerRef.current = setTimeout(() => {
-                            setActiveReactionMsg(msg.id);
-                          }, 2000); // ⏱ Giữ chuột 1 giây mới hiện popup emoji
+                            console.log("Long press detected for msg:", msg);
+                            setActiveReactionMsg(msg.uid || msg.id);
+                          }, 1000); // ⏱ Giữ chuột 1 giây mới hiện popup emoji
                         }}
                         onMouseUp={() => clearTimeout(pressTimerRef.current)}
                         onMouseLeave={() => clearTimeout(pressTimerRef.current)}
-                        onTouchStart={() => {
+                        onTouchStart={(e) => {
                           pressTimerRef.current = setTimeout(() => {
-                            setActiveReactionMsg(msg.id);
-                          }, 2000); // ⏱ Giữ tay trên màn hình 1 giây
+                            console.log("Long touch detected for msg:", msg);
+                            setActiveReactionMsg(msg.uid || msg.id);
+                          }, 1000); // ⏱ Giữ tay trên màn hình 1 giây
                         }}
                         onTouchEnd={() => clearTimeout(pressTimerRef.current)}
                       >
                         {/* Nội dung tin nhắn */}
                         <div
-                          className={`px-3 py-2 rounded-2xl text-sm md:text-base shadow-sm max-w-[75%] whitespace-pre-wrap break-words relative group ${
-                            isOwn
-                              ? "bg-primary text-primary-content rounded-br-none"
-                              : "bg-base-300 rounded-bl-none"
-                          }`}
+                          className={`px-3 py-2 rounded-2xl text-sm md:text-base shadow-sm max-w-[75%] whitespace-pre-wrap break-words relative group ${isOwn
+                            ? "bg-primary text-primary-content rounded-br-none"
+                            : "bg-base-300 rounded-bl-none"
+                            }`}
                         >
                           {/* Reply moment */}
                           {msg.reply_moment && (
@@ -637,13 +638,14 @@ export default function ChatListPage() {
                           )}
 
                           {/* Nếu tin nhắn này đang được ấn giữ -> hiện popup emoji */}
-                          {activeReactionMsg === msg.id && (
+                          {activeReactionMsg === (msg.uid || msg.id) && (
                             <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-base-200 shadow-lg rounded-full px-3 py-1 flex gap-2 z-50">
                               {["👍", "❤️", "😂", "😮", "😢", "🔥", "😍"].map((emo) => (
                                 <button
                                   key={emo}
-                                  onClick={() => {
-                                    handleReactMessage(msg.id, emo);
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleReactMessage(msg.uid || msg.id, emo);
                                     setActiveReactionMsg(null); // ẩn sau khi chọn
                                   }}
                                   className="text-xl hover:scale-125 transition-transform"

@@ -109,6 +109,8 @@ export const sendReactionOnMessage = async (reactionData) => {
     const token = localStorage.getItem("authToken") || localStorage.getItem("idToken");
     if (!token) throw new Error("No token found");
 
+    console.log("🚀 Sending reaction:", reactionData);
+
     const body = {
       data: {
         message_id: reactionData.messageId,
@@ -128,9 +130,10 @@ export const sendReactionOnMessage = async (reactionData) => {
       }
     );
 
+    console.log("✅ Reaction result:", response.data);
     return response.data;
   } catch (err) {
-    console.error("sendReactionOnMessage error:", err);
+    console.error("❌ sendReactionOnMessage error:", err);
     throw err;
   }
 };
