@@ -64,6 +64,13 @@ const Download = () => {
       title: "Bước 3: Mở ứng dụng",
       img: "/images/preview/7.png",
     },
+    {
+      title: "img",
+      img: "/images/preview/8.png",
+    },{
+      title: "img",
+      img: "/images/preview/9.png",
+    }
   ];
 
   return (
