@@ -109,7 +109,7 @@ export const API_URL = {
 
   GET_All_MESSAGE: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getAllMessageV2`)),
   GET_All_MESSAGE_WITH_USER: new DynamicUrl(() => createWsUrlString(`${LOCKET_URL}/getMessageWithUserV2`)),
-  SEND_CHAT_MESSAGE_REACTION: new DynamicUrl(() => createApiUrlString(`${LOCKET_URL}/sendChatMessageReaction`)),
+  SEND_CHAT_MESSAGE_REACTION: "https://api.locketcamera.com/sendChatMessageReaction",
 
   // API lấy dữ liệu từ máy chủ
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),

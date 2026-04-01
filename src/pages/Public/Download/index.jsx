@@ -151,6 +151,12 @@ const Download = () => {
               desc: "Đổi theme dễ dàng",
               color: "from-purple-400 to-pink-600"
             },
+            {
+              icon: "📅",
+              title: "Tính năng lịch giống ios",
+              desc: "",
+              color: "from-purple-400 to-pink-600"
+            },
           ].map((feature, index) => (
             <motion.div
               key={index}
