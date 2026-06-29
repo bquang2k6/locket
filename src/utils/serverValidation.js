@@ -45,38 +45,10 @@ export const recordServerUsage = async (userId, limitType, planId) => {
 /**
  * Get user usage stats từ server
  */
-export const getServerUsageStats = async (userId, userPlan = null) => {
-  try {
-    const planId = userPlan?.plan_id || 'free';
-    const response = await axios.get(API_URL.GET_USAGE_STATS(userId), {
-      params: {
-        plan_id: planId // Send plan_id in query params
-      }
-    });
 
-    return response.data.data; // Changed to return response.data.data
-  } catch (error) {
-    console.error('Error getting usage stats:', error);
-    return null;
-  }
-};
 
 // New function to get caption usage stats from DB-LK-master
-export const getCaptionUsageStats = async (userId, userPlan = null) => {
-  try {
-    const planId = userPlan?.plan_id || 'free';
-    const response = await axios.get(API_URL.GET_CAPTION_USAGE_STATS(userId), {
-      params: {
-        plan_id: planId
-      }
-    });
 
-    return response.data; // DB-LK-master returns data directly
-  } catch (error) {
-    console.error('Error getting caption usage stats:', error);
-    return null;
-  }
-};
 
 /**
  * Validate file size với server

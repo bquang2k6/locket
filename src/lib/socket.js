@@ -4,7 +4,7 @@ let socketInstance = null;
 
 function getBaseWsUrl() {
   const wsUrl = import.meta?.env?.VITE_BASE_API_URL_WS;
-  return wsUrl || "https://wslocketwan.wibu.life";
+  return wsUrl || "https://ws.wangtech.top";
   // return wsUrl || "http://localhost:8000";
 }
 

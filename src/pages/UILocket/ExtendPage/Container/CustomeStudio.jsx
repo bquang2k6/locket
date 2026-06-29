@@ -308,6 +308,22 @@ const ScreenCustomeStudio = () => {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-4">
+          <div className="">
+            <h2 className="text-md font-semibold text-primary flex items-center gap-2">
+              Đang có phiên bản dành riêng cho android
+              <span className="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full uppercase font-bold animate-bounce inline-block border border-white">
+                Hot
+              </span>
+            </h2>
+            <p className="mb-10">
+              <Link
+                to="/download-apk"
+                className="text-primary font-semibold underline hover:text-primary-focus"
+              >
+                Tải app
+              </Link>
+            </p>
+          </div>
           <ThemesCustomes
             title="🎨 Your Saved Theme"
             presets={normalizedPresets}

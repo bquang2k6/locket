@@ -113,7 +113,8 @@ export const API_URL = {
 
   // API lấy dữ liệu từ máy chủ
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),
-  GET_CAPTION_THEMES: createDbApiUrlString(`${LOCKET_PRO}/themes`),
+  GET_CAPTION_THEMES: createApiUrlString(`${LOCKET_PRO}/themes`),
+  
   GET_TIMELINE: createDbApiUrlString(`${LOCKET_PRO}/timelines`),
   DONATE_URL: createDbApiUrlString(`${LOCKET_PRO}/donations`),
   NOTIFI_URL: createDbApiUrlString(`${LOCKET_PRO}/notification`),
@@ -140,7 +141,6 @@ export const API_URL = {
   // Usage Limits API
   CHECK_USAGE_LIMITS: (userId, limitType) => createDbApiUrlString(`/api/usage/check/${userId}/${limitType}`),
   RECORD_USAGE: createDbApiUrlString(`/api/usage/record`),
-  GET_USAGE_STATS: (userId) => createApiUrlString(`/usage/stats/${userId}`), // For gif_caption (Lk_upload-js-master)
-  GET_CAPTION_USAGE_STATS: (userId) => createDbApiUrlString(`/api/usage/stats/${userId}`), // For caption (DB-LK-master)
+  // GET_USAGE_STATS: (userId) => createApiUrlString(`/usage/stats/${userId}`), // For gif_caption (Lk_upload-js-master)
   VALIDATE_FILE_SIZE: createDbApiUrlString(`/api/usage/validate-file`),
 };

@@ -8,7 +8,6 @@ import LoadingRing from "../../../components/UI/Loading/ring";
 import PostCard from "./Container/PostCaptionItems";
 import { API_URL } from "../../../utils/API/apiRoutes";
 import BadgePlan from "./Badge";
-import UsageDisplay from "../../../components/UsageDisplay";
 import { useNavigate } from "react-router-dom";
 
 const POSTS_PER_PAGE = 10;
@@ -256,11 +255,6 @@ const LeftHomeScreen = () => {
 
 
 
-        </div>
-        
-        {/* Usage Display */}
-        <div className="mt-3 px-4">
-          <UsageDisplay className="mx-0" />
         </div>
       </div>
 
