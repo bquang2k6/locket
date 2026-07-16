@@ -115,9 +115,9 @@ export const API_URL = {
   GET_LASTEST_URL: new DynamicUrl(() => createApiUrlString(`${LOCKET_PRO}/getmoment`)),
   GET_CAPTION_THEMES: createApiUrlString(`${LOCKET_PRO}/themes`),
   
-  GET_TIMELINE: createDbApiUrlString(`${LOCKET_PRO}/timelines`),
-  DONATE_URL: createDbApiUrlString(`${LOCKET_PRO}/donations`),
-  NOTIFI_URL: createDbApiUrlString(`${LOCKET_PRO}/notification`),
+  GET_TIMELINE: createApiUrlString(`${LOCKET_PRO}/timelines`),
+  DONATE_URL: createApiUrlString(`${LOCKET_PRO}/donations`),
+  NOTIFI_URL: createApiUrlString(`${LOCKET_PRO}/notification`),
   USER_THEMES_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/posts`),
   CAPTION_POSTS_URL: createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts`),
   DELETE_CAPTION_POST_URL: (postId) => createDbApiUrlString(`${LOCKET_PRO}/user-themes/caption-posts/${postId}`),
