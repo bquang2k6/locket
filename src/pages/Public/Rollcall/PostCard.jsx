@@ -47,7 +47,7 @@ const PostCard = ({ post, token }) => {
     for (let uid of usersToFetch) {
       try {
         const res = await axios.post(
-          "https://api.locketcamera.com/fetchUserV2",
+          "https://api.locketcamera.com/fetchUsers",
           { data: { user_uid: uid } },
           { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
         );
