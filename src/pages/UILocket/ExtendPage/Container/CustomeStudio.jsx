@@ -316,12 +316,14 @@ const ScreenCustomeStudio = () => {
               </span>
             </h2>
             <p className="mb-10">
-              <Link
-                to="/download-apk"
+              <a
+                href="https://apk.locket-wan.top/download"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary font-semibold underline hover:text-primary-focus"
               >
                 Tải app
-              </Link>
+              </a>
             </p>
           </div>
           <ThemesCustomes

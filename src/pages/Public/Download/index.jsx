@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
 const Download = () => {
+  useEffect(() => {
+    window.location.href = "https://apk.locket-wan.top/download";
+  }, []);
   const PreviewImages = [
     {
       img: "https://raw.githubusercontent.com/bquang2k6/gif/refs/heads/master/screenshot/Screenshot_2026-08-03-09-10-32-755_com.quang2k6.locketwan.jpg",
@@ -115,6 +118,16 @@ const Download = () => {
             Trải nghiệm mượt mà hơn với ứng dụng dành riêng cho điện thoại
             Android, giao diện được lấy ý tưởng từ Locket Dio.
           </p>
+          <div className="mt-6 flex justify-center">
+            <a
+              href="https://apk.locket-wan.top/download"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-lg rounded-2xl gap-2 font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+            >
+              📥 Tải Locket Wan APK
+            </a>
+          </div>
         </div>
 
         {/* Tính năng nổi bật */}
@@ -182,12 +195,12 @@ const Download = () => {
 
             <div className="mx-auto flex max-w-xl flex-col gap-3">
               <a
-                href="https://locket-wan.top/download-apk"
+                href="https://apk.locket-wan.top/download"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-outline justify-start gap-3 rounded-xl transition-all duration-300 hover:translate-x-1"
               >
-                🌐 Trang giới thiệu Locket Wan
+                🌐 Tải APK Locket Wan
               </a>
 
               <a

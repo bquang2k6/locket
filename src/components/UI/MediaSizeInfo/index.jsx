@@ -40,12 +40,14 @@ const MediaSizeInfo = () => {
 
           {isAndroid && (
             <p className="mt-2">
-              <Link
-                to="/download-apk"
+              <a
+                href="https://apk.locket-wan.top/download"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-primary font-semibold underline hover:text-primary-focus"
               >
                 Tải app riêng cho Android
-              </Link>
+              </a>
             </p>
           )}
         </>

@@ -116,7 +116,9 @@ const RollCall = () => {
           </p>
 
           <a
-            href="/download-apk"
+            href="https://apk.locket-wan.top/download"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
             Tải ứng dụng Android
