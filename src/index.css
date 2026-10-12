@@ -11,6 +11,16 @@
   -moz-osx-font-smoothing: grayscale;
   /* --theme-color: #ffffff: */
 }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+}
 .no-save {
   pointer-events: none; /* Ngăn mọi tương tác chuột */
   -webkit-user-drag: none; /* Chrome, Edge, Opera */

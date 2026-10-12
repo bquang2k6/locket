@@ -93,7 +93,7 @@ function AppContent() {
 
   return (
     <>
-      {isLiquidGlassTaskbarVisible && <LiquidGlassTaskbar />}
+      {isLiquidGlassTaskbarVisible && location.pathname !== "/" && location.pathname !== "/home" && <LiquidGlassTaskbar />}
       <Routes>
         {user
           ? authRoutes.map(({ path, component: Component }, index) => {
@@ -127,12 +127,12 @@ function AppContent() {
 
         {!user &&
           authRoutes.map(({ path }, index) => (
-            <Route key={index} path={path} element={<Navigate to="/login" />} />
+            <Route key={index} path={path} element={<Navigate to="/login" replace />} />
           ))}
 
         {user &&
           publicRoutes.map(({ path }, index) => (
-            <Route key={index} path={path} element={<Navigate to="/locket" />} />
+            <Route key={index} path={path} element={<Navigate to="/locket" replace />} />
           ))}
 
         <Route path="*" element={<NotFoundPage />} />

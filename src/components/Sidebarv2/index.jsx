@@ -56,8 +56,13 @@ export default function LiquidGlassTaskbar() {
 
   
 
-  // Ẩn ở login + chat
-  if (pathname.startsWith("/login") || pathname.startsWith("/chat")) {
+  // Ẩn ở trang chủ (/) + /home + login + chat
+  if (
+    pathname === "/" ||
+    pathname === "/home" ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/chat")
+  ) {
     return null;
   }
 

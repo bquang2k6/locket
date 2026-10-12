@@ -47,13 +47,13 @@ function AppRoutes() {
       {/* Điều hướng: Nếu chưa đăng nhập mà vào authRoutes -> chuyển hướng login */}
       {!user &&
         authRoutes.map(({ path }, index) => (
-          <Route key={index} path={path} element={<Navigate to="/login" />} />
+          <Route key={index} path={path} element={<Navigate to="/login" replace />} />
         ))}
 
       {/* Điều hướng: Nếu đã đăng nhập mà vào publicRoutes -> chuyển hướng home */}
       {user &&
         publicRoutes.map(({ path }, index) => (
-          <Route key={index} path={path} element={<Navigate to="/locket" />} />
+          <Route key={index} path={path} element={<Navigate to="/locket" replace />} />
         ))}
     </Routes>
   );
